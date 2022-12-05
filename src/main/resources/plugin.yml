@@ -1,0 +1,5 @@
+name: DragonCore
+version: '1.0.1'
+main: fur.kiyoshi.dragoncore.Main
+api-version: 1.19
+authors: [ MyNameIsKiyoshi ]
