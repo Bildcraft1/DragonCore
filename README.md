@@ -3,6 +3,7 @@ DragonCore
 ##### DragonAPI Repository (Gradle / Kotlin)
 ```kotlin
 maven {
+    name = 'kiyoshi-public'
     url = 'https://nexus.kiyoshi.space/repository/kiyoshi-public/'
 }	
 ```
