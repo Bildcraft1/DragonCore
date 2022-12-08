@@ -1,6 +1,8 @@
 package fur.kiyoshi.dragoncore
 
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
+import fur.kiyoshi.dragoncore.commands.Heal
+import fur.kiyoshi.dragoncore.commands.Info
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -19,6 +21,8 @@ class Main : JavaPlugin() {
     private fun instance(){
         instance = this
         this.dragonManager = DragonManager(this)
+        getCommand("about")?.setExecutor(Info)
+        getCommand("heal")?.setExecutor(Heal)
         saveDefaultConfig()
         config.options().parseComments(true)
         config.options().copyDefaults(true)

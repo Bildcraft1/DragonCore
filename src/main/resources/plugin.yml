@@ -3,3 +3,13 @@ version: '1.0.1'
 main: fur.kiyoshi.dragoncore.Main
 api-version: 1.19
 authors: [ MyNameIsKiyoshi ]
+
+commands:
+  info:
+    description: "Send the plugin info"
+    usage: /about
+    permission: default
+  heal:
+    description: "Heals the player"
+    usage: /heal
+    permission: dragoncore.heal
