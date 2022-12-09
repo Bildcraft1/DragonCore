@@ -13,3 +13,7 @@ commands:
     description: "Heals the player"
     usage: /heal
     permission: dragoncore.heal
+  fly:
+    description: "Flight"
+    usage: /fly
+    permission: dragoncore.fly
