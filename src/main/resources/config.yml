@@ -15,3 +15,10 @@ vConfig: 18
 # http://nexus.kiyoshi.space
 Nexus: true
 # Kiyoshi API (Don't touch)
+
+resourcePack:
+  enabled: false
+  url: ""
+  hash: ""
+  prompt: "Enable the texture pack for better experience"
+  forced: false

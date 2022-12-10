@@ -21,3 +21,11 @@ commands:
     description: "Spawns the H O R S E"
     usage: /horse
     permission: dragoncore.fun.horse
+  tp:
+    description: "Teleport"
+    usage: /tp <player>
+    permission: dragoncore.tp
+  tpa:
+    description: "Teleport Request"
+    usage: /tpa <player>
+    permission: dragoncore.tpa

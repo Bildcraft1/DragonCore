@@ -2,9 +2,9 @@ package fur.kiyoshi.dragoncore
 
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
 import fur.kiyoshi.dragoncore.commands.Info
-import fur.kiyoshi.dragoncore.commands.funcommands.Horse
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
 import fur.kiyoshi.dragoncore.commands.playercommands.Heal
+import fur.kiyoshi.dragoncore.commands.teleport.Tp
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import fur.kiyoshi.dragoncore.events.PlayerJoin
 import org.bukkit.event.Listener
@@ -24,10 +24,6 @@ class Main : JavaPlugin() {
     private fun instance(){
         instance = this
         this.dragonManager = DragonManager(this)
-        getCommand("about")?.setExecutor(Info)
-        getCommand("heal")?.setExecutor(Heal)
-        getCommand("fly")?.setExecutor(Fly)
-        getCommand("horse")?.setExecutor(Horse)
         saveDefaultConfig()
         config.options().parseComments(true)
         config.options().copyDefaults(true)
@@ -47,8 +43,16 @@ class Main : JavaPlugin() {
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
     }
 
+    private fun commands() {
+        getCommand("about")?.setExecutor(Info)
+        getCommand("tp")?.setExecutor(Tp)
+        getCommand("heal")?.setExecutor(Heal)
+        getCommand("fly")?.setExecutor(Fly)
+    }
+
     override fun onEnable() {
         instance()
+        commands()
         events()
     }
 
