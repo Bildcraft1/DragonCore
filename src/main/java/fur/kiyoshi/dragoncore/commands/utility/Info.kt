@@ -1,4 +1,4 @@
-package fur.kiyoshi.dragoncore.commands
+package fur.kiyoshi.dragoncore.commands.utility
 
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command

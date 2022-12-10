@@ -29,3 +29,15 @@ commands:
     description: "Teleport Request"
     usage: /tpa <player>
     permission: dragoncore.tpa
+  staff:
+    description: "Staff Mode"
+    usage: /staff
+    permission: dragoncore.staff
+  stafflist:
+    description: "List of staff"
+    usage: /stafflist
+    permission: dragoncore.stafflist
+  help:
+    description: "Help"
+    usage: /help
+    permission: dragoncore.help

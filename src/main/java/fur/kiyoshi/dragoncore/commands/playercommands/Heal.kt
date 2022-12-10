@@ -14,7 +14,7 @@ object Heal: CommandExecutor {
             return true
         }
         sender.health = 20.0
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect" + sender.displayName + "clear")
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect " + sender.displayName + " clear")
         sender.foodLevel = 20
         sender.sendMessage(rgb(153, 0,70, "You have been healed"))
         return true

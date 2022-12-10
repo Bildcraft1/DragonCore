@@ -1,5 +1,6 @@
 package fur.kiyoshi.dragoncore.commands.teleport
 
+import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -17,18 +18,14 @@ object Tp: CommandExecutor {
             val potentialPlayer = args[0]
             val targetPlayer = Bukkit.getServer().getPlayer(potentialPlayer)
             if (targetPlayer != null) {
-                return if (targetPlayer.world.name == sender.world.name){
-                    sender.teleport(targetPlayer.location)
-                    true
-                } else {
-                    sender.sendMessage("Not in the same world")
-                    true
-                }
+                sender.teleport(targetPlayer.location)
+                sender.sendMessage(rgb(153, 0, 70,"Teleported to: ") + rgb(0, 250, 154, targetPlayer.displayName))
+                return true
             }
-            sender.sendMessage("Not a player")
+            sender.sendMessage(rgb(153, 0, 70,"Not a player"))
             return true
         } else {
-            sender.sendMessage("You don't have permission")
+            sender.sendMessage(rgb(153, 0, 70,"You don't have permission"))
             return true
         }
     }

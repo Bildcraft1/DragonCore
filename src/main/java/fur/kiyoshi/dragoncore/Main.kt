@@ -1,10 +1,14 @@
 package fur.kiyoshi.dragoncore
 
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
-import fur.kiyoshi.dragoncore.commands.Info
+import fur.kiyoshi.dragoncore.commands.utility.Info
+import fur.kiyoshi.dragoncore.commands.funcommands.Horse
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
 import fur.kiyoshi.dragoncore.commands.playercommands.Heal
+import fur.kiyoshi.dragoncore.commands.staffmode.Staff
+import fur.kiyoshi.dragoncore.commands.staffmode.StaffList
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
+import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import fur.kiyoshi.dragoncore.events.PlayerJoin
 import org.bukkit.event.Listener
@@ -48,6 +52,11 @@ class Main : JavaPlugin() {
         getCommand("tp")?.setExecutor(Tp)
         getCommand("heal")?.setExecutor(Heal)
         getCommand("fly")?.setExecutor(Fly)
+        getCommand("staff")?.setExecutor(Staff)
+        getCommand("stafflist")?.setExecutor(StaffList)
+        getCommand("horse")?.setExecutor(Horse)
+        getCommand("info")?.setExecutor(Info)
+        getCommand("help")?.setExecutor(Help)
     }
 
     override fun onEnable() {
