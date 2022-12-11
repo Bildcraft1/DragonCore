@@ -41,3 +41,7 @@ commands:
     description: "Help"
     usage: /help
     permission: dragoncore.help
+  staffmode:
+    description: "Staff Mode"
+    usage: /staffmode
+    permission: dragoncore.staffmode

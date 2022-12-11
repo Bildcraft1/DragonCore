@@ -32,6 +32,12 @@ object StaffList: CommandExecutor {
                     sender.sendMessage(rgb(153, 0, 70, key))
                 }
             }
+            sender.sendMessage(rgb(153, 0, 70, "-----") + rgb(0, 250, 154, "Staff List (Staff Mode)") + rgb(153, 0, 70, "-----"))
+            for ((key, value) in StaffMode.staffMap) {
+                if (value) {
+                    sender.sendMessage(rgb(153, 0, 70, key))
+                }
+            }
             return true
         }
         return true

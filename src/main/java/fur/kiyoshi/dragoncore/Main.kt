@@ -7,6 +7,7 @@ import fur.kiyoshi.dragoncore.commands.playercommands.Fly
 import fur.kiyoshi.dragoncore.commands.playercommands.Heal
 import fur.kiyoshi.dragoncore.commands.staffmode.Staff
 import fur.kiyoshi.dragoncore.commands.staffmode.StaffList
+import fur.kiyoshi.dragoncore.commands.staffmode.StaffMode
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.events.NBTBlock
@@ -54,6 +55,7 @@ class Main : JavaPlugin() {
         getCommand("fly")?.setExecutor(Fly)
         getCommand("staff")?.setExecutor(Staff)
         getCommand("stafflist")?.setExecutor(StaffList)
+        getCommand("staffmode")?.setExecutor(StaffMode)
         getCommand("horse")?.setExecutor(Horse)
         getCommand("info")?.setExecutor(Info)
         getCommand("help")?.setExecutor(Help)
