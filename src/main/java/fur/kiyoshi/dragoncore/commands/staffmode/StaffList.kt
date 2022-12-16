@@ -25,11 +25,11 @@ object StaffList: CommandExecutor {
             return true
         }
         if (sender.hasPermission("dragoncore.stafflist")) {
-            sender.sendMessage(rgb(153, 0, 70, "-----") + rgb(0, 250, 154, "Staff List") + rgb(153, 0, 70, "-----"))
-            // For every player inside the staffMap if the value is true then send the player's name to the sender
-            for ((key, value) in Staff.staffMap) {
-                if (value) {
-                    sender.sendMessage(rgb(153, 0, 70, key))
+            sender.sendMessage(rgb(153, 0, 70, "-----") + rgb(0, 250, 154, "Staff Online") + rgb(153, 0, 70, "-----"))
+            // Check for every player if they have the permission dragoncore.staff and if they have add them to the list
+            for (player in sender.server.onlinePlayers) {
+                if (player.hasPermission("dragoncore.staff")) {
+                    sender.sendMessage(rgb(153, 0, 70, player.displayName))
                 }
             }
             sender.sendMessage(rgb(153, 0, 70, "-----") + rgb(0, 250, 154, "Staff List (Staff Mode)") + rgb(153, 0, 70, "-----"))

@@ -5,11 +5,8 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import java.util.*
-
 
 object Staff: CommandExecutor {
-    val staffMap: MutableMap<String, Boolean> = HashMap<String, Boolean>()
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("Sender is not a player")

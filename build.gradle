@@ -23,6 +23,9 @@ repositories {
     maven {
         url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
     }
+    maven {
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
     /*
     As Spigot-API depends on the BungeeCord ChatComponent-API,
     we need to add the Sonatype OSS repository, as Gradle,
@@ -40,6 +43,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.11.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 

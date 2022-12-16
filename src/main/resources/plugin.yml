@@ -2,7 +2,8 @@ name: DragonCore
 version: '1.0.1'
 main: fur.kiyoshi.dragoncore.Main
 api-version: 1.19
-authors: [ MyNameIsKiyoshi ]
+authors: [ MyNameIsKiyoshi, WhiXard ]
+softdepend: [PlaceholderAPI] # This is used, if your plugin works without PlaceholderAPI.
 
 commands:
   about:
@@ -45,3 +46,7 @@ commands:
     description: "Staff Mode"
     usage: /staffmode
     permission: dragoncore.staffmode
+  bloodmoonstatus:
+    description: "Bloodmoon Status"
+    usage: /bloodmoonstatus
+    permission: dragoncore.bloodmoonstatus

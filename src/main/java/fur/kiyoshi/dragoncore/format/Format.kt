@@ -18,6 +18,10 @@ object Format {
         return ChatColor.of(Color(red!!, green!!, blue!!)).toString() + color(s)
     }
 
+    fun defaultrgb(s: String?): String {
+        return rgb(153, 0, 70, s)
+    }
+
     fun hex(message: String): String {
         @Suppress("NAME_SHADOWING") var message = message
         val pattern = Pattern.compile("#[a-fA-F0-9]{6}")
