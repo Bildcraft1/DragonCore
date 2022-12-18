@@ -50,3 +50,15 @@ commands:
     description: "Bloodmoon Status"
     usage: /bloodmoonstatus
     permission: dragoncore.bloodmoonstatus
+  screenshare:
+    description: "Screenshare"
+    usage: /screenshare <player>
+    permission: dragoncore.screenshare
+  ss:
+    description: "Screenshare"
+    usage: /ss <player>
+    permission: dragoncore.screenshare
+  controllo:
+    description: "Controllore"
+    usage: /controllo <player>
+    permission: dragoncore.controllo

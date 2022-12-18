@@ -5,15 +5,17 @@ import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
 import fur.kiyoshi.dragoncore.commands.funcommands.Horse
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
 import fur.kiyoshi.dragoncore.commands.playercommands.Heal
-import fur.kiyoshi.dragoncore.commands.staffmode.Staff
-import fur.kiyoshi.dragoncore.commands.staffmode.StaffList
-import fur.kiyoshi.dragoncore.commands.staffmode.StaffMode
+import fur.kiyoshi.dragoncore.commands.staffutils.Staff
+import fur.kiyoshi.dragoncore.commands.staffutils.StaffList
+import fur.kiyoshi.dragoncore.commands.staffutils.StaffMode
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.commands.utility.Info
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import fur.kiyoshi.dragoncore.events.PlayerJoin
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
+import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
+import fur.kiyoshi.dragoncore.events.ScreenShareEvent
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -50,6 +52,7 @@ class Main : JavaPlugin() {
     private fun events() {
         this.registerEvent(NBTBlock(), "NBTBlock", this)
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
+        this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
     }
 
     private fun commands() {
@@ -64,6 +67,9 @@ class Main : JavaPlugin() {
         getCommand("info")?.setExecutor(Info)
         getCommand("help")?.setExecutor(Help)
         getCommand("bloodmoonstatus")?.setExecutor(BloodMoonStatus)
+        getCommand("ss")?.setExecutor(ScreenShare)
+        getCommand("screenshare")?.setExecutor(ScreenShare)
+        getCommand("controllo")?.setExecutor(ScreenShare)
     }
 
     private fun asciiArt() {

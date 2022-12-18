@@ -1,4 +1,4 @@
-package fur.kiyoshi.dragoncore.commands.staffmode
+package fur.kiyoshi.dragoncore.commands.staffutils
 
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command

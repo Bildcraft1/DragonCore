@@ -8,7 +8,7 @@
 # DragonCore - 1.0.1 By MyNameIsKiyoshi (Kiyoshi#1010) - https://discord.gg/ka7uGKfy7p
 
 # config version (Don't touch)
-vConfig: 18
+vConfig: 19
 # config version (Don't touch)
 
 # Kiyoshi API (Don't touch)
@@ -22,3 +22,6 @@ resourcePack:
   hash: ""
   prompt: "Enable the texture pack for better experience"
   forced: false
+
+screenshare:
+  ban_command: "ban %player% Cheating"
