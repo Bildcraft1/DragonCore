@@ -9,12 +9,15 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class ScreenShareEvent: Listener {
+    var prefixes = arrayOf("/ss", "/screenshare")
     @EventHandler
     fun onCommand(e: PlayerCommandPreprocessEvent) {
         val player = e.player
-        if (screenShareMap.contains(player.name) && screenShareMap[player.name] == true && !e.message.startsWith("/screenshare")) {
-            e.isCancelled = true
-            player.sendMessage(defaultrgb("You are in screenshare mode"))
+        if (!player.hasPermission("dragoncore.staff.bypass")) {
+            if (screenShareMap.contains(player.name) && screenShareMap[player.name] == true && !e.message.startsWith(prefixes[1]) || !e.message.startsWith(prefixes[2])) {
+                e.isCancelled = true
+                player.sendMessage(defaultrgb("You are in screenshare mode"))
+            }
         }
     }
 

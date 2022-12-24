@@ -5,12 +5,18 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion
 
 class DragonCoreExpansion: PlaceholderExpansion() {
 
-    override fun onPlaceholderRequest(player: org.bukkit.entity.Player, identifier: String): String? {
+    override fun onPlaceholderRequest(player: org.bukkit.entity.Player?, identifier: String): String? {
         if (identifier.equals("bloodmoon", ignoreCase = true)) {
-            return if (BloodMoonStatus.bloodMoon && player.world.name == "mondo2") {
-                "true"
+            if (player != null) {
+                return if (BloodMoonStatus.bloodMoon && player.world.name == "mondo2") {
+                    "true"
+                } else {
+                    "false"
+                }
+            } else if (BloodMoonStatus.bloodMoon) {
+                return "true"
             } else {
-                "false"
+                return "false"
             }
         }
         return null
