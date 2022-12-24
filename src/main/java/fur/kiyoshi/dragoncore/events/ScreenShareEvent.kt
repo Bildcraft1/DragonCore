@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class ScreenShareEvent: Listener {
-    var prefixes = arrayOf("/ss", "/screenshare")
+    var prefixes = arrayOf("/ss", "/screenshare", "/controllo")
     @EventHandler
     fun onCommand(e: PlayerCommandPreprocessEvent) {
         val player = e.player
