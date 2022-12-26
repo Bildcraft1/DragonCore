@@ -1,5 +1,6 @@
 package fur.kiyoshi.dragoncore.commands.teleport
 
+import fur.kiyoshi.dragoncore.format.Format.defaultrgb
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -15,6 +16,11 @@ object Tp: CommandExecutor {
             return true
         }
         if (sender.hasPermission("dragoncore.tp")) {
+            if (args.isEmpty()) {
+                sender.sendMessage(defaultrgb("Usage: /tp <PlayerName>"))
+                return true
+            }
+
             val potentialPlayer = args[0]
             val targetPlayer = Bukkit.getServer().getPlayer(potentialPlayer)
             if (targetPlayer != null) {

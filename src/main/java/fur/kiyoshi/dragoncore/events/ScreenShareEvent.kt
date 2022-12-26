@@ -14,7 +14,7 @@ class ScreenShareEvent: Listener {
     fun onCommand(e: PlayerCommandPreprocessEvent) {
         val player = e.player
         if (!player.hasPermission("dragoncore.staff.bypass")) {
-            if (screenShareMap.contains(player.name) && screenShareMap[player.name] == true && !e.message.startsWith(prefixes[1]) || !e.message.startsWith(prefixes[2])) {
+            if (screenShareMap.contains(player.name) && screenShareMap[player.name] == true && !e.message.startsWith(prefixes[1]) && !e.message.startsWith(prefixes[2])) {
                 e.isCancelled = true
                 player.sendMessage(defaultrgb("You are in screenshare mode"))
             }
