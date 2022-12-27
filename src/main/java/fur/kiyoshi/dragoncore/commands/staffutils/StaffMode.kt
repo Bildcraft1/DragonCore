@@ -41,9 +41,10 @@ object StaffMode: CommandExecutor {
                     true
                 }
             }
-        } else {
+        } else if(!sender.hasPermission("dragoncore.staffmode")){
             sender.sendMessage("You don't have permission")
             return true
         }
+        return true
     }
 }

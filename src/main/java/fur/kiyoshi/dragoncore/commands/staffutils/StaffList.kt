@@ -1,5 +1,6 @@
 package fur.kiyoshi.dragoncore.commands.staffutils
 
+import fur.kiyoshi.dragoncore.format.Format.defaultrgb
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -39,6 +40,8 @@ object StaffList: CommandExecutor {
                 }
             }
             return true
+        } else if(!sender.hasPermission("dragoncore.stafflist")) {
+            sender.sendMessage(defaultrgb("You dont have permission"))
         }
         return true
     }
