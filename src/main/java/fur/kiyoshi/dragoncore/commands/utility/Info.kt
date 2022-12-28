@@ -13,7 +13,7 @@ object Info: CommandExecutor {
             sender.sendMessage("Your not a player")
             return true
         }
-        sender.sendMessage(rgb(153, 0, 37, "DragonCore by MyNameIsKiyoshi"))
+        sender.sendMessage(rgb(153, 0, 37, "DragonCore by MyNameIsKiyoshi and 0x7E6 (WhiXard)"))
         return true
     }
 }

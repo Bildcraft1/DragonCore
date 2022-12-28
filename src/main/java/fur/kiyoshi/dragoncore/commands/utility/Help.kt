@@ -13,7 +13,7 @@ object Help: CommandExecutor {
             return true
         }
         if (sender.hasPermission("dragoncore.help")) {
-            sender.sendMessage(rgb(153, 0, 37, "-----DragonCore Help-----"))
+            sender.sendMessage(rgb(153, 0, 37, "------------=[ DragonCore ]=--------------"))
             sender.sendMessage(rgb(153, 0, 37, "/fly - Toggles flight"))
             sender.sendMessage(rgb(153, 0, 37, "/info - Shows info about the plugin"))
             sender.sendMessage(rgb(153, 0, 37, "/tp <player> - Teleports to a player"))

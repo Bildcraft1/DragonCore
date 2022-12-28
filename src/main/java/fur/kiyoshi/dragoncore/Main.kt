@@ -14,8 +14,10 @@ import fur.kiyoshi.dragoncore.commands.utility.Info
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import fur.kiyoshi.dragoncore.events.PlayerJoin
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
+import fur.kiyoshi.dragoncore.commands.Freeze
 import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
 import fur.kiyoshi.dragoncore.events.ScreenShareEvent
+import fur.kiyoshi.dragoncore.events.TabHelper
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -70,6 +72,8 @@ class Main : JavaPlugin() {
         getCommand("ss")?.setExecutor(ScreenShare)
         getCommand("screenshare")?.setExecutor(ScreenShare)
         getCommand("controllo")?.setExecutor(ScreenShare)
+        getCommand("freeze")?.setExecutor(Freeze)
+        getCommand("freeze")?.tabCompleter = TabHelper()
     }
 
     private fun asciiArt() {
