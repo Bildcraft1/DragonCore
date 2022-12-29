@@ -1,7 +1,9 @@
 package fur.kiyoshi.dragoncore.api
 
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
+import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
+import org.bukkit.Bukkit
 
 class DragonCoreExpansion: PlaceholderExpansion() {
 
@@ -17,6 +19,15 @@ class DragonCoreExpansion: PlaceholderExpansion() {
                 return "true"
             } else {
                 return "false"
+            }
+        }
+        if (identifier.equals("topplayer", ignoreCase = true) && Bukkit.getServer().pluginManager.isPluginEnabled("ajLeaderboards")) {
+            if (player != null) {
+                return if (PlaceholderAPI.setPlaceholders(player, "%ajlb_lb_cmi_user_playtime_days_1_alltime_name%") == player.displayName) {
+                    DragonAPI().getConfig().getString("topplayer.string").toString()
+                } else {
+                    ""
+                }
             }
         }
         return null

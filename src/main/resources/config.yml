@@ -25,3 +25,6 @@ resourcePack:
 
 screenshare:
   ban_command: "ban %player% Cheating"
+
+topplayer:
+  string: " 🔝"
