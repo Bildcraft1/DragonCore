@@ -13,7 +13,7 @@ object Horse: CommandExecutor {
             sender.sendMessage("Not a player")
             return true
         }
-        sender.world.spawnEntity(sender.getLocation(), EntityType.HORSE)
+        sender.world.spawnEntity(sender.location, EntityType.HORSE)
         sender.sendMessage(rgb(153,0,37,"Successfully spawned the ") + rgb(255,255,255, "H O R S E"))
         return true
     }

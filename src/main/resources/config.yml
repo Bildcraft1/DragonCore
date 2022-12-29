@@ -28,3 +28,6 @@ screenshare:
 
 topplayer:
   string: " 🔝"
+
+chatfilter:
+  blacklist: []

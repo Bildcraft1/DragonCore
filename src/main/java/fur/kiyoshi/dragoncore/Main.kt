@@ -11,13 +11,12 @@ import fur.kiyoshi.dragoncore.commands.staffutils.StaffMode
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.commands.utility.Info
-import fur.kiyoshi.dragoncore.events.NBTBlock
-import fur.kiyoshi.dragoncore.events.PlayerJoin
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
 import fur.kiyoshi.dragoncore.commands.Freeze
+import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
 import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
-import fur.kiyoshi.dragoncore.events.ScreenShareEvent
-import fur.kiyoshi.dragoncore.events.TabHelper
+import fur.kiyoshi.dragoncore.commands.testcommands.Mute
+import fur.kiyoshi.dragoncore.events.*
 import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -55,6 +54,7 @@ class Main : JavaPlugin() {
         this.registerEvent(NBTBlock(), "NBTBlock", this)
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
         this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
+        this.registerEvent(ChatFilter(), "ChatFilter", this)
     }
 
     private fun commands() {
@@ -72,7 +72,9 @@ class Main : JavaPlugin() {
         getCommand("ss")?.setExecutor(ScreenShare)
         getCommand("screenshare")?.setExecutor(ScreenShare)
         getCommand("controllo")?.setExecutor(ScreenShare)
+        getCommand("mute")?.setExecutor(Mute)
         getCommand("freeze")?.setExecutor(Freeze)
+        getCommand("chatfilter")?.setExecutor(ChatSettings)
         getCommand("freeze")?.tabCompleter = TabHelper()
     }
 

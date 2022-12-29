@@ -66,3 +66,11 @@ commands:
     description: "Freeze"
     usage: /freeze
     permission: dragoncore.freeze
+  mute:
+    description: "Mute"
+    usage: /mute <player>
+    permission: dragoncore.test
+  chatfilter:
+    description: "Chat Filter"
+    usage: /chatfilter
+    permission: dragoncore.chatfilter
