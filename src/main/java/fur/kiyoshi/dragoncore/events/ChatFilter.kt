@@ -15,7 +15,7 @@ class ChatFilter: Listener {
     fun onChatFilter(event: AsyncPlayerChatEvent) {
         var blacklist: MutableList<String> = arrayListOf<String>()
         val p: Player = event.getPlayer()
-        val msg: String = event.getMessage()
+        val msg: String = event.getMessage().lowercase()
         blacklist.addAll((DragonAPI().getConfig().getStringList("chatfilter.blacklist")))
 
         for (x in blacklist) {
@@ -23,17 +23,17 @@ class ChatFilter: Listener {
 
                 for (player in p.server.onlinePlayers) {
                     if (player.hasPermission("dragoncore.staff")) {
-                        val mute = net.md_5.bungee.api.chat.TextComponent("Mute ")
-                        mute.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "/mute ${p.name} 20m")
+                        val mute = net.md_5.bungee.api.chat.TextComponent("[Mute] ")
+                        mute.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "/tempmute ${p.name} 20m")
                         mute.color = net.md_5.bungee.api.ChatColor.RED
                         mute.isBold = true
 
-                        val kick = net.md_5.bungee.api.chat.TextComponent("Kick ")
+                        val kick = net.md_5.bungee.api.chat.TextComponent("[Kick] ")
                         kick.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "/kick ${p.name} Chat Filter")
                         kick.color = net.md_5.bungee.api.ChatColor.RED
                         kick.isBold = true
 
-                        val ban = net.md_5.bungee.api.chat.TextComponent("Ban ")
+                        val ban = net.md_5.bungee.api.chat.TextComponent("[Ban] ")
                         ban.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "/ban ${p.name} Chat Filter")
                         ban.color = net.md_5.bungee.api.ChatColor.RED
                         ban.isBold = true

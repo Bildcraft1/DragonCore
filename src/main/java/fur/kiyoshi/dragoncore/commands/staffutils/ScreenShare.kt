@@ -3,7 +3,6 @@ package fur.kiyoshi.dragoncore.commands.staffutils
 import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.defaultrgb
-import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -46,17 +45,14 @@ object ScreenShare: CommandExecutor {
             }
 
             if (args.size > 1) {
-
-                if (args[1] == "ban") {
-                    sender.performCommand(PlaceholderAPI.setPlaceholders(Bukkit.getPlayer(target), DragonAPI().getConfig().getString("screenshare.ban-command")!!))
-                    return true
-                }
-
-                if (args[1] == "legit") {
+                return if (args[1] == "legit" && screenShareMap[target] == true) {
                     screenShareMap[target] = false
                     target.let { Bukkit.getPlayer(it) }?.sendMessage(color(DragonAPI().getLangFile().getString("messages.spawn")!!))
-                    target.let { Bukkit.getPlayer(it) }?.performCommand("spawn")
-                    return true
+                    target.let { Bukkit.getPlayer(it) }?.performCommand("back")
+                    true
+                } else {
+                    sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/screenshare <player> <legit> (Player not in SS)" )))
+                    true
                 }
             }
 
@@ -67,6 +63,23 @@ object ScreenShare: CommandExecutor {
 
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvtp $target screenshare")
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvtp ${sender.name} screenshare")
+
+            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.generic_divider")!!.replace("{title}", "ScreenShare")))
+            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.screenshare_staff")?.replace("{player}", target)!!))
+
+            val ban = net.md_5.bungee.api.chat.TextComponent("[Ban] ")
+            ban.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "/tempban ${target.let {Bukkit.getPlayer(it)}?.name} 14d Hacking")
+            ban.color = net.md_5.bungee.api.ChatColor.RED
+            ban.isBold = true
+
+            val legit = net.md_5.bungee.api.chat.TextComponent("[Legit]")
+            legit.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/screenshare ${target.let {Bukkit.getPlayer(it)}?.name} legit")
+            legit.color = net.md_5.bungee.api.ChatColor.AQUA
+            legit.isBold = true
+
+            sender.spigot().sendMessage(ban, legit)
+
+            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.divider")!!))
             target.let { Bukkit.getPlayer(it) }?.sendMessage(defaultrgb(DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)))
             screenShareMap[target] = true
 
