@@ -1,5 +1,6 @@
 package fur.kiyoshi.dragoncore.commands.staffutils
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.format.Format
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -42,7 +43,7 @@ object StaffMode: CommandExecutor {
                 }
             }
         } else if(!sender.hasPermission("dragoncore.staffmode")){
-            sender.sendMessage("You don't have permission")
+            sender.sendMessage(Format.defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
             return true
         }
         return true

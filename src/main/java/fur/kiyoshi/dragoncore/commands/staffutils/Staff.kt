@@ -1,5 +1,8 @@
 package fur.kiyoshi.dragoncore.commands.staffutils
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format
+import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -13,12 +16,13 @@ object Staff: CommandExecutor {
             return true
         }
         if (sender.hasPermission("dragoncore.staff")) {
-            sender.sendMessage(rgb(153, 0, 70, "-----") + rgb(153, 0, 70, "Staff Commands") + "------")
-            sender.sendMessage(rgb(153, 0, 70, "/staffmode") + " - Toggles staff mode")
-            sender.sendMessage(rgb(153, 0, 70, "/stafflist") + " - Lists all staff members")
+            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.staff")!!))
+            for (x in DragonAPI().getLangFile().getStringList("messages.staff_command_list")) {
+                sender.sendMessage(color(x))
+            }
             return true
         } else {
-            sender.sendMessage(rgb(153, 0, 70, "You don't have permission"))
+            sender.sendMessage(Format.defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
             return true
         }
     }

@@ -7,6 +7,7 @@ import fur.kiyoshi.dragoncore.api.manager.DragonManager
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import fur.kiyoshi.dragoncore.format.Format
 import org.bukkit.configuration.file.FileConfiguration
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 

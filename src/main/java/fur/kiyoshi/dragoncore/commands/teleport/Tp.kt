@@ -1,5 +1,7 @@
 package fur.kiyoshi.dragoncore.commands.teleport
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format
 import fur.kiyoshi.dragoncore.format.Format.defaultrgb
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.Bukkit
@@ -28,10 +30,10 @@ object Tp: CommandExecutor {
                 sender.sendMessage(rgb(153, 0, 70,"Teleported to: ") + rgb(0, 250, 154, targetPlayer.displayName))
                 return true
             }
-            sender.sendMessage(rgb(153, 0, 70,"Not a player"))
+            sender.sendMessage(Format.color(DragonAPI().getLangFile().getString("messages.player_not_online")!!))
             return true
         } else {
-            sender.sendMessage(rgb(153, 0, 70,"You don't have permission"))
+            sender.sendMessage(defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
             return true
         }
     }

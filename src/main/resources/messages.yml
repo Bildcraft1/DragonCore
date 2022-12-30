@@ -1,4 +1,7 @@
 messages:
+  staff_command_list:
+    - "&b/staffmode&7 - Toggle staff mode"
+    - "&b/stafflist&7 - List all staff members"
   about: "&7This server is running &bDragonCore &7version &b{version}&7."
   no_permission: "&cYou do not have permission to use this command."
   flyon: "&aYou have enabled flight."
@@ -7,3 +10,10 @@ messages:
   heal: "&aYou have been healed."
   screenshare: "&aYou have been screenshared by {staffer}."
   spawn: "&aYou have been teleported to spawn."
+  player_not_online: "&cThat player is not online."
+  already_screensharing: "&cThat player is already screensharing."
+  staff: "&7------------=[ &bStaff Mode &7]=--------------"
+  chatfilter_blocked: "&cYour message has been blocked by the chat filter. Message: &a{message}"
+  chatfilter_blocked_notify: "&c{player} said &f{message}&c, which was blocked by the chat filter."
+  chatfiler_notification: "&7------------=[ &cChat Filter Notification &7]=--------------"
+  divider: "&7--------------------------------------------------"

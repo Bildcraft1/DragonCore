@@ -31,12 +31,19 @@ object ScreenShare: CommandExecutor {
         }
 
         return if (sender.hasPermission("dragoncore.screenshare")) {
+
+
             if (args.isEmpty()) {
-                sender.sendMessage(defaultrgb("Usage: /screenshare <player>"))
+                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/screenshare <player>" )))
                 return true
             }
 
             val target = args[0]
+
+            if (Bukkit.getPlayer(target) == null) {
+                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.player_not_online")!!))
+                return true
+            }
 
             if (args.size > 1) {
 
@@ -54,7 +61,7 @@ object ScreenShare: CommandExecutor {
             }
 
             if (screenShareMap[target] == true) {
-                sender.sendMessage(defaultrgb("The user is already in a screenshare"))
+                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.already_screensharing")!!))
                 return true
             }
 
@@ -63,10 +70,6 @@ object ScreenShare: CommandExecutor {
             target.let { Bukkit.getPlayer(it) }?.sendMessage(defaultrgb(DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)))
             screenShareMap[target] = true
 
-            if (Bukkit.getPlayer(target) == null) {
-                sender.sendMessage(defaultrgb("Player is not online"))
-                return true
-            }
 
             true
         } else {

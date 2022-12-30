@@ -1,5 +1,6 @@
 package fur.kiyoshi.dragoncore.commands.utility
 
+import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -13,15 +14,12 @@ object Help: CommandExecutor {
             return true
         }
         if (sender.hasPermission("dragoncore.help")) {
-            sender.sendMessage(rgb(153, 0, 37, "------------=[ DragonCore ]=--------------"))
-            sender.sendMessage(rgb(153, 0, 37, "/fly - Toggles flight"))
-            sender.sendMessage(rgb(153, 0, 37, "/info - Shows info about the plugin"))
-            sender.sendMessage(rgb(153, 0, 37, "/tp <player> - Teleports to a player"))
-            sender.sendMessage(rgb(153, 0, 37, "/tpa <player> - Sends a teleport request to a player"))
-            sender.sendMessage(rgb(153, 0, 37, "/staff - Set staff mode"))
-            sender.sendMessage(rgb(153, 0, 37, "/stafflist - Shows a list of staff members online"))
-            sender.sendMessage(rgb(153, 0, 37, "/heal - Heals you"))
-
+            sender.sendMessage(color("&7------------=[ &bDragonCore &7]=--------------"))
+            sender.sendMessage(color("&b/Staff &7- Shows the staff commands"))
+            sender.sendMessage(color("&b/Help &7- Shows the help commands"))
+            sender.sendMessage(color("&b/tp <Player> &7- Teleports you to the player"))
+            sender.sendMessage(color("&b/tpa <Player> &7- Teleports you to the player"))
+            sender.sendMessage(color("&b/heal &7- Heals you"))
             return true
         } else {
             sender.sendMessage(rgb(153, 0, 37, "You don't have permission"))
