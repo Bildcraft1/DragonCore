@@ -44,6 +44,11 @@ object ScreenShare: CommandExecutor {
                 return true
             }
 
+            if (target.let {Bukkit.getPlayer(it)}?.hasPermission("dragoncore.staff") == true) {
+                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.screenshare_bypass")?.replace("{player}", target)))
+                return true
+            }
+
             if (args.size > 1) {
                 return if (args[1] == "legit" && screenShareMap[target] == true) {
                     screenShareMap[target] = false

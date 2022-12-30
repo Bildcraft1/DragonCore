@@ -19,3 +19,4 @@ messages:
   chatfiler_notification: "&7------------=[ &cChat Filter Notification &7]=--------------"
   generic_divider: "&7------------=[ &b{title} &7]=--------------"
   divider: "&7--------------------------------------------------"
+  screenshare_bypass: "&cYou cannot screenshare &a{player}."
