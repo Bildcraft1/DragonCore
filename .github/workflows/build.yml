@@ -15,3 +15,8 @@ jobs:
         run: chmod +x gradlew
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Package
+          path: build/libs/*.jar
