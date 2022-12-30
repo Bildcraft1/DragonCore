@@ -1,5 +1,7 @@
 package fur.kiyoshi.dragoncore.commands.utility
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -13,7 +15,10 @@ object Info: CommandExecutor {
             sender.sendMessage("Your not a player")
             return true
         }
-        sender.sendMessage(rgb(153, 0, 37, "DragonCore by MyNameIsKiyoshi and 0x7E6 (WhiXard)"))
+        sender.sendMessage(color("&7This server is running &bDragonCore &7version &b{version}&7 by &bMyNameIsKiyoshi&7 and &bWhiXard (0x7E6)&7.".replace("{version}", DragonAPI().getPluginVersion())))
+        sender.sendMessage(color("&7DragonCore is a plugin that adds a bunch of useful commands and features to your server."))
+        sender.sendMessage(color("&7DragonCore is licensed under the &bGNU General Public License v3.0&7."))
+        sender.sendMessage(color("&7DragonCore is open source and can be found at &bhttps://github.com/MyNameIsKiyoshi/DragonCore&7."))
         return true
     }
 }

@@ -1,5 +1,8 @@
 package fur.kiyoshi.dragoncore.commands.playercommands
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format.color
+import fur.kiyoshi.dragoncore.format.Format.defaultrgb
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -11,13 +14,17 @@ object Fly: CommandExecutor {
         if (sender !is Player) {
             sender.sendMessage("Not a player")
             return true
-        }; if (!sender.allowFlight) {
+        }
+        if (sender.hasPermission("dragoncore.fly")) {
+            if (sender.allowFlight) {
+                sender.allowFlight = false
+                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.flyoff")!!))
+                return true
+            }
             sender.allowFlight = true
-            sender.sendMessage(rgb(153, 0, 70, "Flight") + rgb(0, 250, 154, " Enabled"))
+            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.flyon")!!))
             return true
         }
-        sender.allowFlight = false
-        sender.sendMessage(rgb(153, 0, 70, "Flight") + rgb(178, 34, 34, " Disabled"))
         return true
     }
 }

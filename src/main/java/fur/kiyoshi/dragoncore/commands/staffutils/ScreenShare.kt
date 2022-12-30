@@ -1,6 +1,7 @@
 package fur.kiyoshi.dragoncore.commands.staffutils
 
 import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.defaultrgb
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
@@ -46,7 +47,7 @@ object ScreenShare: CommandExecutor {
 
                 if (args[1] == "legit") {
                     screenShareMap[target] = false
-                    target.let { Bukkit.getPlayer(it) }?.sendMessage(defaultrgb("You have been teleported to the spawn"))
+                    target.let { Bukkit.getPlayer(it) }?.sendMessage(color(DragonAPI().getLangFile().getString("messages.spawn")!!))
                     target.let { Bukkit.getPlayer(it) }?.performCommand("spawn")
                     return true
                 }
@@ -59,7 +60,7 @@ object ScreenShare: CommandExecutor {
 
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvtp $target screenshare")
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvtp ${sender.name} screenshare")
-            target.let { Bukkit.getPlayer(it) }?.sendMessage(defaultrgb("You have been screenshared by ${sender.name}"))
+            target.let { Bukkit.getPlayer(it) }?.sendMessage(defaultrgb(DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)))
             screenShareMap[target] = true
 
             if (Bukkit.getPlayer(target) == null) {
@@ -69,7 +70,7 @@ object ScreenShare: CommandExecutor {
 
             true
         } else {
-            sender.sendMessage(defaultrgb("You do not have permission to use this command"))
+            sender.sendMessage(defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
             true
         }
     }

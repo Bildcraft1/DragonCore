@@ -18,10 +18,10 @@ commands:
     description: "Flight"
     usage: /fly
     permission: dragoncore.fly
-  horse:
-    description: "Spawns the H O R S E"
-    usage: /horse
-    permission: dragoncore.fun.horse
+  version:
+    description: "Display the plugin version"
+    usage: /version
+    permission: default
   tp:
     description: "Teleport"
     usage: /tp <player>

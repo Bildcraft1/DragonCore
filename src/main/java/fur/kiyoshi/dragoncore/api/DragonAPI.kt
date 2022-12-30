@@ -20,6 +20,10 @@ class DragonAPI {
         return Format
     }
 
+    fun getLangFile(): FileConfiguration {
+        return Main.instance.messagefile
+    }
+
     fun getConfig(): FileConfiguration {
         return Main.instance.config
     }

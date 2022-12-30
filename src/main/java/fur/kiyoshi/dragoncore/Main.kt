@@ -1,23 +1,24 @@
 package fur.kiyoshi.dragoncore
 
+import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
+import fur.kiyoshi.dragoncore.commands.Freeze
+import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
-import fur.kiyoshi.dragoncore.commands.funcommands.Horse
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
 import fur.kiyoshi.dragoncore.commands.playercommands.Heal
+import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
 import fur.kiyoshi.dragoncore.commands.staffutils.Staff
 import fur.kiyoshi.dragoncore.commands.staffutils.StaffList
 import fur.kiyoshi.dragoncore.commands.staffutils.StaffMode
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
+import fur.kiyoshi.dragoncore.commands.testcommands.Mute
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.commands.utility.Info
-import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
-import fur.kiyoshi.dragoncore.commands.Freeze
-import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
-import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
-import fur.kiyoshi.dragoncore.commands.testcommands.Mute
+import fur.kiyoshi.dragoncore.commands.utility.Version
 import fur.kiyoshi.dragoncore.events.*
 import org.bukkit.Bukkit
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level
@@ -37,9 +38,15 @@ class Main : JavaPlugin() {
         instance = this
         this.dragonManager = DragonManager(this)
         saveDefaultConfig()
+        if (!dataFolder.resolve("messages.yml").exists()) {
+            saveResource("messages.yml", false)
+        }
+        saveResource("messages.yml", false)
         config.options().parseComments(true)
         config.options().copyDefaults(true)
     }
+
+    var messagefile = YamlConfiguration.loadConfiguration(dataFolder.resolve("messages.yml"))
 
     @Suppress("SameParameterValue")
     private fun registerEvent(pm: Listener, event: String, jp: JavaPlugin) {
@@ -65,7 +72,7 @@ class Main : JavaPlugin() {
         getCommand("staff")?.setExecutor(Staff)
         getCommand("stafflist")?.setExecutor(StaffList)
         getCommand("staffmode")?.setExecutor(StaffMode)
-        getCommand("horse")?.setExecutor(Horse)
+        getCommand("version")?.setExecutor(Version)
         getCommand("info")?.setExecutor(Info)
         getCommand("help")?.setExecutor(Help)
         getCommand("bloodmoonstatus")?.setExecutor(BloodMoonStatus)

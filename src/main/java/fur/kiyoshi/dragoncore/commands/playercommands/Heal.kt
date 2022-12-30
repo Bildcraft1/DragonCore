@@ -1,5 +1,7 @@
 package fur.kiyoshi.dragoncore.commands.playercommands
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.rgb
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
@@ -16,7 +18,7 @@ object Heal: CommandExecutor {
         sender.health = 20.0
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect " + sender.displayName + " clear")
         sender.foodLevel = 20
-        sender.sendMessage(rgb(153, 0,70, "You have been healed"))
+        sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.heal")?.replace("{player}", sender.displayName)))
         return true
     }
 }

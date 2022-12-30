@@ -1,0 +1,9 @@
+messages:
+  about: "&7This server is running &bDragonCore &7version &b{version}&7."
+  no_permission: "&cYou do not have permission to use this command."
+  flyon: "&aYou have enabled flight."
+  flyoff: "&cYou have disabled flight."
+  usage: "&cUsage: {usage}"
+  heal: "&aYou have been healed."
+  screenshare: "&aYou have been screenshared by {staffer}."
+  spawn: "&aYou have been teleported to spawn."

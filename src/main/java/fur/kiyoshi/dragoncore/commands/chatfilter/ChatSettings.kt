@@ -1,6 +1,7 @@
 package fur.kiyoshi.dragoncore.commands.chatfilter
 
 import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format.color
 import fur.kiyoshi.dragoncore.format.Format.defaultrgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -15,7 +16,7 @@ object ChatSettings: CommandExecutor {
         }
         if (sender.hasPermission("dragoncore.staff")) {
             if (args.isEmpty()) {
-                sender.sendMessage("Usage: /chatsettings list")
+                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/chatfilter list" )))
                 return true
             }
 
