@@ -21,15 +21,30 @@ class DragonCoreExpansion: PlaceholderExpansion() {
                 return "false"
             }
         }
-        if (identifier.equals("topplayer", ignoreCase = true) && Bukkit.getServer().pluginManager.isPluginEnabled("ajLeaderboards")) {
-            if (player != null) {
-                return if (PlaceholderAPI.setPlaceholders(player, "%ajlb_lb_cmi_user_playtime_days_1_alltime_name%") == player.displayName) {
-                    DragonAPI().getConfig().getString("topplayer.string").toString()
-                } else {
-                    ""
+
+        if (DragonAPI().getConfig().getBoolean("functions.tag_system")) {
+            if (identifier.equals("tag", ignoreCase = true)) {
+                if (player != null) {
+                    return if (player.hasPermission("dragoncore.tag")) {
+                        // Kinda of a hacky way to do this, but it works
+                        if (PlaceholderAPI.setPlaceholders(player,
+                                DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!
+                            ) == player.displayName) {
+                            DragonAPI().getConfig().getString("tags.topplayer.tag").toString()
+                        } else if (player.hasPermission("dragoncore.staff")) {
+                            DragonAPI().getConfig().getString("tags.staff.tag").toString()
+                        } else if(player.hasPermission("dragoncore.vip")) {
+                            ""
+                        } else {
+                            ""
+                        }
+                    } else {
+                        ""
+                    }
                 }
             }
         }
+
         return null
     }
 

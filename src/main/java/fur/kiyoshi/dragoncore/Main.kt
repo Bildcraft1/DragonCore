@@ -1,5 +1,6 @@
 package fur.kiyoshi.dragoncore
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
 import fur.kiyoshi.dragoncore.commands.Freeze
@@ -61,7 +62,13 @@ class Main : JavaPlugin() {
         this.registerEvent(NBTBlock(), "NBTBlock", this)
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
         this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
-        this.registerEvent(ChatFilter(), "ChatFilter", this)
+        if (DragonAPI().getConfig().getBoolean("functions.chat_filter")) {
+            logger.log(Level.INFO, "[DragonCore] " + "ChatFilter is enabled")
+            this.registerEvent(ChatFilter(), "ChatSettings", this)
+        }
+        if(DragonAPI().getConfig().getBoolean("functions.tag_system")) {
+            logger.log(Level.INFO, "[DragonCore] " + "TagSystem is enabled")
+        }
     }
 
     private fun commands() {

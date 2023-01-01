@@ -16,6 +16,10 @@ vConfig: 19
 Nexus: true
 # Kiyoshi API (Don't touch)
 
+functions:
+  tag_system: true
+  chat_filter: true
+
 resourcePack:
   enabled: false
   url: ""
@@ -26,8 +30,13 @@ resourcePack:
 screenshare:
   ban_command: "ban %player% Cheating"
 
-topplayer:
-  string: " 🔝"
+tags:
+  topplayer:
+    tag: " 🔝"
+    placeholder: "%ajlb_lb_cmi_user_playtime_days_1_alltime_name%"
+  staff:
+    tag: " &7[&a&lStaff&7]&r"
 
+# This is the message that will be sent to the player when they join the server.
 chatfilter:
   blacklist: []
