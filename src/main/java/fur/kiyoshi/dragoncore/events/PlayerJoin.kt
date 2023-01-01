@@ -2,7 +2,7 @@ package fur.kiyoshi.dragoncore.events
 
 import fur.kiyoshi.dragoncore.Main
 import fur.kiyoshi.dragoncore.api.DragonAPI
-import fur.kiyoshi.dragoncore.format.Format.rgb
+import fur.kiyoshi.dragoncore.format.Format.color
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -18,7 +18,7 @@ class PlayerJoin: Listener {
     private var prompt = DragonAPI().getConfig().getString("resourcePack.prompt")
     @EventHandler
     fun onPlayerJoin(eventHandler: PlayerJoinEvent) {
-        eventHandler.player.sendMessage(rgb(156,0,230,"Benvenuto nella modalità Lands di DragonCraft"))
+        eventHandler.player.sendMessage(color("&bBenvenuto nella modalità Lands di DragonCraft"))
         if (Main.instance.config.getBoolean("resourcePack.enabled", false)) {
             eventHandler.player.setResourcePack(url, hash, prompt, force)
             getLogger().log(Level.INFO, "[DragonCore] " + "Loading texture pack to: " + eventHandler.player.name)

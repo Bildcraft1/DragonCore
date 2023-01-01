@@ -74,3 +74,7 @@ commands:
     description: "Chat Filter"
     usage: /chatfilter
     permission: dragoncore.chatfilter
+  tags:
+    description: "Tags Menu"
+    usage: /tags
+    permission: dragoncore.tagsmanage

@@ -6,10 +6,12 @@ import fur.kiyoshi.dragoncore.Main
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
 import fur.kiyoshi.dragoncore.events.NBTBlock
 import fur.kiyoshi.dragoncore.format.Format
+import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import java.util.*
 
 class DragonAPI {
 
@@ -19,6 +21,19 @@ class DragonAPI {
 
     fun getFormat(): Format {
         return Format
+    }
+
+    fun createGuiItem(material: Material?, name: String?, vararg lore: String?): ItemStack? {
+        val item = ItemStack(material!!, 1)
+        val meta = item.itemMeta
+
+        // Set the name of the item
+        meta!!.setDisplayName(name)
+
+        // Set the lore of the item
+        meta.lore = Arrays.asList(*lore)
+        item.itemMeta = meta
+        return item
     }
 
     fun getLangFile(): FileConfiguration {

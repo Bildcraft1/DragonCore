@@ -12,12 +12,14 @@ import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
 import fur.kiyoshi.dragoncore.commands.staffutils.Staff
 import fur.kiyoshi.dragoncore.commands.staffutils.StaffList
 import fur.kiyoshi.dragoncore.commands.staffutils.StaffMode
+import fur.kiyoshi.dragoncore.commands.tags.Tags
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
 import fur.kiyoshi.dragoncore.commands.testcommands.Mute
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.commands.utility.Info
 import fur.kiyoshi.dragoncore.commands.utility.Version
 import fur.kiyoshi.dragoncore.events.*
+import fur.kiyoshi.dragoncore.events.menus.TagsMenu
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.Listener
@@ -68,6 +70,7 @@ class Main : JavaPlugin() {
         }
         if(DragonAPI().getConfig().getBoolean("functions.tag_system")) {
             logger.log(Level.INFO, "[DragonCore] " + "TagSystem is enabled")
+            this.registerEvent(TagsMenu(), "TagsMenu", this)
         }
     }
 
@@ -90,6 +93,7 @@ class Main : JavaPlugin() {
         getCommand("freeze")?.setExecutor(Freeze)
         getCommand("chatfilter")?.setExecutor(ChatSettings)
         getCommand("freeze")?.tabCompleter = TabHelper()
+        getCommand("tags")?.setExecutor(Tags)
     }
 
     private fun asciiArt() {
