@@ -2,6 +2,7 @@ package fur.kiyoshi.dragoncore
 
 import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
+import fur.kiyoshi.dragoncore.api.DragonDatabase
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
 import fur.kiyoshi.dragoncore.commands.Freeze
 import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
@@ -24,6 +25,7 @@ import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
+import java.sql.Connection
 import java.util.logging.Level
 
 
@@ -107,6 +109,17 @@ class Main : JavaPlugin() {
         logger.log(Level.INFO, "\n")
     }
 
+    private val dbUrl = "jdbc:h2${dataFolder.absolutePath}/database"
+
+    private fun database() {
+        Class.forName("org.h2.Driver")
+        DragonDatabase().initialiteDatabase()
+    }
+
+    fun getDatabaseUrl(): String {
+        return dbUrl
+    }
+
     override fun onEnable() {
         asciiArt()
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -117,6 +130,7 @@ class Main : JavaPlugin() {
         instance()
         commands()
         events()
+        // database()
     }
 
     override fun onDisable() {

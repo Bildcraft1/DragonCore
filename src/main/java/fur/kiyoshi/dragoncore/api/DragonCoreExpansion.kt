@@ -1,6 +1,7 @@
 package fur.kiyoshi.dragoncore.api
 
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
+import fur.kiyoshi.dragoncore.commands.tags.Tags.userTags
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.Bukkit
@@ -31,7 +32,7 @@ class DragonCoreExpansion: PlaceholderExpansion() {
                                 DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!
                             ) == player.displayName) {
                             DragonAPI().getConfig().getString("tags.topplayer.tag").toString()
-                        } else if (player.hasPermission("dragoncore.staff")) {
+                        } else if (userTags.contains(player) && userTags[player] == "Staff") {
                             DragonAPI().getConfig().getString("tags.staff.tag").toString()
                         } else if(player.hasPermission("dragoncore.vip")) {
                             ""

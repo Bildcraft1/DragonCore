@@ -1,11 +1,14 @@
 package fur.kiyoshi.dragoncore.events.menus
 
 import fur.kiyoshi.dragoncore.commands.tags.Tags
+import fur.kiyoshi.dragoncore.commands.tags.Tags.userTags
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.inventory.ItemStack
 
 
 class TagsMenu: Listener {
@@ -18,11 +21,18 @@ class TagsMenu: Listener {
         val clickedItem = e.currentItem
 
         // verify current item is not null
-        if (clickedItem == null || clickedItem.type.isAir) return
+        if ((clickedItem == null) || clickedItem.type.isAir) return
         val p = e.whoClicked as Player
 
-        // Using slots click is a best option for your inventory click's
-        p.sendMessage("You clicked at slot " + e.rawSlot)
+        if (clickedItem == ItemStack(Material.DIAMOND_SWORD)) {
+            if (userTags[p] == "Staff") {
+                userTags[p] = "None"
+                p.sendMessage("§aYou have unequipped your Staff Tag")
+            } else {
+                userTags[p] = "Staff"
+                p.sendMessage("§aYou have equipped your Staff Tag")
+            }
+        }
     }
 
     // Cancel dragging in our inventory
