@@ -7,6 +7,7 @@ import fur.kiyoshi.dragoncore.commands.tags.Tags.tags
 import fur.kiyoshi.dragoncore.format.Format.color
 import org.bukkit.Material
 import org.bukkit.Material.DIAMOND_SWORD
+import org.bukkit.Material.NETHERITE_INGOT
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -21,7 +22,7 @@ class TagsMenu: Listener {
     fun updateTags(player: Player) {
         val sql = "UPDATE dragoncore SET tags = ? WHERE name = ?"
         val conn: Connection = DragonDatabase().getConnection()
-        var statement: PreparedStatement? = conn.prepareStatement(sql)
+        val statement: PreparedStatement? = conn.prepareStatement(sql)
         statement?.setString(1, tags[player])
         statement?.setString(2, player.name)
         statement?.executeUpdate()
@@ -42,7 +43,7 @@ class TagsMenu: Listener {
             if (tags[p] == "Staff") {
                 tags[p] = "None"
                 Tags.inv!!.setItem(0, DragonAPI().createGuiItem(
-                    Material.DIAMOND_SWORD,
+                    DIAMOND_SWORD,
                     "§bStaff Tag",
                     "§aFirst line of the lore",
                     "§bSecond line of the lore",
@@ -55,7 +56,7 @@ class TagsMenu: Listener {
                 tags[p] = "Staff"
                 Tags.inv!!.setItem(
                     0, DragonAPI().createGuiItem(
-                    Material.DIAMOND_SWORD,
+                    DIAMOND_SWORD,
                     "§bStaff Tag",
                     "§aFirst line of the lore",
                     "§bSecond line of the lore",
@@ -63,6 +64,34 @@ class TagsMenu: Listener {
                 ))
                 updateTags(p)
                 p.sendMessage(color(DragonAPI().getLangFile().getString("tags.added")?.replace("{tag}", "Staff")))
+            }
+        }
+
+        if (clickedItem.type == NETHERITE_INGOT) {
+            if (tags[p] == "TopPlayer") {
+                tags[p] = "None"
+                Tags.inv!!.setItem(1, DragonAPI().createGuiItem(
+                    NETHERITE_INGOT,
+                    "§bTopPlayer Tag",
+                    "§aFirst line of the lore",
+                    "§bSecond line of the lore",
+                    "§cNot Equipped"
+                ))
+
+                updateTags(p)
+                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.removed")?.replace("{tag}", "TopPlayer")))
+            } else {
+                tags[p] = "TopPlayer"
+                Tags.inv!!.setItem(
+                    1, DragonAPI().createGuiItem(
+                    NETHERITE_INGOT,
+                    "§bTopPlayer Tag",
+                    "§aFirst line of the lore",
+                    "§bSecond line of the lore",
+                    "§aCurrently Equipped"
+                ))
+                updateTags(p)
+                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.added")?.replace("{tag}", "TopPlayer")))
             }
         }
 

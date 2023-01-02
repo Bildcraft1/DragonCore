@@ -17,8 +17,6 @@ import java.sql.PreparedStatement
 object Tags: CommandExecutor {
     // Load from database the tags of the player and load them inside the map
     val tags = mutableMapOf<Player, String>()
-    private val tagList = DragonAPI().getConfig().getStringList("tags")
-    private val tagListSize = tagList.size
 
     val sql = "SELECT tags FROM dragoncore WHERE name = ?"
     val conn: Connection = DragonDatabase().getConnection()
@@ -41,6 +39,8 @@ object Tags: CommandExecutor {
     }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+        var blockInt = 0
+
         if (sender !is Player) {
             sender.sendMessage("Your not a player")
             return true
@@ -66,6 +66,7 @@ object Tags: CommandExecutor {
                         if (tags[sender] == "Staff") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
+                blockInt++
             }
 
             if (sender.hasPermission("dragoncore.vip")) {
@@ -78,7 +79,33 @@ object Tags: CommandExecutor {
                         if (tags[sender] == "VIP") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
+                blockInt++
             }
+
+            if ((PlaceholderAPI.setPlaceholders(sender, DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!) == sender.name) || sender.hasPermission("dragoncore.topplayer")) {
+                inv!!.addItem(
+                    DragonAPI().createGuiItem(
+                        Material.NETHERITE_INGOT,
+                        "§bTop Player Tag",
+                        "§aFirst line of the lore",
+                        "§bSecond line of the lore",
+                        if (tags[sender] == "TopPlayer") "§aCurrently Equipped" else "§cNot Equipped"
+                    )
+                )
+                blockInt++
+            }
+
+            for (x in blockInt until 8) {
+                inv!!.addItem(
+                    DragonAPI().createGuiItem(
+                        Material.BLACK_STAINED_GLASS_PANE,
+                        "",
+                        x.toString(),
+                    )
+                )
+                x + 1
+            }
+
 
             inv!!.addItem(
                 DragonAPI().createGuiItem(
@@ -90,17 +117,6 @@ object Tags: CommandExecutor {
                 )
             )
 
-            if (PlaceholderAPI.setPlaceholders(sender, DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!) == sender.displayName) {
-                inv!!.addItem(
-                    DragonAPI().createGuiItem(
-                        Material.DIAMOND,
-                        "§bTop Player Tag",
-                        "§aFirst line of the lore",
-                        "§bSecond line of the lore",
-                        if (tags[sender] == "TopPlayer") "§aCurrently Equipped" else "§cNot Equipped"
-                    )
-                )
-            }
 
             sender.openInventory(inv!!)
             return true
