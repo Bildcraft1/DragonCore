@@ -32,7 +32,7 @@ object Tags: CommandExecutor {
     var inv: Inventory? = null
 
     // Load tags at boot
-    fun loadTags() {
+    fun loadAllTags() {
         for (player in Bukkit.getOnlinePlayers()) {
             loadTags(player)
         }
@@ -45,13 +45,13 @@ object Tags: CommandExecutor {
             sender.sendMessage("Your not a player")
             return true
         }
+
         loadTags(sender)
 
         if (sender.hasPermission("dragoncore.tagsmanage")) {
             if (!tags.containsKey(sender)) {
                 tags[sender] = "None"
             }
-
 
             // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
             inv = Bukkit.createInventory(null, 9, color("&b&lTags"))
@@ -61,22 +61,8 @@ object Tags: CommandExecutor {
                     DragonAPI().createGuiItem(
                         Material.DIAMOND_SWORD,
                         "§bStaff Tag",
-                        "§aFirst line of the lore",
-                        "§bSecond line of the lore",
+                        "Preview of the tag: " + color(DragonAPI().getConfig().getString("tags.staff.tag")),
                         if (tags[sender] == "Staff") "§aCurrently Equipped" else "§cNot Equipped"
-                    )
-                )
-                blockInt++
-            }
-
-            if (sender.hasPermission("dragoncore.vip")) {
-                inv!!.addItem(
-                    DragonAPI().createGuiItem(
-                        Material.DIAMOND,
-                        "§bVIP Tag",
-                        "§aFirst line of the lore",
-                        "§bSecond line of the lore",
-                        if (tags[sender] == "VIP") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
                 blockInt++
@@ -87,8 +73,7 @@ object Tags: CommandExecutor {
                     DragonAPI().createGuiItem(
                         Material.NETHERITE_INGOT,
                         "§bTop Player Tag",
-                        "§aFirst line of the lore",
-                        "§bSecond line of the lore",
+                        "Preview of the tag:" + color(DragonAPI().getConfig().getString("tags.topplayer.tag")),
                         if (tags[sender] == "TopPlayer") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
@@ -111,9 +96,7 @@ object Tags: CommandExecutor {
                 DragonAPI().createGuiItem(
                     Material.BARRIER,
                     "§cRemove Tag",
-                    "§aFirst line of the lore",
-                    "§bSecond line of the lore",
-                    if (tags[sender] == "None") "§aCurrently Equipped" else "§cNot Equipped"
+                    "§aRemove all tags",
                 )
             )
 

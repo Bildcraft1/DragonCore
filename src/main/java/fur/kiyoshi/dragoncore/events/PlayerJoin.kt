@@ -3,6 +3,8 @@ package fur.kiyoshi.dragoncore.events
 import fur.kiyoshi.dragoncore.Main
 import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.api.DragonDatabase
+import fur.kiyoshi.dragoncore.commands.tags.Tags
+import fur.kiyoshi.dragoncore.events.menus.TagsMenu
 import fur.kiyoshi.dragoncore.format.Format.color
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.event.EventHandler
@@ -46,6 +48,8 @@ class PlayerJoin: Listener {
             statement?.executeUpdate()
             getLogger().log(Level.INFO, "Added ${eventHandler.player.name} to the database")
         }
+
+        Tags.loadTags(eventHandler.player)
 
         if (Main.instance.config.getBoolean("resourcePack.enabled", false)) {
             eventHandler.player.setResourcePack(url, hash, prompt, force)

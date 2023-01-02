@@ -113,7 +113,7 @@ class Main : JavaPlugin() {
             logger.log(Level.INFO, "[DragonCore] " + "Database is enabled")
             DragonDatabase().getConnection()
             DragonDatabase().initializeDatabase()
-            Tags.loadTags()
+            Tags.loadAllTags()
         }
     }
 
