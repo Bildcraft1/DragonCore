@@ -20,3 +20,7 @@ messages:
   generic_divider: "&7------------=[ &b{title} &7]=--------------"
   divider: "&7--------------------------------------------------"
   screenshare_bypass: "&cYou cannot screenshare &a{player}."
+
+tags:
+  added: "&aYou have enabled {tag}."
+  removed: "&cYou have disabled {tag}."

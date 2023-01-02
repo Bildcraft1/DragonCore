@@ -1,7 +1,7 @@
 package fur.kiyoshi.dragoncore.api
 
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
-import fur.kiyoshi.dragoncore.commands.tags.Tags.userTags
+import fur.kiyoshi.dragoncore.commands.tags.Tags.tags
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.Bukkit
@@ -32,8 +32,29 @@ class DragonCoreExpansion: PlaceholderExpansion() {
                                 DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!
                             ) == player.displayName) {
                             DragonAPI().getConfig().getString("tags.topplayer.tag").toString()
-                        } else if (userTags.contains(player) && userTags[player] == "Staff") {
+                        } else if (tags.contains(player) && tags[player] == "Staff") {
                             DragonAPI().getConfig().getString("tags.staff.tag").toString()
+                        } else if(player.hasPermission("dragoncore.vip")) {
+                            ""
+                        } else {
+                            ""
+                        }
+                    } else {
+                        ""
+                    }
+                }
+            }
+
+            if (identifier.equals("tagtab", ignoreCase = true)) {
+                if (player != null) {
+                    return if (player.hasPermission("dragoncore.tag")) {
+                        // Kinda of a hacky way to do this, but it works
+                        if (PlaceholderAPI.setPlaceholders(player,
+                                DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!
+                            ) == player.displayName) {
+                            DragonAPI().getConfig().getString("tags.topplayer.tab_tag").toString()
+                        } else if (tags.contains(player) && tags[player] == "Staff") {
+                            DragonAPI().getConfig().getString("tags.staff.tab_tag").toString()
                         } else if(player.hasPermission("dragoncore.vip")) {
                             ""
                         } else {

@@ -15,6 +15,16 @@ import java.util.logging.Level
 
 
 class PlayerJoin: Listener {
+    fun checkUser(user: UUID): Any {
+        // Check if the user is already in the database
+        val sql = "SELECT * FROM dragoncore WHERE uuid = ?"
+        val conn: Connection = DragonDatabase().getConnection()
+        val statement: PreparedStatement? = conn.prepareStatement(sql)
+        statement?.setString(1, user.toString())
+        val result = statement?.executeQuery()
+        return result!!.next()
+    }
+
     private var hash: ByteArray? = HexFormat.of().parseHex(DragonAPI().getConfig().getString("resourcePack.hash"))
     private var url = DragonAPI().getConfig().getString("resourcePack.url").toString()
     private var force = DragonAPI().getConfig().getBoolean("resourcePack.forced", false)
@@ -23,19 +33,20 @@ class PlayerJoin: Listener {
     fun onPlayerJoin(eventHandler: PlayerJoinEvent) {
         eventHandler.player.sendMessage(color("&bBenvenuto nella modalità Lands di DragonCraft"))
 
-        var statement: PreparedStatement? = null
-        val connection: Connection = DragonDatabase().getConnection()
-        try {
-            statement = connection.prepareStatement("INSERT INTO dragoncore (uuid, username, ip, tags) VALUES (?, ?, ?, ?);")
-            statement.setString(1, eventHandler.player.uniqueId.toString())
-            statement.setString(2, eventHandler.player.name)
-            statement.setString(3, eventHandler.player.address?.hostString ?: "null")
-            statement.setString(4, "None")
-
-            connection.close()
-        } catch (SQLEx: Exception) {
-            getLogger().log(Level.SEVERE, "Could not insert player into database! because: " + SQLEx.message)
+        if (checkUser(eventHandler.player.uniqueId) == true) {
+            getLogger().log(Level.INFO, "[DragonCore] Loading user data for ${eventHandler.player.name}")
+        } else {
+            // If the user is not in the database, add him
+            val sql = "INSERT INTO dragoncore (uuid, name, tags) VALUES (?, ?, ?)"
+            val conn: Connection = DragonDatabase().getConnection()
+            var statement: PreparedStatement? = conn.prepareStatement(sql)
+            statement?.setString(1, eventHandler.player.uniqueId.toString())
+            statement?.setString(2, eventHandler.player.name)
+            statement?.setString(3, "None")
+            statement?.executeUpdate()
+            getLogger().log(Level.INFO, "Added ${eventHandler.player.name} to the database")
         }
+
         if (Main.instance.config.getBoolean("resourcePack.enabled", false)) {
             eventHandler.player.setResourcePack(url, hash, prompt, force)
             getLogger().log(Level.INFO, "[DragonCore] " + "Loading texture pack to: " + eventHandler.player.name)

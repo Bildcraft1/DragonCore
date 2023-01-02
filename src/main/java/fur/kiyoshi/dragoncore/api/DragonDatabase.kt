@@ -1,33 +1,42 @@
 package fur.kiyoshi.dragoncore.api
 
-import fur.kiyoshi.dragoncore.Main
-import org.bukkit.Bukkit.getLogger
 import java.sql.Connection
 import java.sql.DriverManager
-import java.sql.PreparedStatement
-import java.util.logging.Level
+import java.util.*
 
 class DragonDatabase {
-    fun getConnection(): Connection {
-        try {
+    internal var conn: Connection? = null
+    internal var username = DragonAPI().getConfig().getString("database.username") // provide the username
+    internal var password = DragonAPI().getConfig().getString("database.password") // provide the password
 
-            val connection = DriverManager.getConnection(Main.instance.getDatabaseUrl())
-            return connection
-        } catch (SQLEx: Exception) {
-            getLogger().log(Level.SEVERE, "Could not connect to H2 server! because: " + SQLEx.message)
+    fun getConnection(): Connection {
+        val connectionProps = Properties()
+        connectionProps["user"] = username
+        connectionProps["password"] = password
+
+        try {
+            Class.forName("org.mariadb.jdbc.Driver")
+            conn = DriverManager.getConnection(
+                "jdbc:" + DragonAPI().getConfig().getString("database.type")?.lowercase() + "://" + DragonAPI().getConfig().getString("database.host") + ":" + DragonAPI().getConfig().getString("database.port") + "/" + DragonAPI().getConfig().getString("database.database"),
+                connectionProps)
+            return conn!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null!!
         }
-        return null!!
     }
 
-    fun initialiteDatabase() {
-        val connection: Connection = getConnection()
-        var preparedStatement: PreparedStatement = null!!
-        try {
-            preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS dragoncore (uuid VARCHAR(36), username VARCHAR(16), ip VARCHAR(16), tags VARCHAR(16), PRIMARY KEY (uuid));")
-            preparedStatement.execute()
-        }catch (SQLEx: Exception) {
-            getLogger().log(Level.SEVERE, "Could not initialize database! because: " + SQLEx.message)
-        }
+    fun closeConnection() {
+        conn?.close()
+    }
+
+
+
+    fun initializeDatabase() {
+        getConnection()
+        val statement = conn?.createStatement()
+        statement?.executeUpdate("CREATE TABLE IF NOT EXISTS `dragoncore` (`id` INT NOT NULL AUTO_INCREMENT, `uuid` VARCHAR(36) NOT NULL, `name` VARCHAR(16) NOT NULL, `tags` VARCHAR(255) NOT NULL, PRIMARY KEY (`id`));")
+        closeConnection()
     }
 
 }

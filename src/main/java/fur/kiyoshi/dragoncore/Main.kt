@@ -25,7 +25,6 @@ import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
-import java.sql.Connection
 import java.util.logging.Level
 
 
@@ -109,15 +108,13 @@ class Main : JavaPlugin() {
         logger.log(Level.INFO, "\n")
     }
 
-    private val dbUrl = "jdbc:h2${dataFolder.absolutePath}/database"
-
-    private fun database() {
-        Class.forName("org.h2.Driver")
-        DragonDatabase().initialiteDatabase()
-    }
-
-    fun getDatabaseUrl(): String {
-        return dbUrl
+    fun database() {
+        if (DragonAPI().getConfig().getBoolean("functions.database")) {
+            logger.log(Level.INFO, "[DragonCore] " + "Database is enabled")
+            DragonDatabase().getConnection()
+            DragonDatabase().initializeDatabase()
+            Tags.loadTags()
+        }
     }
 
     override fun onEnable() {
@@ -130,7 +127,7 @@ class Main : JavaPlugin() {
         instance()
         commands()
         events()
-        // database()
+        database()
     }
 
     override fun onDisable() {

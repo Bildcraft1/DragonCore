@@ -1,17 +1,31 @@
 package fur.kiyoshi.dragoncore.events.menus
 
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.api.DragonDatabase
 import fur.kiyoshi.dragoncore.commands.tags.Tags
-import fur.kiyoshi.dragoncore.commands.tags.Tags.userTags
+import fur.kiyoshi.dragoncore.commands.tags.Tags.tags
+import fur.kiyoshi.dragoncore.format.Format.color
 import org.bukkit.Material
+import org.bukkit.Material.DIAMOND_SWORD
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
-import org.bukkit.inventory.ItemStack
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 
 class TagsMenu: Listener {
+
+    fun updateTags(player: Player) {
+        val sql = "UPDATE dragoncore SET tags = ? WHERE name = ?"
+        val conn: Connection = DragonDatabase().getConnection()
+        var statement: PreparedStatement? = conn.prepareStatement(sql)
+        statement?.setString(1, tags[player])
+        statement?.setString(2, player.name)
+        statement?.executeUpdate()
+    }
 
     // Check for clicks on items
     @EventHandler
@@ -24,15 +38,40 @@ class TagsMenu: Listener {
         if ((clickedItem == null) || clickedItem.type.isAir) return
         val p = e.whoClicked as Player
 
-        if (clickedItem == ItemStack(Material.DIAMOND_SWORD)) {
-            if (userTags[p] == "Staff") {
-                userTags[p] = "None"
-                p.sendMessage("§aYou have unequipped your Staff Tag")
+        if (clickedItem.type == DIAMOND_SWORD) {
+            if (tags[p] == "Staff") {
+                tags[p] = "None"
+                Tags.inv!!.setItem(0, DragonAPI().createGuiItem(
+                    Material.DIAMOND_SWORD,
+                    "§bStaff Tag",
+                    "§aFirst line of the lore",
+                    "§bSecond line of the lore",
+                    "§cNot Equipped"
+                ))
+
+                updateTags(p)
+                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.removed")?.replace("{tag}", "Staff")))
             } else {
-                userTags[p] = "Staff"
-                p.sendMessage("§aYou have equipped your Staff Tag")
+                tags[p] = "Staff"
+                Tags.inv!!.setItem(
+                    0, DragonAPI().createGuiItem(
+                    Material.DIAMOND_SWORD,
+                    "§bStaff Tag",
+                    "§aFirst line of the lore",
+                    "§bSecond line of the lore",
+                    "§aCurrently Equipped"
+                ))
+                updateTags(p)
+                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.added")?.replace("{tag}", "Staff")))
             }
         }
+
+        if (clickedItem.type == Material.BARRIER) {
+            tags[e.whoClicked as Player] = "None"
+            updateTags(e.whoClicked as Player)
+            p.closeInventory()
+        }
+
     }
 
     // Cancel dragging in our inventory

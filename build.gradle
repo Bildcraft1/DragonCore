@@ -4,6 +4,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.8.0-Beta'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 group = 'fur.kiyoshi'
@@ -46,6 +47,7 @@ dependencies {
     compileOnly 'me.clip:placeholderapi:2.11.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation("com.google.guava:guava:31.1-jre")
+    implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
 }
 
 def targetJavaVersion = 17

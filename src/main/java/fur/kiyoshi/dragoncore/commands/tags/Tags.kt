@@ -1,6 +1,7 @@
 package fur.kiyoshi.dragoncore.commands.tags
 
 import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.api.DragonDatabase
 import fur.kiyoshi.dragoncore.format.Format.color
 import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
@@ -10,20 +11,45 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
+import java.sql.Connection
+import java.sql.PreparedStatement
 
 object Tags: CommandExecutor {
-    val userTags: MutableMap<Player, String> = HashMap<Player, String>()
+    // Load from database the tags of the player and load them inside the map
+    val tags = mutableMapOf<Player, String>()
+    private val tagList = DragonAPI().getConfig().getStringList("tags")
+    private val tagListSize = tagList.size
+
+    val sql = "SELECT tags FROM dragoncore WHERE name = ?"
+    val conn: Connection = DragonDatabase().getConnection()
+    var statement: PreparedStatement? = conn.prepareStatement(sql)
+    // Load the tags of the player
+    fun loadTags(player: Player) {
+        statement?.setString(1, player.name)
+        val result = statement?.executeQuery()
+        if (result?.next()!!) {
+            tags[player] = result.getString("tags")
+        }
+    }
     var inv: Inventory? = null
+
+    // Load tags at boot
+    fun loadTags() {
+        for (player in Bukkit.getOnlinePlayers()) {
+            loadTags(player)
+        }
+    }
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("Your not a player")
             return true
         }
+        loadTags(sender)
 
         if (sender.hasPermission("dragoncore.tagsmanage")) {
-            if (!userTags.containsKey(sender)) {
-                userTags[sender] = "None"
+            if (!tags.containsKey(sender)) {
+                tags[sender] = "None"
             }
 
 
@@ -37,7 +63,7 @@ object Tags: CommandExecutor {
                         "§bStaff Tag",
                         "§aFirst line of the lore",
                         "§bSecond line of the lore",
-                        if (userTags[sender] == "Staff") "§aCurrently Equipped" else "§cNot Equipped"
+                        if (tags[sender] == "Staff") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
             }
@@ -49,10 +75,20 @@ object Tags: CommandExecutor {
                         "§bVIP Tag",
                         "§aFirst line of the lore",
                         "§bSecond line of the lore",
-                        if (userTags[sender] == "VIP") "§aCurrently Equipped" else "§cNot Equipped"
+                        if (tags[sender] == "VIP") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
             }
+
+            inv!!.addItem(
+                DragonAPI().createGuiItem(
+                    Material.BARRIER,
+                    "§cRemove Tag",
+                    "§aFirst line of the lore",
+                    "§bSecond line of the lore",
+                    if (tags[sender] == "None") "§aCurrently Equipped" else "§cNot Equipped"
+                )
+            )
 
             if (PlaceholderAPI.setPlaceholders(sender, DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!) == sender.displayName) {
                 inv!!.addItem(
@@ -61,7 +97,7 @@ object Tags: CommandExecutor {
                         "§bTop Player Tag",
                         "§aFirst line of the lore",
                         "§bSecond line of the lore",
-                        if (userTags[sender] == "TopPlayer") "§aCurrently Equipped" else "§cNot Equipped"
+                        if (tags[sender] == "TopPlayer") "§aCurrently Equipped" else "§cNot Equipped"
                     )
                 )
             }
