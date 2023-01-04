@@ -29,7 +29,7 @@ class PlayerJoin: Listener {
 
     private var hash: ByteArray? = HexFormat.of().parseHex(DragonAPI().getConfig().getString("resourcePack.hash"))
     private var url = DragonAPI().getConfig().getString("resourcePack.url").toString()
-    private var force = DragonAPI().getConfig().getBoolean("resourcePack.forced", false)
+    private var force = DragonAPI().getConfig().getBoolean("resourcePack.forced")
     private var prompt = DragonAPI().getConfig().getString("resourcePack.prompt")
     @EventHandler
     fun onPlayerJoin(eventHandler: PlayerJoinEvent) {

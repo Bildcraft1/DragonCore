@@ -41,7 +41,7 @@ class TagsMenu: Listener {
 
         for (item in DragonAPI().getConfig().getConfigurationSection("tags")!!.getKeys(false)) {
             if (clickedItem.itemMeta!!.displayName == color(DragonAPI().getConfig().getString("tags.$item.name"))) {
-                if (p.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item")}")) {
+                if (p.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item.name")}")) {
                     if (tags[p] == item) {
                         p.sendMessage(color("&cYou already have this tag"))
                         return
