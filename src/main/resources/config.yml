@@ -42,12 +42,7 @@ screenshare:
   ban_command: "ban %player% Cheating"
 
 tags:
-  topplayer:
-    tag: " 🔝"
-    placeholder: "%ajlb_lb_cmi_user_playtime_days_1_alltime_name%"
-  staff:
-    tag: " &7[&a&lStaff&7]&r"
-    tab_tag: "&7[&a&lStaff&7]&r"
+
 
 # This is the message that will be sent to the player when they join the server.
 chatfilter:

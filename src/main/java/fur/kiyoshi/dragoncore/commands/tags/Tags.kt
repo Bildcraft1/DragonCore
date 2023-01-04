@@ -18,9 +18,11 @@ object Tags: CommandExecutor {
     // Load from database the tags of the player and load them inside the map
     val tags = mutableMapOf<Player, String>()
 
-    val sql = "SELECT tags FROM dragoncore WHERE name = ?"
-    val conn: Connection = DragonDatabase().getConnection()
-    var statement: PreparedStatement? = conn.prepareStatement(sql)
+
+
+    const val sql = "SELECT tags FROM dragoncore WHERE name = ?"
+    private val conn: Connection = DragonDatabase().getConnection()
+    private var statement: PreparedStatement? = conn.prepareStatement(sql)
     // Load the tags of the player
     fun loadTags(player: Player) {
         statement?.setString(1, player.name)
@@ -56,31 +58,27 @@ object Tags: CommandExecutor {
             // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
             inv = Bukkit.createInventory(null, 9, color("&b&lTags"))
 
-            if (sender.hasPermission("dragoncore.staff")) {
-                inv!!.addItem(
-                    DragonAPI().createGuiItem(
-                        Material.DIAMOND_SWORD,
-                        "§bStaff Tag",
-                        "Preview of the tag: " + color(DragonAPI().getConfig().getString("tags.staff.tag")),
-                        if (tags[sender] == "Staff") "§aCurrently Equipped" else "§cNot Equipped"
-                    )
-                )
-                blockInt++
+
+            // Create a item for every item inside the configuration get the name and the material and the lore
+            for (item in DragonAPI().getConfig().getConfigurationSection("tags")!!.getKeys(false)) {
+                val itemStack = DragonAPI().getConfig().getItemStack("tags.$item.item")
+                val itemMeta = itemStack?.itemMeta
+                itemMeta?.setDisplayName(color(DragonAPI().getConfig().getString("tags.$item.name")))
+                if (itemMeta != null) {
+                    itemMeta.lore = DragonAPI().getConfig().getStringList("tags.$item.tag")
+                }
+                if (itemStack != null) {
+                    itemStack.itemMeta = itemMeta
+                }
+                if (sender.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item")}")) {
+                    inv!!.addItem(DragonAPI().createGuiItem(DragonAPI().getConfig().getString("tags.$item.item")?.let { Material.getMaterial(it) }, color(DragonAPI().getConfig().getString("tags.$item.name")),
+                            "Preview of the tag: " + color(DragonAPI().getConfig().getString("tags.$item.tag")),
+                            if (tags[sender] == item) "§aCurrently Equipped" else "§cNot Equipped"))
+                    blockInt++
+                }
             }
 
-            if ((PlaceholderAPI.setPlaceholders(sender, DragonAPI().getConfig().getString("tags.topplayer.placeholder")!!) == sender.name) || sender.hasPermission("dragoncore.topplayer")) {
-                inv!!.addItem(
-                    DragonAPI().createGuiItem(
-                        Material.NETHERITE_INGOT,
-                        "§bTop Player Tag",
-                        "Preview of the tag:" + color(DragonAPI().getConfig().getString("tags.topplayer.tag")),
-                        if (tags[sender] == "TopPlayer") "§aCurrently Equipped" else "§cNot Equipped"
-                    )
-                )
-                blockInt++
-            }
-
-            for (x in blockInt until 8) {
+            for (x in blockInt until inv!!.size - 1) {
                 inv!!.addItem(
                     DragonAPI().createGuiItem(
                         Material.BLACK_STAINED_GLASS_PANE,

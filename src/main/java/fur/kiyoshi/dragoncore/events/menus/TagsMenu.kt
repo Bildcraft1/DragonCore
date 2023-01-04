@@ -39,59 +39,21 @@ class TagsMenu: Listener {
         if ((clickedItem == null) || clickedItem.type.isAir) return
         val p = e.whoClicked as Player
 
-        if (clickedItem.type == DIAMOND_SWORD) {
-            if (tags[p] == "Staff") {
-                tags[p] = "None"
-                Tags.inv!!.setItem(0, DragonAPI().createGuiItem(
-                    DIAMOND_SWORD,
-                    "§bStaff Tag",
-                    "§aFirst line of the lore",
-                    "§bSecond line of the lore",
-                    "§cNot Equipped"
-                ))
-
-                updateTags(p)
-                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.removed")?.replace("{tag}", "Staff")))
-            } else {
-                tags[p] = "Staff"
-                Tags.inv!!.setItem(
-                    0, DragonAPI().createGuiItem(
-                    DIAMOND_SWORD,
-                    "§bStaff Tag",
-                    "§aFirst line of the lore",
-                    "§bSecond line of the lore",
-                    "§aCurrently Equipped"
-                ))
-                updateTags(p)
-                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.added")?.replace("{tag}", "Staff")))
-            }
-        }
-
-        if (clickedItem.type == NETHERITE_INGOT) {
-            if (tags[p] == "TopPlayer") {
-                tags[p] = "None"
-                Tags.inv!!.setItem(1, DragonAPI().createGuiItem(
-                    NETHERITE_INGOT,
-                    "§bTopPlayer Tag",
-                    "§aFirst line of the lore",
-                    "§bSecond line of the lore",
-                    "§cNot Equipped"
-                ))
-
-                updateTags(p)
-                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.removed")?.replace("{tag}", "TopPlayer")))
-            } else {
-                tags[p] = "TopPlayer"
-                Tags.inv!!.setItem(
-                    1, DragonAPI().createGuiItem(
-                    NETHERITE_INGOT,
-                    "§bTopPlayer Tag",
-                    "§aFirst line of the lore",
-                    "§bSecond line of the lore",
-                    "§aCurrently Equipped"
-                ))
-                updateTags(p)
-                p.sendMessage(color(DragonAPI().getLangFile().getString("tags.added")?.replace("{tag}", "TopPlayer")))
+        for (item in DragonAPI().getConfig().getConfigurationSection("tags")!!.getKeys(false)) {
+            if (clickedItem.itemMeta!!.displayName == color(DragonAPI().getConfig().getString("tags.$item.name"))) {
+                if (p.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item")}")) {
+                    if (tags[p] == item) {
+                        p.sendMessage(color("&cYou already have this tag"))
+                        return
+                    }
+                    tags[p] = item
+                    updateTags(p)
+                    p.sendMessage(color("&aYou have successfully changed your tag to &b$item"))
+                    p.closeInventory()
+                } else {
+                    tags[p] = "None"
+                    p.sendMessage(color("&cYou don't have the permission to use this tag"))
+                }
             }
         }
 
