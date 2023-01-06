@@ -1,22 +1,47 @@
 package fur.kiyoshi.dragoncore.events
 
 import fur.kiyoshi.dragoncore.api.DragonAPI
-import fur.kiyoshi.dragoncore.format.Format
 import fur.kiyoshi.dragoncore.format.Format.color
-import fur.kiyoshi.dragoncore.format.Format.defaultrgb
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
 
 class ChatFilter: Listener {
+    var prefix = color("&c&lDragonCore >> &7")
 
     @EventHandler
     fun onChatFilter(event: AsyncPlayerChatEvent) {
         var blacklist: MutableList<String> = arrayListOf<String>()
-        val p: Player = event.getPlayer()
-        val msg: String = event.getMessage().lowercase()
+        val p: Player = event.player
+        val msg: String = event.message.lowercase()
         blacklist.addAll((DragonAPI().getConfig().getStringList("chatfilter.blacklist")))
+
+        if (msg.matches("^<.*>.*$".toRegex())) {
+            for (player in p.server.onlinePlayers) {
+                if (player.hasPermission("dragoncore.staff")) {
+                    val teleport = TextComponent(prefix + color(" User &7") + p.name + color(" &ctried to force op!"))
+                    teleport.clickEvent =
+                        ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp " + p.name)
+                    player.spigot().sendMessage(teleport)
+                }
+            }
+            event.isCancelled = true
+        }
+
+        if (msg.matches(".*\\{jndi:ldap://.*}.*".toRegex())) {
+            for (player in p.server.onlinePlayers) {
+                if (player.hasPermission("dragoncore.staff")) {
+                    val teleport = TextComponent(prefix + "User §7" + p.name + " §ctried to Log4Shell!")
+                    teleport.clickEvent =
+                        ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp " + p.name)
+                    player.spigot().sendMessage(teleport)
+                }
+            }
+            event.isCancelled = true
+        }
 
         for (x in blacklist) {
             if (msg.contains(x)) {

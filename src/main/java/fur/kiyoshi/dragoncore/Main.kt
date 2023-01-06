@@ -68,6 +68,7 @@ class Main : JavaPlugin() {
         if (DragonAPI().getConfig().getBoolean("functions.chat_filter")) {
             logger.log(Level.INFO, "[DragonCore] " + "ChatFilter is enabled")
             this.registerEvent(ChatFilter(), "ChatSettings", this)
+            this.registerEvent(AntiPluginsDumper(), "AntiPluginsDumper", this)
         }
         if(DragonAPI().getConfig().getBoolean("functions.tag_system")) {
             logger.log(Level.INFO, "[DragonCore] " + "TagSystem is enabled")
