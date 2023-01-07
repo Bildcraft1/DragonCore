@@ -15,15 +15,27 @@ class TabHelper: TabCompleter {
         args: Array<out String>
     ): MutableList<String>? {
         if (args.size != 2) {
-        if (label == "freeze" && args[0].isEmpty()) {
-            mutableList.add("clear")
-            mutableList.add("100")
-            return mutableList
-        } else if (label == "freeze" && !args[0].isEmpty()) {
-            return null
-        }
+            if (label == "freeze" && args[0].isEmpty()) {
+                mutableList.add("clear")
+                mutableList.add("100")
+                return mutableList
+            } else if (label == "freeze" && !args[0].isEmpty()) {
+                return null
+            }
+
+            if(label == "tags" && args[0].isEmpty()) {
+                if(sender.hasPermission("dragoncore.tags.remove")) {
+                    mutableList.add("remove")
+                    mutableList.add("clear")
+                    return mutableList
+                }
+                mutableList.add("clear")
+                return mutableList
+            } else if (label == "tags" && !args[0].isEmpty()) {
+                return null
+            }
+
         }
         return null
     }
-
 }

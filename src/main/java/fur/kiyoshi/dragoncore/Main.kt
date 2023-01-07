@@ -95,6 +95,7 @@ class Main : JavaPlugin() {
         getCommand("freeze")?.setExecutor(Freeze)
         getCommand("chatfilter")?.setExecutor(ChatSettings)
         getCommand("freeze")?.tabCompleter = TabHelper()
+        getCommand("tags")?.tabCompleter = TabHelper()
         getCommand("tags")?.setExecutor(Tags)
     }
 

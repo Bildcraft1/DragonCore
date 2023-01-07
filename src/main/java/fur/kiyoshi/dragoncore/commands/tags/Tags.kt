@@ -18,9 +18,7 @@ object Tags: CommandExecutor {
     // Load from database the tags of the player and load them inside the map
     val tags = mutableMapOf<Player, String>()
 
-
-
-    const val sql = "SELECT tags FROM dragoncore WHERE uuid = ?"
+    private const val sql = "SELECT tags FROM dragoncore WHERE uuid = ?"
     private val conn: Connection = DragonDatabase().getConnection()
     private var statement: PreparedStatement? = conn.prepareStatement(sql)
     // Load the tags of the player
@@ -31,6 +29,17 @@ object Tags: CommandExecutor {
             tags[player] = result.getString("tags")
         }
     }
+
+    fun resetTags(player: Player) {
+        val sql = "UPDATE dragoncore SET tags = ? WHERE uuid = ?"
+        val conn: Connection = DragonDatabase().getConnection()
+        val statement: PreparedStatement? = conn.prepareStatement(sql)
+        statement?.setString(1, "None")
+        statement?.setString(2, player.uniqueId.toString())
+        statement?.executeUpdate()
+        tags[player] = "None"
+    }
+
     var inv: Inventory? = null
 
     // Load tags at boot
@@ -49,6 +58,31 @@ object Tags: CommandExecutor {
         }
 
         loadTags(sender)
+
+        if (args.size == 1) {
+            if(args[0] == "clear") {
+                tags[sender] = "None"
+                resetTags(sender)
+                sender.sendMessage(color("&aTags cleared!"))
+                return true
+            }
+        }
+
+        if(args.size == 2) {
+            if(args[0] == "remove") {
+                if(sender.hasPermission("dragoncore.tags.remove")) {
+                    val target = Bukkit.getPlayer(args[1])
+                    if(target == null) {
+                        sender.sendMessage(color("&cPlayer not found"))
+                        return true
+                    }
+                    tags[target] = "None"
+                    resetTags(target)
+                    sender.sendMessage(color("&aTags cleared!"))
+                    return true
+                }
+            }
+        }
 
         if (sender.hasPermission("dragoncore.tagsmanage")) {
             if (!tags.containsKey(sender)) {
