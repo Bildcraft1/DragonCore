@@ -70,7 +70,7 @@ object Tags: CommandExecutor {
                 if (itemStack != null) {
                     itemStack.itemMeta = itemMeta
                 }
-                if (sender.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item")}")) {
+                if (sender.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item.name")}")) {
                     inv!!.addItem(DragonAPI().createGuiItem(DragonAPI().getConfig().getString("tags.$item.item")?.let { Material.getMaterial(it) }, color(DragonAPI().getConfig().getString("tags.$item.name")),
                             "Preview of the tag: " + color(DragonAPI().getConfig().getString("tags.$item.tag")),
                             if (tags[sender] == item) "§aCurrently Equipped" else "§cNot Equipped"))
