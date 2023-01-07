@@ -20,12 +20,12 @@ object Tags: CommandExecutor {
 
 
 
-    const val sql = "SELECT tags FROM dragoncore WHERE name = ?"
+    const val sql = "SELECT tags FROM dragoncore WHERE uuid = ?"
     private val conn: Connection = DragonDatabase().getConnection()
     private var statement: PreparedStatement? = conn.prepareStatement(sql)
     // Load the tags of the player
     fun loadTags(player: Player) {
-        statement?.setString(1, player.name)
+        statement?.setString(1, player.uniqueId.toString())
         val result = statement?.executeQuery()
         if (result?.next()!!) {
             tags[player] = result.getString("tags")
