@@ -1,37 +1,55 @@
-package fur.kiyoshi.dragoncore.events;
+package fur.kiyoshi.dragoncore.events
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.server.TabCompleteEvent;
+import fur.kiyoshi.dragoncore.api.DragonAPI
+import fur.kiyoshi.dragoncore.format.Format.color
+import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import org.bukkit.event.server.TabCompleteEvent
+import java.util.*
 
-import static fur.kiyoshi.dragoncore.format.Format.color;
+class AntiPluginsDumper : Listener {
+    private var prefix = color("&c&lDragonCore >> &7")
+    private fun blacklist(command: String): Boolean {
+        for (msg in DragonAPI().getConfig().getStringList("exploit.blacklist")) {
+            if (command.contains(msg)) {
+                return true
+            }
+        }
+        return false
+    }
 
-public class AntiPluginsDumper implements Listener {
-    String prefix = color("&c&lDragonCore >> &7");
-
-    @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
-    public void onPluginsDumper(PlayerCommandPreprocessEvent e) {
-        String message = e.getMessage().toLowerCase();
-        Player player = e.getPlayer();
-        if (message.contains("bukkit:ver") || message.contains("pl") || message.contains("plugins") || message.contains("bukkit:pl") || message.contains("bukkit:plugins") || message.contains("bukkit:version") || message.contains("ver") || message.contains("version") && !player.hasPermission("dragoncore.staff")) {
-            player.getServer().broadcast(prefix + color("&c" + player.getName() + " has been kicked for using a plugins dumper!"), "dragoncore.notify");
-            player.kickPlayer(color("&cYou have been kicked for using a plugins dumper!"));
-            e.setCancelled(true);
-            e.getPlayer().sendMessage(prefix + color("&cPlugins dumpers are disabled!"));
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onPluginsDumper(e: PlayerCommandPreprocessEvent) {
+        if (DragonAPI().getConfig().getBoolean("functions.anti-exploit")) {
+            val message = e.message.lowercase(Locale.getDefault())
+            val player = e.player
+            if (blacklist(message) && !player.hasPermission("dragoncore.staff")) {
+                player.server.broadcast(
+                    prefix + color("&c" + player.name + " has been kicked for using a plugins dumper!"),
+                    "dragoncore.notify"
+                )
+                player.kickPlayer(color("&cYou have been kicked for using a plugins dumper!"))
+                e.isCancelled = true
+                e.player.sendMessage(prefix + color("&cPlugins dumpers are disabled!"))
+            }
         }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.HIGHEST)
-    public void onTabComplete(TabCompleteEvent e) {
-        String message = e.getBuffer().toLowerCase();
-        Player player = e.getSender().getServer().matchPlayer(e.getSender().getName()).get(0);
-        if (message.contains("bukkit:ver") && !player.hasPermission("dragoncore.staff")) {
-            player.getServer().broadcast(prefix + color("&c" + player.getName() + " has been kicked for using a plugins dumper!"), "dragoncore.notify");
-            player.kickPlayer(color("&cYou have been kicked for using a plugins dumper!"));
-            e.setCancelled(true);
-            e.getSender().sendMessage(prefix + color("&cPlugins dumpers are disabled!"));
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onTabComplete(e: TabCompleteEvent) {
+        if (DragonAPI().getConfig().getBoolean("functions.anti-exploit")) {
+            val message = e.buffer.lowercase(Locale.getDefault())
+            val player = e.sender
+            if (blacklist(message) && !player.hasPermission("dragoncore.staff")) {
+                player.server.broadcast(
+                    prefix + color("&c" + player.name + " has been kicked for using a plugins dumper!"),
+                    "dragoncore.notify"
+                )
+                e.isCancelled = true
+                player.sendMessage(prefix + color("&cPlugins dumpers are disabled!"))
+            }
         }
     }
 }

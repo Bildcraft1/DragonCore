@@ -4,7 +4,6 @@ import fur.kiyoshi.dragoncore.Main
 import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.api.DragonDatabase
 import fur.kiyoshi.dragoncore.commands.tags.Tags
-import fur.kiyoshi.dragoncore.events.menus.TagsMenu
 import fur.kiyoshi.dragoncore.format.Format.color
 import org.bukkit.Bukkit.getLogger
 import org.bukkit.event.EventHandler

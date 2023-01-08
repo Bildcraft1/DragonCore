@@ -4,7 +4,7 @@ import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
 import fur.kiyoshi.dragoncore.api.DragonDatabase
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
-import fur.kiyoshi.dragoncore.commands.Freeze
+import fur.kiyoshi.dragoncore.commands.testcommands.Freeze
 import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
@@ -18,6 +18,7 @@ import fur.kiyoshi.dragoncore.commands.teleport.Tp
 import fur.kiyoshi.dragoncore.commands.testcommands.Mute
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.commands.utility.Info
+import fur.kiyoshi.dragoncore.commands.utility.ReloadConfig
 import fur.kiyoshi.dragoncore.commands.utility.Version
 import fur.kiyoshi.dragoncore.events.*
 import fur.kiyoshi.dragoncore.events.menus.TagsMenu
@@ -97,6 +98,7 @@ class Main : JavaPlugin() {
         getCommand("freeze")?.tabCompleter = TabHelper()
         getCommand("tags")?.tabCompleter = TabHelper()
         getCommand("tags")?.setExecutor(Tags)
+        getCommand("reload")?.setExecutor(ReloadConfig)
     }
 
     private fun asciiArt() {

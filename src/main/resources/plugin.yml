@@ -78,3 +78,9 @@ commands:
     description: "Tags Menu"
     usage: /tags
     permission: dragoncore.tagsmanage
+  reload:
+    description: "Reload"
+    usage: /reload
+    permission: dragoncore.reload
+
+

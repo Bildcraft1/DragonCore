@@ -25,11 +25,14 @@ database:
   port: 3306
   database: "database"
 
-
 functions:
   tag_system: true
   chat_filter: true
   database: true
+  anti-exploit: true
+
+exploit:
+  blacklist: ["plugins", "pl", "bukkit:ver"]
 
 resourcePack:
   enabled: false
@@ -42,7 +45,6 @@ screenshare:
   ban_command: "ban %player% Cheating"
 
 tags:
-
 
 # This is the message that will be sent to the player when they join the server.
 chatfilter:
