@@ -4,7 +4,6 @@ import fur.kiyoshi.dragoncore.api.DragonAPI
 import fur.kiyoshi.dragoncore.api.DragonCoreExpansion
 import fur.kiyoshi.dragoncore.api.DragonDatabase
 import fur.kiyoshi.dragoncore.api.manager.DragonManager
-import fur.kiyoshi.dragoncore.commands.testcommands.Freeze
 import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
@@ -15,6 +14,7 @@ import fur.kiyoshi.dragoncore.commands.staffutils.StaffList
 import fur.kiyoshi.dragoncore.commands.staffutils.StaffMode
 import fur.kiyoshi.dragoncore.commands.tags.Tags
 import fur.kiyoshi.dragoncore.commands.teleport.Tp
+import fur.kiyoshi.dragoncore.commands.testcommands.Freeze
 import fur.kiyoshi.dragoncore.commands.testcommands.Mute
 import fur.kiyoshi.dragoncore.commands.utility.Help
 import fur.kiyoshi.dragoncore.commands.utility.Info
@@ -75,6 +75,7 @@ class Main : JavaPlugin() {
             logger.log(Level.INFO, "[DragonCore] " + "TagSystem is enabled")
             this.registerEvent(TagsMenu(), "TagsMenu", this)
         }
+        TopLeaderboard().runTaskTimer(this, 0, 12000)
     }
 
     private fun commands() {

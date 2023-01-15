@@ -18,29 +18,15 @@ object StaffMode: CommandExecutor {
         if (sender.hasPermission("dragoncore.staffmode")) {
             // Check if the player is in the map and if they are not then add them to the map and set their value to true
             return if (!staffMap.containsKey(sender.name) || staffMap[sender.name] == false) {
-                if (sender.hasPermission("group.dragone")) {
-                    staffMap[sender.name] = true
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user ${sender.name} parent add fakedragone")
-                    sender.sendMessage(Format.rgb(153, 0, 70, "Staff Mode") + Format.rgb(178, 34, 34, " Disabled"))
-                    true
-                } else {
                     staffMap[sender.name] = true
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user ${sender.name} parent add fakeutentestaff")
                     sender.sendMessage(Format.rgb(153, 0, 70, "Staff Mode") + Format.rgb(178, 34, 34, " Disabled"))
                     true
-                }
             } else {
-                if (sender.hasPermission("group.dragone")) {
-                    staffMap[sender.name] = false
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user ${sender.name} parent remove fakedragone")
-                    sender.sendMessage(Format.rgb(153, 0, 70, "Staff Mode") + Format.rgb(0, 250, 154, " Enabled"))
-                    true
-                } else {
                     staffMap[sender.name] = false
                     Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "lp user ${sender.name} parent remove fakeutentestaff")
                     sender.sendMessage(Format.rgb(153, 0, 70, "Staff Mode") + Format.rgb(0, 250, 154, " Enabled"))
                     true
-                }
             }
         } else if(!sender.hasPermission("dragoncore.staffmode")){
             sender.sendMessage(Format.defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
