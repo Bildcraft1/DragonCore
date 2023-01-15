@@ -82,5 +82,7 @@ commands:
     description: "Reload"
     usage: /reload
     permission: dragoncore.reload
-
-
+  report:
+    description: "Report"
+    usage: /report <player> <reason>
+    permission: dragoncore.report

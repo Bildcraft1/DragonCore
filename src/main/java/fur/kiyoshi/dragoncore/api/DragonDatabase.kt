@@ -36,6 +36,7 @@ class DragonDatabase {
         getConnection()
         val statement = conn?.createStatement()
         statement?.executeUpdate("CREATE TABLE IF NOT EXISTS `dragoncore` (`id` INT NOT NULL AUTO_INCREMENT, `uuid` VARCHAR(36) NOT NULL, `name` VARCHAR(16) NOT NULL, `tags` VARCHAR(255) NOT NULL, PRIMARY KEY (`id`));")
+        statement?.executeUpdate("CREATE TABLE IF NOT EXISTS `dragoncore_reports` (id INT NOT NULL AUTO_INCREMENT, uuid VARCHAR(36) NOT NULL, name VARCHAR(16) NOT NULL, status boolean NOT NULL DEFAULT 0, reason VARCHAR(255) NOT NULL, reporter VARCHAR(255) NOT NULL, PRIMARY KEY (id));")
         closeConnection()
     }
 

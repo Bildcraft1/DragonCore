@@ -6,7 +6,7 @@ import org.bukkit.command.TabCompleter
 
 
 class TabHelper: TabCompleter {
-    var mutableList : MutableList<String> = ArrayList()
+    private var mutableList : MutableList<String> = ArrayList()
 
     override fun onTabComplete(
         sender: CommandSender,

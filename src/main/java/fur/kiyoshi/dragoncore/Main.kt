@@ -8,6 +8,7 @@ import fur.kiyoshi.dragoncore.commands.chatfilter.ChatSettings
 import fur.kiyoshi.dragoncore.commands.otherplugins.BloodMoonStatus
 import fur.kiyoshi.dragoncore.commands.playercommands.Fly
 import fur.kiyoshi.dragoncore.commands.playercommands.Heal
+import fur.kiyoshi.dragoncore.commands.report.ReportCommand
 import fur.kiyoshi.dragoncore.commands.staffutils.ScreenShare
 import fur.kiyoshi.dragoncore.commands.staffutils.Staff
 import fur.kiyoshi.dragoncore.commands.staffutils.StaffList
@@ -100,6 +101,7 @@ class Main : JavaPlugin() {
         getCommand("tags")?.tabCompleter = TabHelper()
         getCommand("tags")?.setExecutor(Tags)
         getCommand("reload")?.setExecutor(ReloadConfig)
+        getCommand("report")?.setExecutor(ReportCommand)
     }
 
     private fun asciiArt() {
