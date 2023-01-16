@@ -25,7 +25,8 @@ object ReportCommand: CommandExecutor {
                 if (args[0].equals("list", true)) {
                     sender.sendMessage("§7List of reports")
                         for (report in ReportAPI().getReports()) {
-                            sender.sendMessage(color("ID: §c${report.id} §7Player: §b${report.name} §7Reason: §c${report.reason} §7 Reported by: §b${report.reporter}"))
+                            val status = if (report.status.toBoolean()) "§aStaff is checking" else "§cOpen"
+                            sender.sendMessage(color("ID: §c${report.id} §7Player: §b${report.name} §7Reason: §c${report.reason} §7 Reported by: §b${report.reporter} §7Status: §c${status}"))
                             deletebutton.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/report delete ${report.id}")
                             deletebutton.color = net.md_5.bungee.api.ChatColor.RED
                             deletebutton.isBold = true
@@ -61,7 +62,13 @@ object ReportCommand: CommandExecutor {
                     }
                     if (args.size == 2) {
                         val report = ReportAPI().getReport(args[1].toInt())
-                        ReportAPI().setStatus(args[1].toInt(), 1)
+
+                        if (ReportAPI().checkReport(args[1].toInt())) {
+                            sender.sendMessage("Report is already checked")
+                            return true
+                        }
+
+                        ReportAPI().setReport(args[1].toInt(), true)
                         sender.sendMessage("§7Report ID: §c${report.id} §7Player: §b${report.name} §7Reason: §c${report.reason} §7 Reported by: §b${report.reporter}")
                         return true
                     }
@@ -76,7 +83,7 @@ object ReportCommand: CommandExecutor {
                 val reason = args[1]
                 sender.sendMessage("You have reported ${player?.name} for $reason")
                 if (player != null) {
-                    ReportAPI().createReport(player, reason, sender)
+                    ReportAPI().createReport(player, reason, sender, false)
                     ReportAPI().sendDiscordReport(player, reason, sender)
                 }
                 return true

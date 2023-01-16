@@ -7,14 +7,28 @@ import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.bukkit.entity.Player
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.ResultSet
 
 
 class ReportAPI {
-    fun createReport(player: Player?, reason: String, reporter: Player) {
+    fun createReport(player: Player?, reason: String, reporter: Player, status: Boolean) {
         val db = DragonDatabase()
         db.getConnection()
-        val statement = db.conn?.createStatement()
-        statement?.executeUpdate("INSERT INTO `dragoncore_reports` (uuid, name, reason, reporter) VALUES ('${player?.uniqueId}', '${player?.name}', '${reason}', '${reporter.name}');")
+        val sql = "INSERT INTO `dragoncore_reports` (uuid, name, reason, reporter, status) VALUES (?,?,?,?,?);"
+        val conn: Connection = DragonDatabase().getConnection()
+        var statement: PreparedStatement? = conn.prepareStatement(sql)
+        if (player != null) {
+            statement?.setString(1, player.uniqueId.toString())
+        }
+        if (player != null) {
+            statement?.setString(2, player.name)
+        }
+        statement?.setString(3, reason)
+        statement?.setString(4, reporter.name)
+        statement?.setBoolean(5, status)
+        statement?.executeUpdate()
         db.closeConnection()
     }
 
@@ -26,11 +40,22 @@ class ReportAPI {
         db.closeConnection()
     }
 
-    fun setStatus(id: Int, status: Int) {
+    fun checkReport(id: Int): Boolean {
         val db = DragonDatabase()
         db.getConnection()
         val statement = db.conn?.createStatement()
-        statement?.executeUpdate("UPDATE `dragoncore_reports` SET status = 1 WHERE id = ${id};")
+        val result: ResultSet = statement?.executeQuery("SELECT * FROM `dragoncore_reports` WHERE id = ${id};")!!
+        if (result.next()) {
+            return result.getBoolean("status")
+        }
+        return false
+    }
+
+    fun setReport(id: Int, status: Boolean) {
+        val db = DragonDatabase()
+        db.getConnection()
+        val statement = db.conn?.createStatement()
+        statement?.executeUpdate("UPDATE `dragoncore_reports` SET status = $status WHERE id = $id;")
         db.closeConnection()
     }
 
@@ -41,7 +66,7 @@ class ReportAPI {
         val result = statement?.executeQuery("SELECT * FROM `dragoncore_reports`;")
         val reports = mutableListOf<Report>()
         while (result?.next()!!) {
-            reports.add(Report(result.getString("uuid"), result.getString("name"), result.getString("reason"), result.getString("reporter"), result.getInt("id")))
+            reports.add(Report(result.getString("uuid"), result.getString("name"), result.getString("reason"), result.getString("reporter"), result.getInt("id"), result.getBoolean("status")))
         }
         db.closeConnection()
         return reports
@@ -52,11 +77,11 @@ class ReportAPI {
         db.getConnection()
         val statement = db.conn?.createStatement()
         val result = statement?.executeQuery("SELECT * FROM `dragoncore_reports` WHERE id = '$id';")
-        val report = Report(result?.getString("uuid").toString(),
-            result?.getString("name").toString(),
-            result?.getString("reason").toString(), result?.getString("reporter").toString(), result?.getInt("id"))
+        while (result?.next()!!) {
+            return Report(result.getString("uuid"), result.getString("name"), result.getString("reason"), result.getString("reporter"), result.getInt("id"), result.getBoolean("status"))
+        }
         db.closeConnection()
-        return report
+        return Report("null", "null", "null", "null", 0, false)
     }
 
     fun sendDiscordReport(player: Player, reason: String, reporter: Player) {
@@ -85,16 +110,18 @@ class ReportAPI {
     }
 
     class Report {
+        val status: String
         var id: Int = 0
         val uuid: String
         val name: String
         val reason: String
         val reporter: String
 
-        constructor(uuid: String, name: String, reason: String, reporter: String, id: Int?) {
+        constructor(uuid: String, name: String, reason: String, reporter: String, id: Int?, status: Boolean) {
             if (id != null) {
                 this.id = id
             }
+            this.status = status.toString()
             this.uuid = uuid
             this.name = name
             this.reason = reason
