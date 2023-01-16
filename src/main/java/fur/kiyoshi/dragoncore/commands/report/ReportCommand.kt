@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object ReportCommand: CommandExecutor {
+    val deletebutton = net.md_5.bungee.api.chat.TextComponent("[Delete] ")
+    val checkbutton = net.md_5.bungee.api.chat.TextComponent("[Check] ")
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if(sender !is Player) {
             sender.sendMessage("Sender is not a player")
@@ -21,20 +23,51 @@ object ReportCommand: CommandExecutor {
             }
             if (args.size == 1) {
                 if (args[0].equals("list", true)) {
-                    sender.sendMessage("List of reports")
-                    var i = 0
-                    while (i <= 10) {
+                    sender.sendMessage("§7List of reports")
                         for (report in ReportAPI().getReports()) {
-                            sender.sendMessage(color("§7Player: §b${report.name} §7Reason: §c${report.reason} §7 Reported by: §b${report.reporter}"))
+                            sender.sendMessage(color("ID: §c${report.id} §7Player: §b${report.name} §7Reason: §c${report.reason} §7 Reported by: §b${report.reporter}"))
+                            deletebutton.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/report delete ${report.id}")
+                            deletebutton.color = net.md_5.bungee.api.ChatColor.RED
+                            deletebutton.isBold = true
+
+                            checkbutton.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/report check ${report.id}")
+                            checkbutton.color = net.md_5.bungee.api.ChatColor.GREEN
+                            checkbutton.isBold = true
+                            sender.spigot().sendMessage(deletebutton, checkbutton)
                         }
-                        i++
-                    }
                     return true
                 }
                 sender.sendMessage("Please specify a reason to report")
                 return true
             }
             if (args.size >= 2) {
+                if (args[0] == "delete") {
+                    if (args[1].toIntOrNull() == null) {
+                        sender.sendMessage("Please specify a report ID to delete")
+                        return true
+                    }
+                    if (args.size == 2) {
+                        ReportAPI().deleteReport(args[1].toInt())
+                        sender.sendMessage("Report deleted")
+                        return true
+                    }
+                    return true
+                }
+
+                if (args[0] == "check") {
+                    if (args[1].toIntOrNull() == null) {
+                        sender.sendMessage("Please specify a report ID to check")
+                        return true
+                    }
+                    if (args.size == 2) {
+                        val report = ReportAPI().getReport(args[1].toInt())
+                        ReportAPI().setStatus(args[1].toInt(), 1)
+                        sender.sendMessage("§7Report ID: §c${report.id} §7Player: §b${report.name} §7Reason: §c${report.reason} §7 Reported by: §b${report.reporter}")
+                        return true
+                    }
+                    return true
+                }
+
                 if (sender.server.getPlayer(args[0]) == null) {
                     sender.sendMessage("Player not found")
                     return true

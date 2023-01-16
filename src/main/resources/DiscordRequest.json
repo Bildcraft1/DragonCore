@@ -1,0 +1,29 @@
+{
+  "content": "",
+  "tts": false,
+  "username": "Report Bot",
+  "embeds": [
+    {
+      "type": "rich",
+      "title": "New Report",
+      "description": "User %reporter% reported:",
+      "color": 255,
+      "fields": [
+        {
+          "name": "Possible cheater",
+          "value": "%player%",
+          "inline": true
+        },
+        {
+          "name": "Reason",
+          "value": "%reason%"
+        }
+      ],
+      "thumbnail": {
+        "url": "https://mc-heads.net/avatar/%player%",
+        "height": 0,
+        "width": 0
+      }
+    }
+  ]
+}
