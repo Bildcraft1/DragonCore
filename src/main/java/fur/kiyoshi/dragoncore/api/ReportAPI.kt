@@ -14,8 +14,6 @@ import java.sql.ResultSet
 
 class ReportAPI {
     fun createReport(player: Player?, reason: String, reporter: Player, status: Boolean) {
-        val db = DragonDatabase()
-        db.getConnection()
         val sql = "INSERT INTO `dragoncore_reports` (uuid, name, reason, reporter, status) VALUES (?,?,?,?,?);"
         val conn: Connection = DragonDatabase().getConnection()
         var statement: PreparedStatement? = conn.prepareStatement(sql)
@@ -29,7 +27,7 @@ class ReportAPI {
         statement?.setString(4, reporter.name)
         statement?.setBoolean(5, status)
         statement?.executeUpdate()
-        db.closeConnection()
+        conn.close()
     }
 
     fun deleteReport(id: Int) {
@@ -87,7 +85,6 @@ class ReportAPI {
     fun sendDiscordReport(player: Player, reason: String, reporter: Player) {
         val httpclient: CloseableHttpClient = HttpClients.createDefault()
         val httpPost = HttpPost(DragonAPI().getConfig().getString("discord.webhook"))
-        reporter.sendMessage(httpPost.uri.toString())
 
         val json = Main.instance.getResource("DiscordRequest.json")?.bufferedReader().use { it!!.readText() }
             .replace("%player%", player.name)
@@ -103,7 +100,7 @@ class ReportAPI {
         if (response.statusLine.statusCode == 204) {
             reporter.sendMessage("§7Report sent to discord")
         } else {
-            reporter.sendMessage("§7Report failed to send to discord" + response.statusLine.statusCode)
+            reporter.sendMessage("§7Report failed to send to discord " + response.statusLine.statusCode)
         }
         entity.content?.use { }
         httpclient.close()

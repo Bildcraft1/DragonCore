@@ -77,6 +77,7 @@ class Main : JavaPlugin() {
             this.registerEvent(TagsMenu(), "TagsMenu", this)
         }
         TopLeaderboard().runTaskTimer(this, 0, 12000)
+        DragonStatistics().runTaskTimer(this, 0, 12000)
     }
 
     private fun commands() {

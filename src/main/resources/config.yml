@@ -52,3 +52,6 @@ chatfilter:
 
 discord:
   webhook: ""
+
+statistics_api:
+  url: ""
