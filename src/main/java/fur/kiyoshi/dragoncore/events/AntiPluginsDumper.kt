@@ -20,7 +20,7 @@ class AntiPluginsDumper : Listener {
         return false
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onPluginsDumper(e: PlayerCommandPreprocessEvent) {
         if (DragonAPI().getConfig().getBoolean("functions.anti-exploit")) {
             val message = e.message.lowercase(Locale.getDefault())
@@ -37,7 +37,7 @@ class AntiPluginsDumper : Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onTabComplete(e: TabCompleteEvent) {
         if (DragonAPI().getConfig().getBoolean("functions.anti-exploit")) {
             val message = e.buffer.lowercase(Locale.getDefault())

@@ -8,9 +8,14 @@ import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import net.md_5.bungee.api.chat.*
+import net.md_5.bungee.api.ChatColor
+import java.util.stream.Collectors
 
 object ScreenShare: CommandExecutor {
-    val screenShareMap: MutableMap<String, Boolean> = HashMap()
+
+    //1° = player, 2° = staffer
+    val screenShareMap: MutableMap<Player, Player> = HashMap()
     /**
      * Executes the given command, returning its success.
      * <br></br>
@@ -31,7 +36,6 @@ object ScreenShare: CommandExecutor {
 
         return if (sender.hasPermission("dragoncore.screenshare")) {
 
-
             if (args.isEmpty()) {
                 sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/screenshare <player>" )))
                 return true
@@ -39,19 +43,21 @@ object ScreenShare: CommandExecutor {
 
             val target = args[0]
 
-            if (Bukkit.getPlayer(target) == null) {
+            val targetPlayer = Bukkit.getPlayer(target)
+
+            if (targetPlayer == null) {
                 sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.player_not_online")!!))
                 return true
             }
 
-            if (target.let {Bukkit.getPlayer(it)}?.hasPermission("dragoncore.staff") == true) {
+            if (targetPlayer.hasPermission("dragoncore.staff")) {
                 sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.screenshare_bypass")?.replace("{player}", target)))
                 return true
             }
 
             if (args.size > 1) {
-                return if (args[1] == "legit" && screenShareMap[target] == true) {
-                    screenShareMap[target] = false
+                return if (args[1] == "legit" && screenShareMap.contains(targetPlayer)) {
+                    screenShareMap.remove(targetPlayer)
                     target.let { Bukkit.getPlayer(it) }?.sendMessage(color(DragonAPI().getLangFile().getString("messages.spawn")!!))
                     target.let { Bukkit.getPlayer(it) }?.performCommand("back")
                     true
@@ -61,7 +67,11 @@ object ScreenShare: CommandExecutor {
                 }
             }
 
-            if (screenShareMap[target] == true) {
+            if (screenShareMap.containsValue(sender)) {
+                sender.sendMessage("You cant screenshare more than one people")
+            }
+
+            if (screenShareMap.contains(targetPlayer)) {
                 sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.already_screensharing")!!))
                 return true
             }
@@ -72,23 +82,23 @@ object ScreenShare: CommandExecutor {
             sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.generic_divider")!!.replace("{title}", "ScreenShare")))
             sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.screenshare_staff")?.replace("{player}", target)!!))
 
-            val ban = net.md_5.bungee.api.chat.TextComponent("[Ban] ")
-            ban.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.SUGGEST_COMMAND, "/tempban ${target.let {Bukkit.getPlayer(it)}?.name} 14d Hacking")
-            ban.color = net.md_5.bungee.api.ChatColor.RED
+            val ban = TextComponent("[Ban] ")
+            ban.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tempban ${targetPlayer.name} 14d Hacking")
+            ban.color = ChatColor.RED
             ban.isBold = true
 
-            val legit = net.md_5.bungee.api.chat.TextComponent("[Legit]")
-            legit.clickEvent = net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.RUN_COMMAND, "/screenshare ${target.let {Bukkit.getPlayer(it)}?.name} legit")
-            legit.color = net.md_5.bungee.api.ChatColor.AQUA
+            val legit = TextComponent("[Legit]")
+            legit.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/screenshare ${targetPlayer.name} legit")
+            legit.color = ChatColor.AQUA
             legit.isBold = true
 
             sender.spigot().sendMessage(ban, legit)
 
             sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.divider")!!))
-            target.let { Bukkit.getPlayer(it) }?.sendMessage(defaultrgb(DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)))
-            screenShareMap[target] = true
+            targetPlayer.sendMessage(defaultrgb(DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)))
+            screenShareMap[targetPlayer] = sender.player!!
 
-
+            sender.sendMessage(screenShareMap.entries.stream().map { e -> e.key.name + ": " + e.value.name }.collect(Collectors.toList()).joinToString(", ", "[", "]"))
             true
         } else {
             sender.sendMessage(defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
