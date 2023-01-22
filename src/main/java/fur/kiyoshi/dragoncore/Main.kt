@@ -67,6 +67,7 @@ class Main : JavaPlugin() {
         this.registerEvent(NBTBlock(), "NBTBlock", this)
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
         this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
+        this.registerEvent(DeathMessage(), "DeathMessage", this)
         if (DragonAPI().getConfig().getBoolean("functions.chat_filter")) {
             logger.log(Level.INFO, "[DragonCore] " + "ChatFilter is enabled")
             this.registerEvent(ChatFilter(), "ChatSettings", this)

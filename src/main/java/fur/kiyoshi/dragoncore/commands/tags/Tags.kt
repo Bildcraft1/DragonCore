@@ -89,8 +89,14 @@ object Tags: CommandExecutor {
                 tags[sender] = "None"
             }
 
+            var inventorysize = DragonAPI().getConfig().getConfigurationSection("tags")!!.getKeys(false).size * 9
+
+            if (inventorysize > 54) {
+                inventorysize = 54
+            }
+
             // Create a new inventory, with no owner (as this isn't a real inventory), a size of nine, called example
-            inv = Bukkit.createInventory(null, 9, color("&b&lTags"))
+            inv = Bukkit.createInventory(null, inventorysize, color("&b&lTags"))
 
 
             // Create a item for every item inside the configuration get the name and the material and the lore
@@ -114,10 +120,10 @@ object Tags: CommandExecutor {
 
             for (x in blockInt until inv!!.size - 1) {
                 inv!!.addItem(
-                    DragonAPI().createGuiItem(
+                    DragonAPI().createGuiItemCustom(
                         Material.BLACK_STAINED_GLASS_PANE,
                         "",
-                        x.toString(),
+                        "",
                     )
                 )
                 x + 1

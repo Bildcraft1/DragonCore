@@ -8,8 +8,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 object ReportCommand: CommandExecutor {
-    val deletebutton = net.md_5.bungee.api.chat.TextComponent("[Delete] ")
-    val checkbutton = net.md_5.bungee.api.chat.TextComponent("[Check] ")
+    private val deletebutton = net.md_5.bungee.api.chat.TextComponent("[Delete] ")
+    private val checkbutton = net.md_5.bungee.api.chat.TextComponent("[Check] ")
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if(sender !is Player) {
             sender.sendMessage("Sender is not a player")
@@ -21,7 +21,10 @@ object ReportCommand: CommandExecutor {
                 sender.sendMessage("Please specify a player to report")
                 return true
             }
-            if (args.size == 1) {
+
+            if (sender.hasPermission("dragoncore.staff")) {
+
+                if (args.size == 1) {
                 if (args[0].equals("list", true)) {
                     sender.sendMessage("§7List of reports")
                         for (report in ReportAPI().getReports()) {
@@ -41,7 +44,8 @@ object ReportCommand: CommandExecutor {
                 sender.sendMessage("Please specify a reason to report")
                 return true
             }
-            if (args.size >= 2) {
+
+                if (args.size >= 2) {
                 if (args[0] == "delete") {
                     if (args[1].toIntOrNull() == null) {
                         sender.sendMessage("Please specify a report ID to delete")
@@ -74,20 +78,27 @@ object ReportCommand: CommandExecutor {
                     }
                     return true
                 }
+            }
+            }
 
-                if (sender.server.getPlayer(args[0]) == null) {
-                    sender.sendMessage("Player not found")
-                    return true
-                }
-                val player = sender.server.getPlayer(args[0])
-                val reason = args[1]
-                sender.sendMessage("You have reported ${player?.name} for $reason")
-                if (player != null) {
-                    ReportAPI().createReport(player, reason, sender, false)
-                    ReportAPI().sendDiscordReport(player, reason, sender)
-                }
+            if (sender.server.getPlayer(args[0]) == null) {
+                sender.sendMessage("Player not found")
                 return true
             }
+
+            if (args.size == 1) {
+                sender.sendMessage("Please specify a reason to report")
+                return true
+            }
+
+            val player = sender.server.getPlayer(args[0])
+            val reason = args[1]
+            sender.sendMessage("You have reported ${player?.name} for $reason")
+            if (player != null) {
+                ReportAPI().createReport(player, reason, sender, false)
+                ReportAPI().sendDiscordReport(player, reason, sender)
+            }
+            return true
         } else if (!sender.hasPermission("dragoncore.report")) {
             sender.sendMessage("You do not have permission to use this command")
             return true

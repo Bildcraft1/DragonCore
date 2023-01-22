@@ -36,6 +36,20 @@ class DragonAPI {
         return item
     }
 
+    fun createGuiItemCustom(material: Material?, name: String?, vararg lore: String?): ItemStack? {
+        val item = ItemStack(material!!, 1)
+        val meta = item.itemMeta
+
+        // Set the name of the item
+        meta!!.setDisplayName(name)
+
+        // Set the lore of the item
+        meta.lore = Arrays.asList(*lore)
+        meta.setCustomModelData(Random().nextInt(100000))
+        item.itemMeta = meta
+        return item
+    }
+
     fun getLangFile(): FileConfiguration {
         return Main.instance.messagefile
     }
