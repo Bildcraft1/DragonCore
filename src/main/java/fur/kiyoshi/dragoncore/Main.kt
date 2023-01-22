@@ -22,6 +22,7 @@ import fur.kiyoshi.dragoncore.commands.utility.Info
 import fur.kiyoshi.dragoncore.commands.utility.ReloadConfig
 import fur.kiyoshi.dragoncore.commands.utility.Version
 import fur.kiyoshi.dragoncore.events.*
+import fur.kiyoshi.dragoncore.events.externalplugins.CheckLands
 import fur.kiyoshi.dragoncore.events.menus.TagsMenu
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
@@ -79,6 +80,7 @@ class Main : JavaPlugin() {
         }
         TopLeaderboard().runTaskTimer(this, 0, 12000)
         DragonStatistics().runTaskTimer(this, 0, 12000)
+        CheckLands().runTaskTimer(this, 0, 12000)
     }
 
     private fun commands() {
