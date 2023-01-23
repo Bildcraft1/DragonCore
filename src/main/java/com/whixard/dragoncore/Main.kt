@@ -16,7 +16,6 @@ import com.whixard.dragoncore.commands.staffutils.StaffMode
 import com.whixard.dragoncore.commands.tags.Tags
 import com.whixard.dragoncore.commands.teleport.Tp
 import com.whixard.dragoncore.commands.testcommands.Freeze
-import com.whixard.dragoncore.commands.testcommands.Mute
 import com.whixard.dragoncore.commands.utility.Help
 import com.whixard.dragoncore.commands.utility.Info
 import com.whixard.dragoncore.commands.utility.ReloadConfig
@@ -98,7 +97,6 @@ class Main : JavaPlugin() {
         getCommand("ss")?.setExecutor(ScreenShare)
         getCommand("screenshare")?.setExecutor(ScreenShare)
         getCommand("controllo")?.setExecutor(ScreenShare)
-        getCommand("mute")?.setExecutor(Mute)
         getCommand("freeze")?.setExecutor(Freeze)
         getCommand("chatfilter")?.setExecutor(ChatSettings)
         getCommand("freeze")?.tabCompleter = TabHelper()

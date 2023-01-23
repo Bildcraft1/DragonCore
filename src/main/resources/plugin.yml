@@ -26,10 +26,6 @@ commands:
     description: "Teleport"
     usage: /tp <player>
     permission: dragoncore.tp
-  tpa:
-    description: "Teleport Request"
-    usage: /tpa <player>
-    permission: dragoncore.tpa
   staff:
     description: "Staff Mode"
     usage: /staff
@@ -66,10 +62,6 @@ commands:
     description: "Freeze"
     usage: /freeze
     permission: dragoncore.freeze
-  mute:
-    description: "Mute"
-    usage: /mute <player>
-    permission: dragoncore.test
   chatfilter:
     description: "Chat Filter"
     usage: /chatfilter
