@@ -3,13 +3,12 @@ package com.whixard.dragoncore.commands.staffutils
 import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.format.Format
 import com.whixard.dragoncore.format.Format.color
-import com.whixard.dragoncore.format.Format.rgb
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object Staff: CommandExecutor {
+object Staff : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("Sender is not a player")

@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object StaffList: CommandExecutor {
+object StaffList : CommandExecutor {
     /**
      * Executes the given command, returning its success.
      * <br></br>
@@ -34,14 +34,21 @@ object StaffList: CommandExecutor {
                     sender.sendMessage(rgb(153, 0, 70, player.displayName))
                 }
             }
-            sender.sendMessage(rgb(153, 0, 70, "-----") + rgb(0, 250, 154, "Staff List (Staff Mode)") + rgb(153, 0, 70, "-----"))
+            sender.sendMessage(
+                rgb(153, 0, 70, "-----") + rgb(0, 250, 154, "Staff List (Staff Mode)") + rgb(
+                    153,
+                    0,
+                    70,
+                    "-----"
+                )
+            )
             for ((key, value) in StaffMode.staffMap) {
                 if (value) {
                     sender.sendMessage(rgb(153, 0, 70, key))
                 }
             }
             return true
-        } else if(!sender.hasPermission("dragoncore.stafflist")) {
+        } else if (!sender.hasPermission("dragoncore.stafflist")) {
             sender.sendMessage(defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))
         }
         return true

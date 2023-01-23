@@ -5,8 +5,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 
 
-class TabHelper: TabCompleter {
-    private var mutableList : MutableList<String> = ArrayList()
+class TabHelper : TabCompleter {
+    private var mutableList: MutableList<String> = ArrayList()
 
     override fun onTabComplete(
         sender: CommandSender,
@@ -23,8 +23,8 @@ class TabHelper: TabCompleter {
                 return null
             }
 
-            if(label == "tags" && args[0].isEmpty()) {
-                if(sender.hasPermission("dragoncore.tags.remove")) {
+            if (label == "tags" && args[0].isEmpty()) {
+                if (sender.hasPermission("dragoncore.tags.remove")) {
                     mutableList.add("remove")
                     mutableList.add("clear")
                     return mutableList

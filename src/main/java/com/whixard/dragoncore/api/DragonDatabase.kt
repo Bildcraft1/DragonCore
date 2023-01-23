@@ -17,8 +17,12 @@ class DragonDatabase {
         try {
             Class.forName("org.mariadb.jdbc.Driver")
             conn = DriverManager.getConnection(
-                "jdbc:" + DragonAPI().getConfig().getString("database.type")?.lowercase() + "://" + DragonAPI().getConfig().getString("database.host") + ":" + DragonAPI().getConfig().getString("database.port") + "/" + DragonAPI().getConfig().getString("database.database"),
-                connectionProps)
+                "jdbc:" + DragonAPI().getConfig().getString("database.type")
+                    ?.lowercase() + "://" + DragonAPI().getConfig()
+                    .getString("database.host") + ":" + DragonAPI().getConfig()
+                    .getString("database.port") + "/" + DragonAPI().getConfig().getString("database.database"),
+                connectionProps
+            )
             return conn!!
         } catch (e: Exception) {
             e.printStackTrace()
@@ -29,7 +33,6 @@ class DragonDatabase {
     fun closeConnection() {
         conn?.close()
     }
-
 
 
     fun initializeDatabase() {

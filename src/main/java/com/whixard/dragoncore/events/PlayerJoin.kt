@@ -1,6 +1,5 @@
 package com.whixard.dragoncore.events
 
-import com.whixard.dragoncore.Main
 import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.api.DragonDatabase
 import com.whixard.dragoncore.commands.tags.Tags
@@ -15,7 +14,7 @@ import java.util.*
 import java.util.logging.Level
 
 
-class PlayerJoin: Listener {
+class PlayerJoin : Listener {
     fun checkUser(user: UUID): Any {
         // Check if the user is already in the database
         val sql = "SELECT * FROM dragoncore WHERE uuid = ?"
@@ -30,6 +29,7 @@ class PlayerJoin: Listener {
     private var url = DragonAPI().getConfig().getString("resourcePack.url").toString()
     private var force = DragonAPI().getConfig().getBoolean("resourcePack.forced")
     private var prompt = DragonAPI().getConfig().getString("resourcePack.prompt")
+
     @EventHandler
     fun onPlayerJoin(eventHandler: PlayerJoinEvent) {
         eventHandler.player.sendMessage(color("&bBenvenuto nella modalità Lands di DragonCraft"))

@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 
-object Tp: CommandExecutor {
+object Tp : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("Sender is not a player")
@@ -27,7 +27,7 @@ object Tp: CommandExecutor {
             val targetPlayer = Bukkit.getServer().getPlayer(potentialPlayer)
             if (targetPlayer != null) {
                 sender.teleport(targetPlayer.location)
-                sender.sendMessage(rgb(153, 0, 70,"Teleported to: ") + rgb(0, 250, 154, targetPlayer.displayName))
+                sender.sendMessage(rgb(153, 0, 70, "Teleported to: ") + rgb(0, 250, 154, targetPlayer.displayName))
                 return true
             }
             sender.sendMessage(Format.color(DragonAPI().getLangFile().getString("messages.player_not_online")!!))

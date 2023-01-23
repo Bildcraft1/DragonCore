@@ -8,8 +8,9 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 
-object BloodMoonStatus: CommandExecutor {
+object BloodMoonStatus : CommandExecutor {
     var bloodMoon = false
+
     /**
      * Executes the given command, returning its success.
      * <br></br>
@@ -27,7 +28,12 @@ object BloodMoonStatus: CommandExecutor {
             if (args[0] == "status") {
                 sender.sendMessage(defaultrgb("BloodMoon is ${if (bloodMoon) "on" else "off"}"))
                 sender.sendMessage(defaultrgb("PlaceHolder response:"))
-                sender.sendMessage(PlaceholderAPI.setPlaceholders(sender as Player, defaultrgb("%dragoncore_bloodmoon%")))
+                sender.sendMessage(
+                    PlaceholderAPI.setPlaceholders(
+                        sender as Player,
+                        defaultrgb("%dragoncore_bloodmoon%")
+                    )
+                )
                 return true
             }
 
@@ -42,11 +48,11 @@ object BloodMoonStatus: CommandExecutor {
             }
 
             return if (bloodMoon) {
-                    sender.sendMessage("Blood Moon is active")
-                    true
+                sender.sendMessage("Blood Moon is active")
+                true
             } else {
-                    sender.sendMessage("Blood Moon is not active")
-                    true
+                sender.sendMessage("Blood Moon is not active")
+                true
             }
         }
         sender.sendMessage("You do not have permission to use this command")

@@ -3,9 +3,8 @@ package com.whixard.dragoncore.api
 import com.whixard.dragoncore.commands.otherplugins.BloodMoonStatus
 import com.whixard.dragoncore.commands.tags.Tags.tags
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
-import org.bukkit.entity.Player
 
-class DragonCoreExpansion: PlaceholderExpansion() {
+class DragonCoreExpansion : PlaceholderExpansion() {
 
     override fun onPlaceholderRequest(player: org.bukkit.entity.Player?, identifier: String): String? {
         if (identifier.equals("bloodmoon", ignoreCase = true)) {

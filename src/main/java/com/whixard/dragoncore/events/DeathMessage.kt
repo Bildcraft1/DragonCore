@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 
-class DeathMessage: Listener {
+class DeathMessage : Listener {
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.entity

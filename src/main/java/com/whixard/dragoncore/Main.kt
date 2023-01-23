@@ -41,8 +41,8 @@ class Main : JavaPlugin() {
     private var dragonManager: DragonManager? = null
 
     @Suppress("SameParameterValue")
-    private fun instance(){
-        Main.Companion.instance = this
+    private fun instance() {
+        instance = this
         this.dragonManager = DragonManager(this)
         saveDefaultConfig()
         if (!dataFolder.resolve("messages.yml").exists()) {
@@ -74,7 +74,7 @@ class Main : JavaPlugin() {
             this.registerEvent(ChatFilter(), "ChatSettings", this)
             this.registerEvent(AntiPluginsDumper(), "AntiPluginsDumper", this)
         }
-        if(DragonAPI().getConfig().getBoolean("functions.tag_system")) {
+        if (DragonAPI().getConfig().getBoolean("functions.tag_system")) {
             logger.log(Level.INFO, "[DragonCore] " + "TagSystem is enabled")
             this.registerEvent(TagsMenu(), "TagsMenu", this)
         }
@@ -110,12 +110,12 @@ class Main : JavaPlugin() {
 
     private fun asciiArt() {
         logger.log(Level.INFO, "\n")
-        logger.log(Level.INFO,        "      ____                               ______")
-        logger.log(Level.INFO,        "     / __ \\_________ _____ _____  ____  / ____/___  ________")
-        logger.log(Level.INFO,        "    / / / / ___/ __ `/ __ `/ __ \\/ __ \\/ /   / __ \\/ ___/ _ \\")
-        logger.log(Level.INFO,        "   / /_/ / /  / /_/ / /_/ / /_/ / / / / /___/ /_/ / /  /  __/")
-        logger.log(Level.INFO,        "  /_____/_/   \\__,_/\\__, /\\____/_/ /_/\\____/\\____/_/   \\___/")
-        logger.log(Level.INFO,        "                   /____/")
+        logger.log(Level.INFO, "      ____                               ______")
+        logger.log(Level.INFO, "     / __ \\_________ _____ _____  ____  / ____/___  ________")
+        logger.log(Level.INFO, "    / / / / ___/ __ `/ __ `/ __ \\/ __ \\/ /   / __ \\/ ___/ _ \\")
+        logger.log(Level.INFO, "   / /_/ / /  / /_/ / /_/ / /_/ / / / / /___/ /_/ / /  /  __/")
+        logger.log(Level.INFO, "  /_____/_/   \\__,_/\\__, /\\____/_/ /_/\\____/\\____/_/   \\___/")
+        logger.log(Level.INFO, "                   /____/")
         logger.log(Level.INFO, "\n")
     }
 

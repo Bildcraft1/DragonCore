@@ -3,19 +3,21 @@ package com.whixard.dragoncore.commands.staffutils
 import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.format.Format.color
 import com.whixard.dragoncore.format.Format.defaultrgb
+import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.chat.ClickEvent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
-import net.md_5.bungee.api.chat.*
-import net.md_5.bungee.api.ChatColor
 import java.util.stream.Collectors
 
-object ScreenShare: CommandExecutor {
+object ScreenShare : CommandExecutor {
 
     //1° = player, 2° = staffer
     val screenShareMap: MutableMap<Player, Player> = HashMap()
+
     /**
      * Executes the given command, returning its success.
      * <br></br>
@@ -37,7 +39,12 @@ object ScreenShare: CommandExecutor {
         return if (sender.hasPermission("dragoncore.screenshare")) {
 
             if (args.isEmpty()) {
-                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/screenshare <player>" )))
+                sender.sendMessage(
+                    color(
+                        DragonAPI().getLangFile().getString("messages.usage")
+                            ?.replace("{usage}", "/screenshare <player>")
+                    )
+                )
                 return true
             }
 
@@ -51,18 +58,28 @@ object ScreenShare: CommandExecutor {
             }
 
             if (targetPlayer.hasPermission("dragoncore.staff")) {
-                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.screenshare_bypass")?.replace("{player}", target)))
+                sender.sendMessage(
+                    color(
+                        DragonAPI().getLangFile().getString("messages.screenshare_bypass")?.replace("{player}", target)
+                    )
+                )
                 return true
             }
 
             if (args.size > 1) {
                 return if (args[1] == "legit" && screenShareMap.contains(targetPlayer)) {
                     screenShareMap.remove(targetPlayer)
-                    target.let { Bukkit.getPlayer(it) }?.sendMessage(color(DragonAPI().getLangFile().getString("messages.spawn")!!))
+                    target.let { Bukkit.getPlayer(it) }
+                        ?.sendMessage(color(DragonAPI().getLangFile().getString("messages.spawn")!!))
                     target.let { Bukkit.getPlayer(it) }?.performCommand("back")
                     true
                 } else {
-                    sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/screenshare <player> <legit> (Player not in SS)" )))
+                    sender.sendMessage(
+                        color(
+                            DragonAPI().getLangFile().getString("messages.usage")
+                                ?.replace("{usage}", "/screenshare <player> <legit> (Player not in SS)")
+                        )
+                    )
                     true
                 }
             }
@@ -79,8 +96,16 @@ object ScreenShare: CommandExecutor {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvtp $target screenshare")
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "mvtp ${sender.name} screenshare")
 
-            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.generic_divider")!!.replace("{title}", "ScreenShare")))
-            sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.screenshare_staff")?.replace("{player}", target)!!))
+            sender.sendMessage(
+                color(
+                    DragonAPI().getLangFile().getString("messages.generic_divider")!!.replace("{title}", "ScreenShare")
+                )
+            )
+            sender.sendMessage(
+                color(
+                    DragonAPI().getLangFile().getString("messages.screenshare_staff")?.replace("{player}", target)!!
+                )
+            )
 
             val ban = TextComponent("[Ban] ")
             ban.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tempban ${targetPlayer.name} 14d Hacking")
@@ -95,10 +120,15 @@ object ScreenShare: CommandExecutor {
             sender.spigot().sendMessage(ban, legit)
 
             sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.divider")!!))
-            targetPlayer.sendMessage(defaultrgb(DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)))
+            targetPlayer.sendMessage(
+                defaultrgb(
+                    DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)
+                )
+            )
             screenShareMap[targetPlayer] = sender.player!!
 
-            sender.sendMessage(screenShareMap.entries.stream().map { e -> e.key.name + ": " + e.value.name }.collect(Collectors.toList()).joinToString(", ", "[", "]"))
+            sender.sendMessage(screenShareMap.entries.stream().map { e -> e.key.name + ": " + e.value.name }
+                .collect(Collectors.toList()).joinToString(", ", "[", "]"))
             true
         } else {
             sender.sendMessage(defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))

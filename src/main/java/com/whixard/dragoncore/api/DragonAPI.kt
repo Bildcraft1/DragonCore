@@ -2,13 +2,11 @@
 
 package com.whixard.dragoncore.api
 
-import com.whixard.dragoncore.Main
 import com.whixard.dragoncore.api.manager.DragonManager
 import com.whixard.dragoncore.events.NBTBlock
 import com.whixard.dragoncore.format.Format
 import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -23,7 +21,7 @@ class DragonAPI {
         return Format
     }
 
-    fun createGuiItem(material: Material?, name: String?, vararg lore: String?): ItemStack? {
+    fun createGuiItem(material: Material?, name: String?, vararg lore: String?): ItemStack {
         val item = ItemStack(material!!, 1)
         val meta = item.itemMeta
 
@@ -36,7 +34,7 @@ class DragonAPI {
         return item
     }
 
-    fun createGuiItemCustom(material: Material?, name: String?, vararg lore: String?): ItemStack? {
+    fun createGuiItemCustom(material: Material?, name: String?, vararg lore: String?): ItemStack {
         val item = ItemStack(material!!, 1)
         val meta = item.itemMeta
 

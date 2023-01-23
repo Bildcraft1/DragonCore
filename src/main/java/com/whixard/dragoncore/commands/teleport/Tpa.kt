@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object Tpa: CommandExecutor {
+object Tpa : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("Sender is not a player")
@@ -16,7 +16,7 @@ object Tpa: CommandExecutor {
             val potentialPlayer = args[0]
             val targetPlayer = Bukkit.getServer().getPlayer(potentialPlayer)
             if (targetPlayer != null) {
-                return if (targetPlayer.world.name == sender.world.name){
+                return if (targetPlayer.world.name == sender.world.name) {
                     TODO("Need to work on a Accept/Denying System")
                     true
                 } else {

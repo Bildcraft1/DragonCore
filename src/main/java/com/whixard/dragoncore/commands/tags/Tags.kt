@@ -3,7 +3,6 @@ package com.whixard.dragoncore.commands.tags
 import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.api.DragonDatabase
 import com.whixard.dragoncore.format.Format.color
-import me.clip.placeholderapi.PlaceholderAPI
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.Command
@@ -14,13 +13,14 @@ import org.bukkit.inventory.Inventory
 import java.sql.Connection
 import java.sql.PreparedStatement
 
-object Tags: CommandExecutor {
+object Tags : CommandExecutor {
     // Load from database the tags of the player and load them inside the map
     val tags = mutableMapOf<Player, String>()
 
     private const val sql = "SELECT tags FROM dragoncore WHERE uuid = ?"
     private val conn: Connection = DragonDatabase().getConnection()
     private var statement: PreparedStatement? = conn.prepareStatement(sql)
+
     // Load the tags of the player
     fun loadTags(player: Player) {
         statement?.setString(1, player.uniqueId.toString())
@@ -60,7 +60,7 @@ object Tags: CommandExecutor {
         loadTags(sender)
 
         if (args.size == 1) {
-            if(args[0] == "clear") {
+            if (args[0] == "clear") {
                 tags[sender] = "None"
                 resetTags(sender)
                 sender.sendMessage(color("&aTags cleared!"))
@@ -68,11 +68,11 @@ object Tags: CommandExecutor {
             }
         }
 
-        if(args.size == 2) {
-            if(args[0] == "remove") {
-                if(sender.hasPermission("dragoncore.tags.remove")) {
+        if (args.size == 2) {
+            if (args[0] == "remove") {
+                if (sender.hasPermission("dragoncore.tags.remove")) {
                     val target = Bukkit.getPlayer(args[1])
-                    if(target == null) {
+                    if (target == null) {
                         sender.sendMessage(color("&cPlayer not found"))
                         return true
                     }
@@ -111,9 +111,14 @@ object Tags: CommandExecutor {
                     itemStack.itemMeta = itemMeta
                 }
                 if (sender.hasPermission("dragoncore.tags.${DragonAPI().getConfig().getString("tags.$item.name")}")) {
-                    inv!!.addItem(DragonAPI().createGuiItem(DragonAPI().getConfig().getString("tags.$item.item")?.let { Material.getMaterial(it) }, color(DragonAPI().getConfig().getString("tags.$item.name")),
+                    inv!!.addItem(
+                        DragonAPI().createGuiItem(
+                            DragonAPI().getConfig().getString("tags.$item.item")?.let { Material.getMaterial(it) },
+                            color(DragonAPI().getConfig().getString("tags.$item.name")),
                             "Preview of the tag: " + color(DragonAPI().getConfig().getString("tags.$item.tag")),
-                            if (tags[sender] == item) "§aCurrently Equipped" else "§cNot Equipped"))
+                            if (tags[sender] == item) "§aCurrently Equipped" else "§cNot Equipped"
+                        )
+                    )
                     blockInt++
                 }
             }

@@ -8,7 +8,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object ChatSettings: CommandExecutor {
+object ChatSettings : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage("Sender is not a player")
@@ -16,7 +16,11 @@ object ChatSettings: CommandExecutor {
         }
         if (sender.hasPermission("dragoncore.staff")) {
             if (args.isEmpty()) {
-                sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}","/chatfilter list" )))
+                sender.sendMessage(
+                    color(
+                        DragonAPI().getLangFile().getString("messages.usage")?.replace("{usage}", "/chatfilter list")
+                    )
+                )
                 return true
             }
 

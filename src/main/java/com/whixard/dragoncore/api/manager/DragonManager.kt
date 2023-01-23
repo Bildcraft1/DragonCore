@@ -2,8 +2,6 @@
 
 package com.whixard.dragoncore.api.manager
 
-import com.whixard.dragoncore.Main
-
 class DragonManager(var main: com.whixard.dragoncore.Main) {
     private var plugin: com.whixard.dragoncore.Main? = null
 

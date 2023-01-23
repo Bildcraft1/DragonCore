@@ -11,8 +11,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent
 import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
-class ScreenShareEvent: Listener {
+class ScreenShareEvent : Listener {
     private var prefixes = arrayOf("/ss", "/screenshare", "/controllo")
+
     @EventHandler
     fun onCommand(e: PlayerCommandPreprocessEvent) {
         val player = e.player
@@ -30,7 +31,10 @@ class ScreenShareEvent: Listener {
         if (screenShareMap.contains(player)) {
             screenShareMap.remove(player)
             screenShareMap[player]?.performCommand("ban ${player.name} 30d Leaving during screenshare")
-            Bukkit.broadcast(defaultrgb("${player.name} has been banned for leaving during SS"), "dragoncore.screenshare")
+            Bukkit.broadcast(
+                defaultrgb("${player.name} has been banned for leaving during SS"),
+                "dragoncore.screenshare"
+            )
         }
     }
 

@@ -6,8 +6,6 @@ import com.whixard.dragoncore.commands.tags.Tags
 import com.whixard.dragoncore.commands.tags.Tags.tags
 import com.whixard.dragoncore.format.Format.color
 import org.bukkit.Material
-import org.bukkit.Material.DIAMOND_SWORD
-import org.bukkit.Material.NETHERITE_INGOT
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -17,7 +15,7 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 
 
-class TagsMenu: Listener {
+class TagsMenu : Listener {
 
     fun updateTags(player: Player) {
         val sql = "UPDATE dragoncore SET tags = ? WHERE name = ?"

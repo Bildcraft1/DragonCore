@@ -1,6 +1,5 @@
 package com.whixard.dragoncore.api
 
-import com.whixard.dragoncore.Main
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
@@ -64,7 +63,16 @@ class ReportAPI {
         val result = statement?.executeQuery("SELECT * FROM `dragoncore_reports`;")
         val reports = mutableListOf<Report>()
         while (result?.next()!!) {
-            reports.add(Report(result.getString("uuid"), result.getString("name"), result.getString("reason"), result.getString("reporter"), result.getInt("id"), result.getBoolean("status")))
+            reports.add(
+                Report(
+                    result.getString("uuid"),
+                    result.getString("name"),
+                    result.getString("reason"),
+                    result.getString("reporter"),
+                    result.getInt("id"),
+                    result.getBoolean("status")
+                )
+            )
         }
         db.closeConnection()
         return reports
@@ -76,7 +84,14 @@ class ReportAPI {
         val statement = db.conn?.createStatement()
         val result = statement?.executeQuery("SELECT * FROM `dragoncore_reports` WHERE id = '$id';")
         while (result?.next()!!) {
-            return Report(result.getString("uuid"), result.getString("name"), result.getString("reason"), result.getString("reporter"), result.getInt("id"), result.getBoolean("status"))
+            return Report(
+                result.getString("uuid"),
+                result.getString("name"),
+                result.getString("reason"),
+                result.getString("reporter"),
+                result.getInt("id"),
+                result.getBoolean("status")
+            )
         }
         db.closeConnection()
         return Report("null", "null", "null", "null", 0, false)
@@ -86,14 +101,15 @@ class ReportAPI {
         val httpclient: CloseableHttpClient = HttpClients.createDefault()
         val httpPost = HttpPost(DragonAPI().getConfig().getString("discord.webhook"))
 
-        val json = com.whixard.dragoncore.Main.instance.getResource("DiscordRequest.json")?.bufferedReader().use { it!!.readText() }
+        val json = com.whixard.dragoncore.Main.instance.getResource("DiscordRequest.json")?.bufferedReader()
+            .use { it!!.readText() }
             .replace("%player%", player.name)
             .replace("%reason%", reason)
             .replace("%reporter%", reporter.name)
         val entity = StringEntity(json)
         httpPost.entity = entity
-        httpPost.setHeader("Accept", "application/json");
-        httpPost.setHeader("Content-type", "application/json");
+        httpPost.setHeader("Accept", "application/json")
+        httpPost.setHeader("Content-type", "application/json")
 
         val response: CloseableHttpResponse = httpclient.execute(httpPost)
         assert(response.statusLine.statusCode == 204)
