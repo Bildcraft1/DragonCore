@@ -47,7 +47,6 @@ class Main : JavaPlugin() {
         if (!dataFolder.resolve("messages.yml").exists()) {
             saveResource("messages.yml", false)
         }
-        saveResource("messages.yml", false)
         config.options().parseComments(true)
         config.options().copyDefaults(true)
     }
@@ -113,11 +112,14 @@ class Main : JavaPlugin() {
         getCommand("controllo")?.setExecutor(ScreenShare)
         getCommand("freeze")?.setExecutor(Freeze)
         getCommand("chatfilter")?.setExecutor(ChatSettings)
-        getCommand("freeze")?.tabCompleter = TabHelper()
-        getCommand("tags")?.tabCompleter = TabHelper()
         getCommand("tags")?.setExecutor(Tags)
         getCommand("reload")?.setExecutor(ReloadConfig)
         getCommand("report")?.setExecutor(ReportCommand)
+    }
+
+    private fun tabCompleters() {
+        getCommand("freeze")?.tabCompleter = TabHelper()
+        getCommand("tags")?.tabCompleter = TabHelper()
     }
 
     private fun asciiArt() {
@@ -147,6 +149,7 @@ class Main : JavaPlugin() {
         }
         instance()
         commands()
+        tabCompleters()
         events()
         database()
     }
