@@ -9,10 +9,7 @@ import com.whixard.dragoncore.commands.otherplugins.BloodMoonStatus
 import com.whixard.dragoncore.commands.playercommands.Fly
 import com.whixard.dragoncore.commands.playercommands.Heal
 import com.whixard.dragoncore.commands.report.ReportCommand
-import com.whixard.dragoncore.commands.staffutils.ScreenShare
-import com.whixard.dragoncore.commands.staffutils.Staff
-import com.whixard.dragoncore.commands.staffutils.StaffList
-import com.whixard.dragoncore.commands.staffutils.StaffMode
+import com.whixard.dragoncore.commands.staffutils.*
 import com.whixard.dragoncore.commands.tags.Tags
 import com.whixard.dragoncore.commands.teleport.Tp
 import com.whixard.dragoncore.commands.testcommands.Freeze
@@ -115,6 +112,7 @@ class Main : JavaPlugin() {
         getCommand("tags")?.setExecutor(Tags)
         getCommand("reload")?.setExecutor(ReloadConfig)
         getCommand("report")?.setExecutor(ReportCommand)
+        getCommand("randomtp")?.setExecutor(RandomTp)
     }
 
     private fun tabCompleters() {

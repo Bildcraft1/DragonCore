@@ -78,3 +78,7 @@ commands:
     description: "Report"
     usage: /report <player> <reason>
     permission: dragoncore.report
+  randomtp:
+    description: "Random Teleport"
+    usage: /randomtp
+    permission: dragoncore.randomtp

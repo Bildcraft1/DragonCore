@@ -7,8 +7,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
-group = 'fur.kiyoshi'
-version = '1.0.5'
+group = 'com.whixard'
+version = '1.1.0'
 
 
 repositories {
@@ -27,6 +27,7 @@ repositories {
     maven {
         url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
     /*
     As Spigot-API depends on the BungeeCord ChatComponent-API,
     we need to add the Sonatype OSS repository, as Gradle,
