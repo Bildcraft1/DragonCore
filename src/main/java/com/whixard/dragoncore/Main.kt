@@ -64,22 +64,36 @@ class Main : JavaPlugin() {
     }
 
     private fun events() {
-        this.registerEvent(NBTBlock(), "NBTBlock", this)
+         // this.registerEvent(NBTBlock(), "NBTBlock", this)
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
         this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
         this.registerEvent(DeathMessage(), "DeathMessage", this)
+
         if (DragonAPI().getConfig().getBoolean("functions.chat_filter")) {
-            logger.log(Level.INFO, "[DragonCore] " + "ChatFilter is enabled")
+            logger.log(Level.INFO, "ChatFilter is enabled")
             this.registerEvent(ChatFilter(), "ChatSettings", this)
             this.registerEvent(AntiPluginsDumper(), "AntiPluginsDumper", this)
         }
+
         if (DragonAPI().getConfig().getBoolean("functions.tag_system")) {
-            logger.log(Level.INFO, "[DragonCore] " + "TagSystem is enabled")
+            logger.log(Level.INFO, "TagSystem is enabled")
             this.registerEvent(TagsMenu(), "TagsMenu", this)
         }
         TopLeaderboard().runTaskTimer(this, 0, 12000)
-        DragonStatistics().runTaskTimer(this, 0, 12000)
-        CheckLands().runTaskTimer(this, 0, 12000)
+
+        if (DragonAPI().getConfig().getBoolean("statistics_api.enabled")) {
+            DragonStatistics().runTaskTimer(this, 0, 12000)
+            logger.log(Level.INFO, "Statistics are enabled with url: ${DragonAPI().getConfig().getString("statistics_api.url")}")
+        } else {
+            logger.log(Level.INFO, "Statistics are disabled.")
+        }
+
+        if(Bukkit.getPluginManager().isPluginEnabled("Lands")) {
+            logger.log(Level.INFO, "Enabling scoreboard checking for Lands plugin")
+            CheckLands().runTaskTimer(this, 0, 12000)
+        } else {
+            logger.log(Level.INFO, "Lands not found, disabling tab checker.")
+        }
     }
 
     private fun commands() {
@@ -107,14 +121,12 @@ class Main : JavaPlugin() {
     }
 
     private fun asciiArt() {
-        logger.log(Level.INFO, "\n")
         logger.log(Level.INFO, "      ____                               ______")
         logger.log(Level.INFO, "     / __ \\_________ _____ _____  ____  / ____/___  ________")
         logger.log(Level.INFO, "    / / / / ___/ __ `/ __ `/ __ \\/ __ \\/ /   / __ \\/ ___/ _ \\")
         logger.log(Level.INFO, "   / /_/ / /  / /_/ / /_/ / /_/ / / / / /___/ /_/ / /  /  __/")
         logger.log(Level.INFO, "  /_____/_/   \\__,_/\\__, /\\____/_/ /_/\\____/\\____/_/   \\___/")
         logger.log(Level.INFO, "                   /____/")
-        logger.log(Level.INFO, "\n")
     }
 
     fun database() {

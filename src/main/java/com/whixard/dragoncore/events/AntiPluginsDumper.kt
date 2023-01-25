@@ -23,14 +23,13 @@ class AntiPluginsDumper : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onPluginsDumper(e: PlayerCommandPreprocessEvent) {
         if (DragonAPI().getConfig().getBoolean("functions.anti-exploit")) {
-            val message = e.message.lowercase(Locale.getDefault())
+            val message = e.message.lowercase()
             val player = e.player
             if (blacklist(message) && !player.hasPermission("dragoncore.staff")) {
                 player.server.broadcast(
-                    prefix + color("&c" + player.name + " has been kicked for using a plugins dumper!"),
+                    prefix + color("&c" + player.name + " has been flagged for using a plugins dumper!"),
                     "dragoncore.notify"
                 )
-                player.kickPlayer(color("&cYou have been kicked for using a plugins dumper!"))
                 e.isCancelled = true
                 e.player.sendMessage(prefix + color("&cPlugins dumpers are disabled!"))
             }
@@ -40,11 +39,11 @@ class AntiPluginsDumper : Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     fun onTabComplete(e: TabCompleteEvent) {
         if (DragonAPI().getConfig().getBoolean("functions.anti-exploit")) {
-            val message = e.buffer.lowercase(Locale.getDefault())
+            val message = e.buffer.lowercase()
             val player = e.sender
             if (blacklist(message) && !player.hasPermission("dragoncore.staff")) {
                 player.server.broadcast(
-                    prefix + color("&c" + player.name + " has been kicked for using a plugins dumper!"),
+                    prefix + color("&c" + player.name + " has been flagged for using a plugins dumper!"),
                     "dragoncore.notify"
                 )
                 e.isCancelled = true
