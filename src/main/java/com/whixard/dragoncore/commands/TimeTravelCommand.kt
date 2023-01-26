@@ -7,25 +7,28 @@ import org.bukkit.boss.BossBar
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 
 object TimeTravelCommand: CommandExecutor {
-    var bossbar: BossBar? = null;
-    var pre_bossbar: BossBar? = null;
+    var bossbar: BossBar? = null
+    var pre_bossbar: BossBar? = null
 
     private var items: MutableMap<String, ItemStack> = HashMap<String, ItemStack>()
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-        items["sword"] = ItemStack(Material.DIAMOND_SWORD)
-        items["sword"]!!.addEnchantment(Enchantment.DAMAGE_ALL, 5)
-        items["sword"]!!.itemMeta = items["sword"]!!.itemMeta?.apply {
+        items["diamond"] = ItemStack(Material.DIAMOND)
+        items["diamond"]!!.itemMeta = items["diamond"]!!.itemMeta?.apply {
             lore = listOf("Time Traveler")
         }
 
-        items["helmet"] = ItemStack(Material.DIAMOND_HELMET)
-        items["helmet"]!!.itemMeta = items["helmet"]!!.itemMeta?.apply {
+        items["gold"] = ItemStack(Material.GOLD_INGOT)
+        items["gold"]!!.itemMeta = items["gold"]!!.itemMeta?.apply {
+            lore = listOf("Time Traveler")
+        }
+
+        items["iron"] = ItemStack(Material.IRON_INGOT)
+        items["iron"]!!.itemMeta = items["iron"]!!.itemMeta?.apply {
             lore = listOf("Time Traveler")
         }
 
@@ -33,7 +36,7 @@ object TimeTravelCommand: CommandExecutor {
             if (args[0] == "start") {
                 if (pre_bossbar == null) {
                     for (player in sender.server.onlinePlayers) {
-                        player.playSound(player.location, Sound.BLOCK_PORTAL_TRAVEL,100F, 1F);
+                        player.playSound(player.location, Sound.BLOCK_PORTAL_TRAVEL,100F, 1F)
                     }
                     pre_bossbar = sender.server.createBossBar("Time Travel Event", org.bukkit.boss.BarColor.PURPLE, org.bukkit.boss.BarStyle.SOLID)
                     pre_bossbar!!.isVisible = true

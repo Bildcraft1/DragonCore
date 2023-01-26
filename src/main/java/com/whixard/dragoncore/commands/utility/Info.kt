@@ -24,7 +24,7 @@ object Info : CommandExecutor {
         )
         sender.sendMessage(color("&7DragonCore is a plugin that adds a bunch of useful commands and features to your server."))
         sender.sendMessage(color("&7DragonCore is licensed under the &bGNU General Public License v3.0&7."))
-        sender.sendMessage(color("&7DragonCore is open source and can be found at &bhttps://github.com/MyNameIsKiyoshi/DragonCore&7."))
+        sender.sendMessage(color("&7DragonCore is open source and can be found at &bhttps://github.com/Bildcraft1/DragonCore&7."))
         return true
     }
 }
