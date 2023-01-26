@@ -4,6 +4,7 @@ import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.api.DragonCoreExpansion
 import com.whixard.dragoncore.api.DragonDatabase
 import com.whixard.dragoncore.api.manager.DragonManager
+import com.whixard.dragoncore.commands.TimeTravelCommand
 import com.whixard.dragoncore.commands.chatfilter.ChatSettings
 import com.whixard.dragoncore.commands.otherplugins.BloodMoonStatus
 import com.whixard.dragoncore.commands.playercommands.Fly
@@ -115,6 +116,7 @@ class Main : JavaPlugin() {
         getCommand("reload")?.setExecutor(ReloadConfig)
         getCommand("report")?.setExecutor(ReportCommand)
         getCommand("randomtp")?.setExecutor(RandomTp)
+        getCommand("timetravel")?.setExecutor(TimeTravelCommand)
     }
 
     private fun tabCompleters() {

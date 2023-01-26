@@ -82,3 +82,7 @@ commands:
     description: "Random Teleport"
     usage: /randomtp
     permission: dragoncore.randomtp
+  timetravel:
+    description: "Time Travel"
+    usage: /timetravel <seconds>
+    permission: dragoncore.timetravel
