@@ -116,7 +116,16 @@ class Main : JavaPlugin() {
         getCommand("reload")?.setExecutor(ReloadConfig)
         getCommand("report")?.setExecutor(ReportCommand)
         getCommand("randomtp")?.setExecutor(RandomTp)
-        getCommand("timetravel")?.setExecutor(TimeTravelCommand)
+    }
+
+    private fun betaFeatures() {
+        if (DragonAPI().getConfig().getBoolean("beta_features")) {
+            logger.log(Level.INFO, "Beta features are enabled")
+            getCommand("timetravel")?.setExecutor(TimeTravelCommand)
+            this.registerEvent(BetaEvents(), "HelloPlayer", this)
+        } else {
+            logger.log(Level.INFO, "Beta features are disabled")
+        }
     }
 
     private fun tabCompleters() {
@@ -151,6 +160,7 @@ class Main : JavaPlugin() {
         }
         instance()
         commands()
+        betaFeatures()
         tabCompleters()
         events()
         database()

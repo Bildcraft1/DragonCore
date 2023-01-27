@@ -18,17 +18,26 @@ object TimeTravelCommand: CommandExecutor {
     private var items: MutableMap<String, ItemStack> = HashMap<String, ItemStack>()
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         items["diamond"] = ItemStack(Material.DIAMOND)
+        items["diamond"]!!.amount = 3
         items["diamond"]!!.itemMeta = items["diamond"]!!.itemMeta?.apply {
             lore = listOf("Time Traveler")
         }
 
         items["gold"] = ItemStack(Material.GOLD_INGOT)
+        items["gold"]!!.amount = 10
         items["gold"]!!.itemMeta = items["gold"]!!.itemMeta?.apply {
             lore = listOf("Time Traveler")
         }
 
         items["iron"] = ItemStack(Material.IRON_INGOT)
+        items["iron"]!!.amount = 20
         items["iron"]!!.itemMeta = items["iron"]!!.itemMeta?.apply {
+            lore = listOf("Time Traveler")
+        }
+
+        items["ancient"] = ItemStack(Material.ANCIENT_DEBRIS)
+        items["ancient"]!!.amount = 1
+        items["ancient"]!!.itemMeta = items["ancient"]!!.itemMeta?.apply {
             lore = listOf("Time Traveler")
         }
 
@@ -39,13 +48,15 @@ object TimeTravelCommand: CommandExecutor {
                         player.playSound(player.location, Sound.BLOCK_PORTAL_TRAVEL,100F, 1F)
                     }
                     pre_bossbar = sender.server.createBossBar("Time Travel Event", org.bukkit.boss.BarColor.PURPLE, org.bukkit.boss.BarStyle.SOLID)
+                    pre_bossbar!!.addFlag(org.bukkit.boss.BarFlag.CREATE_FOG)
+                    pre_bossbar!!.addFlag(org.bukkit.boss.BarFlag.DARKEN_SKY)
                     pre_bossbar!!.isVisible = true
                     pre_bossbar!!.progress = 1.0
                     for (player in sender.server.onlinePlayers) {
                         pre_bossbar!!.addPlayer(player)
                     }
-                    sender.sendMessage("Time Travel Event starting in 10 seconds")
-                    preStartTimer()
+                    sender.server.broadcastMessage("Time Travel Event starting in 10 seconds")
+                    preStartTimer(args[1].toInt())
                 }
 
 
@@ -55,7 +66,7 @@ object TimeTravelCommand: CommandExecutor {
     }
 
 
-    private fun preStartTimer() {
+    private fun preStartTimer(timer: Int) {
         object : BukkitRunnable() {
             override fun run() {
                 if (pre_bossbar != null) {
@@ -66,14 +77,14 @@ object TimeTravelCommand: CommandExecutor {
                         pre_bossbar!!.removeAll()
                         pre_bossbar = null
                         cancel()
-                        startTimer()
+                        startTimer(timer)
                     }
                 }
             }
         }.runTaskTimer(Main.instance, 0, 20)
     }
 
-    private fun startTimer() {
+    private fun startTimer(timer: Int) {
         bossbar = Main.instance.server.createBossBar("Time Travel Event", org.bukkit.boss.BarColor.PURPLE, org.bukkit.boss.BarStyle.SOLID)
         bossbar!!.isVisible = true
         bossbar!!.progress = 1.0

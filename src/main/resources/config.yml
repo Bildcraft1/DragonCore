@@ -7,6 +7,8 @@
 # https://patorjk.com/software/taag/#p=display&c=bash&f=Slant&t=DragonCore%0A
 # DragonCore - 1.1.0 By 0x7E6 (wisard) - https://discord.dragoncraft.it
 
+beta_features: false
+
 database:
   # Database type (MySQL or SQLite)
   type: MariaDB
