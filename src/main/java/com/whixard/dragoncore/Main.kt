@@ -8,6 +8,7 @@ import com.whixard.dragoncore.commands.TimeTravelCommand
 import com.whixard.dragoncore.commands.chatfilter.ChatSettings
 import com.whixard.dragoncore.commands.otherplugins.BloodMoonStatus
 import com.whixard.dragoncore.commands.playercommands.Fly
+import com.whixard.dragoncore.commands.playercommands.Friends
 import com.whixard.dragoncore.commands.playercommands.Heal
 import com.whixard.dragoncore.commands.report.ReportCommand
 import com.whixard.dragoncore.commands.staffutils.*
@@ -116,6 +117,7 @@ class Main : JavaPlugin() {
         getCommand("reload")?.setExecutor(ReloadConfig)
         getCommand("report")?.setExecutor(ReportCommand)
         getCommand("randomtp")?.setExecutor(RandomTp)
+        getCommand("friends")?.setExecutor(Friends)
     }
 
     private fun betaFeatures() {

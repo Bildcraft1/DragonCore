@@ -86,3 +86,7 @@ commands:
     description: "Time Travel"
     usage: /timetravel <seconds>
     permission: dragoncore.timetravel
+  friends:
+    description: "Friends"
+    usage: /friends
+    permission: dragoncore.friends

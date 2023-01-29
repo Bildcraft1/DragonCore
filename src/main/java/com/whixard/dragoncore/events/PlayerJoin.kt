@@ -25,6 +25,27 @@ class PlayerJoin : Listener {
         return result!!.next()
     }
 
+    fun registerNewUser(user: UUID, name: String) {
+        // If the user is not in the database, add him
+        val sql = "INSERT INTO dragoncore (uuid, name, tags) VALUES (?, ?, ?)"
+        val conn: Connection = DragonDatabase().getConnection()
+        var statement: PreparedStatement? = conn.prepareStatement(sql)
+        statement?.setString(1, user.toString())
+        statement?.setString(2, name)
+        statement?.setString(3, "None")
+        statement?.executeUpdate()
+        getLogger().log(Level.INFO, "Added ${name} to the database")
+
+        // Add the player to the friends database
+        val sql2 = "INSERT INTO dragoncore_friends (uuid, friends) VALUES (?, ?)"
+        val conn2: Connection = DragonDatabase().getConnection()
+        var statement2: PreparedStatement? = conn2.prepareStatement(sql2)
+        statement2?.setString(1, user.toString())
+        statement2?.setString(2, "None")
+        statement2?.executeUpdate()
+        getLogger().log(Level.INFO, "Added ${name} to the friends database")
+    }
+
     private var hash: ByteArray? = HexFormat.of().parseHex(DragonAPI().getConfig().getString("resourcePack.hash"))
     private var url = DragonAPI().getConfig().getString("resourcePack.url").toString()
     private var force = DragonAPI().getConfig().getBoolean("resourcePack.forced")
@@ -37,15 +58,7 @@ class PlayerJoin : Listener {
         if (checkUser(eventHandler.player.uniqueId) == true) {
             getLogger().log(Level.INFO, "[DragonCore] Loading user data for ${eventHandler.player.name}")
         } else {
-            // If the user is not in the database, add him
-            val sql = "INSERT INTO dragoncore (uuid, name, tags) VALUES (?, ?, ?)"
-            val conn: Connection = DragonDatabase().getConnection()
-            var statement: PreparedStatement? = conn.prepareStatement(sql)
-            statement?.setString(1, eventHandler.player.uniqueId.toString())
-            statement?.setString(2, eventHandler.player.name)
-            statement?.setString(3, "None")
-            statement?.executeUpdate()
-            getLogger().log(Level.INFO, "Added ${eventHandler.player.name} to the database")
+            registerNewUser(eventHandler.player.uniqueId, eventHandler.player.name)
         }
 
         Tags.loadTags(eventHandler.player)
