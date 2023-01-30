@@ -15,7 +15,7 @@ class BetaEvents: Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         for (p in event.player.server.onlinePlayers) {
-            if (p.hasPermission("dragoncore.hello")) {
+            if (p.hasPermission("dragoncore.hello") && p != event.player) {
                 val component = TextComponent(
                     ChatColor.translateAlternateColorCodes(
                         '&',
