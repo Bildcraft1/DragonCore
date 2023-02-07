@@ -5,6 +5,7 @@ import com.whixard.dragoncore.api.DragonCoreExpansion
 import com.whixard.dragoncore.api.DragonDatabase
 import com.whixard.dragoncore.api.manager.DragonManager
 import com.whixard.dragoncore.commands.TimeTravelCommand
+import com.whixard.dragoncore.commands.TimeTravelTabCompleter
 import com.whixard.dragoncore.commands.chatfilter.ChatSettings
 import com.whixard.dragoncore.commands.otherplugins.BloodMoonStatus
 import com.whixard.dragoncore.commands.playercommands.Fly
@@ -124,6 +125,7 @@ class Main : JavaPlugin() {
         if (DragonAPI().getConfig().getBoolean("beta_features")) {
             logger.log(Level.INFO, "Beta features are enabled")
             getCommand("timetravel")?.setExecutor(TimeTravelCommand)
+            getCommand("timetravel")?.tabCompleter = TimeTravelTabCompleter
             this.registerEvent(BetaEvents(), "HelloPlayer", this)
         } else {
             logger.log(Level.INFO, "Beta features are disabled")
