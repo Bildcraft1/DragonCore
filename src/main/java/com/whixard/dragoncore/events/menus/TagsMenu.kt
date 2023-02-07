@@ -17,7 +17,7 @@ import java.sql.PreparedStatement
 
 class TagsMenu : Listener {
 
-    fun updateTags(player: Player) {
+    private fun updateTags(player: Player) {
         val sql = "UPDATE dragoncore SET tags = ? WHERE name = ?"
         val conn: Connection = DragonDatabase().getConnection()
         val statement: PreparedStatement? = conn.prepareStatement(sql)

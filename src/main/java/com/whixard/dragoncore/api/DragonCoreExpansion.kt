@@ -64,7 +64,7 @@ class DragonCoreExpansion : PlaceholderExpansion() {
      * @return name of the author for this expansion
      */
     override fun getAuthor(): String {
-        return "MyNameIsKiyoshi"
+        return "WhiXard"
     }
 
     /**

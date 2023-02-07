@@ -49,3 +49,5 @@ discord:
 statistics_api:
   enabled: false
   url: ""
+
+salutiplayers: ["Ciao {player_name}!", "Come va {player_name}?"]

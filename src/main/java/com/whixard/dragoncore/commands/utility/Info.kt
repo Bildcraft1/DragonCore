@@ -16,7 +16,7 @@ object Info : CommandExecutor {
         }
         sender.sendMessage(
             color(
-                "&7This server is running &bDragonCore &7version &b{version}&7 by &bMyNameIsKiyoshi&7 and &bWhiXard (0x7E6)&7.".replace(
+                "&7This server is running &bDragonCore &7version &b{version}&7 by &bWhiXard (0x7E6)&7.".replace(
                     "{version}",
                     DragonAPI().getPluginVersion()
                 )

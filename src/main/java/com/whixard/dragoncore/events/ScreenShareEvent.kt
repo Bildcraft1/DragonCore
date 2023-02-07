@@ -1,5 +1,6 @@
 package com.whixard.dragoncore.events
 
+import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.commands.staffutils.ScreenShare.screenShareMap
 import com.whixard.dragoncore.format.Format.color
 import com.whixard.dragoncore.format.Format.defaultrgb
@@ -30,9 +31,8 @@ class ScreenShareEvent : Listener {
         val player = e.player
         if (screenShareMap.contains(player)) {
             screenShareMap.remove(player)
-            screenShareMap[player]?.performCommand("ban ${player.name} 30d Leaving during screenshare")
             Bukkit.broadcast(
-                defaultrgb("${player.name} has been banned for leaving during SS"),
+                defaultrgb("${player.name} logged out during screenshare"),
                 "dragoncore.screenshare"
             )
         }
@@ -44,14 +44,14 @@ class ScreenShareEvent : Listener {
         if (screenShareMap.containsKey(player)) {
             e.isCancelled = true
             val recipient = screenShareMap[player]!!
-            player.sendMessage(color("§c${player.name}§7: ${e.message}"))
-            recipient.sendMessage(color("§c${player.name}§7: ${e.message}"))
+            player.sendMessage(color(DragonAPI().getLangFile().getString("screenshare.player_format")?.replace("{player_name}", player.name)?.replace("{player_message}", e.message)))
+            recipient.sendMessage(color(DragonAPI().getLangFile().getString("screenshare.player_format")?.replace("{player_name}", player.name)?.replace("{player_message}", e.message)))
             //manda a staffer
         } else if (screenShareMap.containsValue(player)) {
             e.isCancelled = true
             val recipient = screenShareMap.firstNotNullOf { it.takeIf { it.value == player } }.key
-            player.sendMessage(color("§9${player.name}§7: ${e.message}"))
-            recipient.sendMessage(color("§9${player.name}§7: ${e.message}"))
+            player.sendMessage(color(DragonAPI().getLangFile().getString("screenshare.staffer_format")?.replace("{staffer_name}", player.name)?.replace("{staffer_message}", e.message)))
+            recipient.sendMessage(color(DragonAPI().getLangFile().getString("screenshare.staffer_format")?.replace("{staffer_name}", player.name)?.replace("{staffer_message}", e.message)))
             //manda a player
         }
     }
