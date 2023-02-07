@@ -84,7 +84,6 @@ commands:
     permission: dragoncore.randomtp
   timetravel:
     description: "Time Travel"
-    usage: /timetravel <seconds>
     permission: dragoncore.timetravel
   friends:
     description: "Friends"

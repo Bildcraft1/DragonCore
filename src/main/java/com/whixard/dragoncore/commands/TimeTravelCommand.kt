@@ -1,8 +1,13 @@
 package com.whixard.dragoncore.commands
 
 import com.whixard.dragoncore.Main
+import com.whixard.dragoncore.format.Format
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.Sound
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarFlag
+import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
@@ -42,23 +47,37 @@ object TimeTravelCommand: CommandExecutor {
         }
 
         if (sender.hasPermission("dragoncore.timetravelevent")) {
+
             if (args[0] == "start") {
                 if (pre_bossbar == null) {
-                    for (player in sender.server.onlinePlayers) {
+                    for (player in Main.instance.server.onlinePlayers) {
                         player.playSound(player.location, Sound.BLOCK_PORTAL_TRAVEL,100F, 1F)
                     }
-                    pre_bossbar = sender.server.createBossBar("Time Travel Event", org.bukkit.boss.BarColor.PURPLE, org.bukkit.boss.BarStyle.SOLID)
-                    pre_bossbar!!.addFlag(org.bukkit.boss.BarFlag.CREATE_FOG)
-                    pre_bossbar!!.addFlag(org.bukkit.boss.BarFlag.DARKEN_SKY)
+                    pre_bossbar = Bukkit.createBossBar(Format.color("&f Sta per cominciare &c- &dViaggio del Drago"), BarColor.PURPLE, BarStyle.SOLID)
+                    pre_bossbar!!.addFlag(BarFlag.CREATE_FOG)
+                    pre_bossbar!!.addFlag(BarFlag.DARKEN_SKY)
                     pre_bossbar!!.isVisible = true
                     pre_bossbar!!.progress = 1.0
-                    for (player in sender.server.onlinePlayers) {
+                    for (player in Main.instance.server.onlinePlayers) {
                         pre_bossbar!!.addPlayer(player)
                     }
-                    sender.server.broadcastMessage("Time Travel Event starting in 10 seconds")
-                    preStartTimer(args[1].toInt())
+                    sender.server.broadcastMessage(Format.color("&dEvento viaggio del Drago inizierà tra 10 secondi."))
+                    sender.server.broadcastMessage(Format.color("&7È consigliabile svuotarsi l'inventario!"))
+                    preStartTimer()
                 }
 
+
+            }
+            if (args[0] == "stop") {
+
+                if(bossbar == null){
+
+                    sender.sendMessage(Format.color("&cNon si sta svolgendo nessun viaggio del Drago al momento."))
+                    return true
+
+                }
+
+                bossbar?.progress=0.1
 
             }
         }
@@ -66,7 +85,7 @@ object TimeTravelCommand: CommandExecutor {
     }
 
 
-    private fun preStartTimer(timer: Int) {
+    private fun preStartTimer() {
         object : BukkitRunnable() {
             override fun run() {
                 if (pre_bossbar != null) {
@@ -77,20 +96,20 @@ object TimeTravelCommand: CommandExecutor {
                         pre_bossbar!!.removeAll()
                         pre_bossbar = null
                         cancel()
-                        startTimer(timer)
+                        startTimer()
                     }
                 }
             }
         }.runTaskTimer(Main.instance, 0, 20)
     }
 
-    private fun startTimer(timer: Int) {
-        bossbar = Main.instance.server.createBossBar("Time Travel Event", org.bukkit.boss.BarColor.PURPLE, org.bukkit.boss.BarStyle.SOLID)
+    private fun startTimer() {
+        bossbar = Bukkit.createBossBar(Format.color("&d&lViaggio del Drago"), BarColor.PURPLE, BarStyle.SOLID)
         bossbar!!.isVisible = true
         bossbar!!.progress = 1.0
-        bossbar!!.addFlag(org.bukkit.boss.BarFlag.CREATE_FOG)
-        bossbar!!.addFlag(org.bukkit.boss.BarFlag.DARKEN_SKY)
-        bossbar!!.style = org.bukkit.boss.BarStyle.SEGMENTED_10
+        bossbar!!.addFlag(BarFlag.CREATE_FOG)
+        bossbar!!.addFlag(BarFlag.DARKEN_SKY)
+        bossbar!!.style = BarStyle.SEGMENTED_10
 
         for (player in Main.instance.server.onlinePlayers) {
             bossbar!!.addPlayer(player)
@@ -99,8 +118,8 @@ object TimeTravelCommand: CommandExecutor {
         object : BukkitRunnable() {
             override fun run() {
                 if (bossbar != null) {
-                    if (bossbar!!.progress > 0.1) {
-                        bossbar!!.progress -= 0.1
+                    if (bossbar!!.progress > 0.1) { // CA. 39 CICLI ESATTI ( 0.025 * 40 = 1)
+                        bossbar!!.progress -= 0.025
                     } else {
                         bossbar!!.isVisible = false
                         bossbar!!.removeAll()
@@ -119,7 +138,7 @@ object TimeTravelCommand: CommandExecutor {
     private fun giveItems() {
         for (player in Main.instance.server.onlinePlayers) {
             val world = player.world
-            world.dropItem(player.location.add(0.0, 5.0, 0.0), items.values.random())
+            world.dropItem(player.location.add(0.0, 2.0, 0.0), items.values.random())
             player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 100F, 1F)
         }
     }
