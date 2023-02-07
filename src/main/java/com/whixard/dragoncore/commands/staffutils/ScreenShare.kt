@@ -86,6 +86,7 @@ object ScreenShare : CommandExecutor {
 
             if (screenShareMap.containsValue(sender)) {
                 sender.sendMessage("You cant screenshare more than one people")
+                return true
             }
 
             if (screenShareMap.contains(targetPlayer)) {
@@ -118,6 +119,7 @@ object ScreenShare : CommandExecutor {
             legit.isBold = true
 
             sender.spigot().sendMessage(ban, legit)
+            screenShareMap[targetPlayer] = sender.player!!
 
             sender.sendMessage(color(DragonAPI().getLangFile().getString("messages.divider")!!))
             targetPlayer.sendMessage(
@@ -125,10 +127,14 @@ object ScreenShare : CommandExecutor {
                     DragonAPI().getLangFile().getString("messages.screenshare")!!.replace("{staffer}", sender.name)
                 )
             )
-            screenShareMap[targetPlayer] = sender.player!!
+            targetPlayer.sendTitle(
+                defaultrgb(DragonAPI().getLangFile().getString("screenshare.screenshare_title")!!),
+                defaultrgb(DragonAPI().getLangFile().getString("screenshare.screenshare_subtitle")!!.replace("{staffer}", sender.name)),
+                10,
+                70,
+                20
+            )
 
-            sender.sendMessage(screenShareMap.entries.stream().map { e -> e.key.name + ": " + e.value.name }
-                .collect(Collectors.toList()).joinToString(", ", "[", "]"))
             true
         } else {
             sender.sendMessage(defaultrgb(DragonAPI().getConfig().getString("messages.no-permission")!!))

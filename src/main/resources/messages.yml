@@ -24,3 +24,9 @@ messages:
 tags:
   added: "&aYou have enabled {tag}."
   removed: "&cYou have disabled {tag}."
+
+screenshare:
+  player_format: "§c{player_name}§7: ${player_message}"
+  staffer_format: "§9{staffer_name}§7: ${staffer_message}"
+  screenshare_title: "&cScreenshare"
+  screenshare_subtitle: "&7You are currently screensharing &c{staffer}&7."

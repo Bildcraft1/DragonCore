@@ -13,26 +13,9 @@ import org.bukkit.event.player.PlayerJoinEvent
 
 class BetaEvents: Listener {
     @EventHandler
-    fun onPlayerJoin(event: PlayerJoinEvent) {
-        for (p in event.player.server.onlinePlayers) {
-            if (p.hasPermission("dragoncore.hello") && p != event.player) {
-                val component = TextComponent(
-                    ChatColor.translateAlternateColorCodes(
-                        '&',
-                        "&7&l&oCLICCA QUI&7&o per salutare &6&o" + event.player.name + "&7!"
-                    )
-                )
-                component.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "Ciao " + event.player.name + "!")
-                p.spigot().sendMessage(component)
-            }
-        }
-    }
-
-
-    @EventHandler
     fun onPlayerAdvancement(event: PlayerAdvancementDoneEvent) {
         if (event.advancement.key.key.contains("recipes")) return
-        event.player.sendMessage(hex("#9a00b3DragonAchivements >> ") + color("&7&l" + event.player.name + " ha completato l'impresa &6" + event.advancement.display?.title + "&7!"))
+        event.player.sendMessage(hex("\uD83D\uDC32&5&lDragonAchievments &7● ") + color("&7&l" + event.player.name + " ha completato l'impresa &6" + event.advancement.display?.title + "&7!"))
         event.player.playSound(event.player.location, "minecraft:entity.player.levelup", 1f, 1f)
     }
 }

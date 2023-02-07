@@ -30,7 +30,7 @@ object Tags : CommandExecutor {
         }
     }
 
-    fun resetTags(player: Player) {
+    private fun resetTags(player: Player) {
         val sql = "UPDATE dragoncore SET tags = ? WHERE uuid = ?"
         val conn: Connection = DragonDatabase().getConnection()
         val statement: PreparedStatement? = conn.prepareStatement(sql)
