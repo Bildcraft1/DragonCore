@@ -58,7 +58,7 @@ object TimeTravelCommand: CommandExecutor {
 
             if (args[0] == "start") {
                 if (pre_bossbar == null) {
-                    for (player in Main.instance.server.onlinePlayers) {
+                    for (player in sender.server.onlinePlayers) {
                         player.playSound(player.location, Sound.BLOCK_PORTAL_TRAVEL,100F, 1F)
                     }
                     pre_bossbar = Bukkit.createBossBar(Format.color("&fAvvio... &c- &dViaggio del Drago"), BarColor.PURPLE, BarStyle.SOLID)
@@ -66,7 +66,7 @@ object TimeTravelCommand: CommandExecutor {
                     pre_bossbar!!.addFlag(BarFlag.DARKEN_SKY)
                     pre_bossbar!!.isVisible = true
                     pre_bossbar!!.progress = 1.0
-                    for (player in Main.instance.server.onlinePlayers) {
+                    for (player in sender.server.onlinePlayers) {
                         pre_bossbar!!.addPlayer(player)
                     }
                     sender.server.broadcastMessage(Format.color("&f&lEvento &f- &d&lViaggio del Drago&7 comincierà tra 10 secondi."))
@@ -120,7 +120,7 @@ object TimeTravelCommand: CommandExecutor {
         bossbar!!.addFlag(BarFlag.DARKEN_SKY)
         bossbar!!.style = BarStyle.SEGMENTED_10
 
-        for (player in Main.instance.server.onlinePlayers) {
+        for (player in sender.server.onlinePlayers) {
             bossbar!!.addPlayer(player)
         }
 
@@ -130,7 +130,7 @@ object TimeTravelCommand: CommandExecutor {
                     if (bossbar!!.progress > 0.1) { // CA. 39 CICLI ESATTI ( 0.025 * 40 = 1)
                         bossbar!!.progress -= 0.025
                     } else {
-                        for(player in Main.instance.server.onlinePlayers){
+                        for(player in sender.server.onlinePlayers){
                             player.playSound(player.location,Sound.ENTITY_ENDER_DRAGON_DEATH,0.35f,1f)
                         }
                         bossbar!!.isVisible = false
@@ -149,8 +149,7 @@ object TimeTravelCommand: CommandExecutor {
 
     var conta_give = 0;
     private fun giveItems() {
-        for (player in Main.instance.server.onlinePlayers) {
-
+        for (player in sender.server.onlinePlayers) {
 
             val world = player.world
 
@@ -158,10 +157,7 @@ object TimeTravelCommand: CommandExecutor {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,TextComponent(Format.color("&f&l + &f"+oggetto.amount+"x "+oggetto.itemMeta?.displayName)))
             if(player.inventory.firstEmpty()==-1) world.dropItem(player.location, oggetto)
             else player.inventory.addItem(oggetto)
-
-
-
-
+            
             if(conta_give>3){
 
                 player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_GROWL, 50F, 1F)
