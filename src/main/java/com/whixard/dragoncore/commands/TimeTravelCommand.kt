@@ -86,7 +86,7 @@ object TimeTravelCommand: CommandExecutor {
                 }
 
                 sender.server.broadcastMessage(Format.color("&dEvento viaggio del Drago &cannullato da un'amministratore."))
-                bossbar?.progress=0.1
+                bossbar?.progress=0.025
 
             }
         }
@@ -127,7 +127,7 @@ object TimeTravelCommand: CommandExecutor {
         object : BukkitRunnable() {
             override fun run() {
                 if (bossbar != null) {
-                    if (bossbar!!.progress > 0.1) { // CA. 39 CICLI ESATTI ( 0.025 * 40 = 1)
+                    if (bossbar!!.progress > 0.05) { // CA. 39 CICLI ESATTI ( 0.025 * 40 = 1)
                         bossbar!!.progress -= 0.025
                     } else {
                         for(player in Main.instance.server.onlinePlayers){
