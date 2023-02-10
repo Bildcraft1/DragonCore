@@ -9,9 +9,17 @@ import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+
 import java.util.*
 
 class DragonAPI {
+
+
+    fun addBalance(amount: Double){
+
+
+
+    }
 
     fun getBackEnd(): com.whixard.dragoncore.Main? {
         return DragonManager(com.whixard.dragoncore.Main.instance).getBackEnd()

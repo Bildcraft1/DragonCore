@@ -22,6 +22,7 @@ import com.whixard.dragoncore.commands.utility.ReloadConfig
 import com.whixard.dragoncore.commands.utility.Version
 import com.whixard.dragoncore.events.*
 import com.whixard.dragoncore.events.externalplugins.CheckLands
+import com.whixard.dragoncore.events.menus.ParkourManager
 import com.whixard.dragoncore.events.menus.TagsMenu
 import org.bukkit.Bukkit
 import org.bukkit.configuration.file.YamlConfiguration
@@ -67,6 +68,11 @@ class Main : JavaPlugin() {
         this.registerEvent(PlayerJoin(), "PlayerJoin", this)
         this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
         this.registerEvent(DeathMessage(), "DeathMessage", this)
+
+        if(getConfig().contains("parkour_world_name")){
+
+            server.pluginManager.registerEvents(ParkourManager(), this)
+        }
 
         this.registerEvent(NewPlayer(), "NewPlayer", this)
 
