@@ -2,24 +2,26 @@
 
 package com.whixard.dragoncore.api
 
+import com.whixard.dragoncore.Main
 import com.whixard.dragoncore.api.manager.DragonManager
 import com.whixard.dragoncore.events.NBTBlock
 import com.whixard.dragoncore.format.Format
+import jdk.jfr.Percentage
+import me.lucko.spark.api.Spark
+import me.lucko.spark.api.statistic.StatisticWindow
+import me.lucko.spark.api.statistic.types.DoubleStatistic
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-
+import org.bukkit.plugin.RegisteredServiceProvider
 import java.util.*
+import kotlin.math.max
+
 
 class DragonAPI {
 
-
-    fun addBalance(amount: Double){
-
-
-
-    }
 
     fun getBackEnd(): com.whixard.dragoncore.Main? {
         return DragonManager(com.whixard.dragoncore.Main.instance).getBackEnd()
@@ -62,6 +64,15 @@ class DragonAPI {
 
     fun getConfig(): FileConfiguration {
         return com.whixard.dragoncore.Main.instance.config
+    }
+
+    fun getServerTPS() : DoubleStatistic<StatisticWindow.TicksPerSecond>? {
+        return Bukkit.getServicesManager().getRegistration(Spark::class.java)?.provider?.tps()
+    }
+
+
+    fun getServerUsingRamPercentage() : Int { // from 0 to 100
+        return (((Runtime.getRuntime().maxMemory()-Runtime.getRuntime().freeMemory()))/(Runtime.getRuntime().maxMemory())).toInt()
     }
 
     fun getPlugins(): List<String> {
