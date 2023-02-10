@@ -21,10 +21,17 @@ import com.whixard.dragoncore.commands.utility.Info
 import com.whixard.dragoncore.commands.utility.ReloadConfig
 import com.whixard.dragoncore.commands.utility.Version
 import com.whixard.dragoncore.events.*
+import com.whixard.dragoncore.events.ResourcesMonitoring.RM_Events
+import com.whixard.dragoncore.events.ResourcesMonitoring.RM_Generic
 import com.whixard.dragoncore.events.externalplugins.CheckLands
 import com.whixard.dragoncore.events.menus.ParkourManager
 import com.whixard.dragoncore.events.menus.TagsMenu
+import com.whixard.dragoncore.format.Format
 import org.bukkit.Bukkit
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarFlag
+import org.bukkit.boss.BarStyle
+import org.bukkit.boss.BossBar
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
@@ -37,6 +44,10 @@ class Main : JavaPlugin() {
         @JvmStatic
         lateinit var instance: Main
     }
+
+    public var TPS_Alert_BossBar : BossBar ? = null
+    public var RAM_Alert_BossBar : BossBar ? = null
+    public var is_resources_alert_running : Boolean = false
 
     private var dragonManager: DragonManager? = null
 
@@ -69,9 +80,15 @@ class Main : JavaPlugin() {
         this.registerEvent(ScreenShareEvent(), "ScreenShareEvent", this)
         this.registerEvent(DeathMessage(), "DeathMessage", this)
 
-        if(getConfig().contains("parkour_world_name")){
+        if(config.contains("parkour_world_name")){
 
             server.pluginManager.registerEvents(ParkourManager(), this)
+        }
+
+        if(config.contains("alerts.tps-when-under") && config.contains("alerts.ram-when-over")){
+
+            server.pluginManager.registerEvents(RM_Events(), this)
+
         }
 
         this.registerEvent(NewPlayer(), "NewPlayer", this)
@@ -87,6 +104,18 @@ class Main : JavaPlugin() {
             this.registerEvent(TagsMenu(), "TagsMenu", this)
         }
         TopLeaderboard().runTaskTimer(this, 0, 12000)
+
+        if(config.contains("alerts.tps-when-under") && config.contains("alerts.ram-when-over")){
+
+            RM_Generic().runTaskTimerAsynchronously(this,0,600)
+            //RAM_Alert_BossBar = Bukkit.createBossBar(Format.color("&fRAM USAGE: &c?%"), BarColor.RED, BarStyle.SOLID, BarFlag.DARKEN_SKY)
+            TPS_Alert_BossBar = Bukkit.createBossBar(Format.color("&fTPS: &c?"),BarColor.RED,BarStyle.SOLID,BarFlag.DARKEN_SKY)
+            //RAM_Alert_BossBar!!.isVisible = false
+            TPS_Alert_BossBar!!.isVisible = false
+
+        }else{
+            server.logger.warning("Alerts are disabled, to enable them insert the correct values in the config.yml")
+        }
 
         if (DragonAPI().getConfig().getBoolean("statistics_api.enabled")) {
             DragonStatistics().runTaskTimer(this, 0, 12000)

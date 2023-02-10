@@ -40,6 +40,8 @@ repositories {
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     maven { url = 'https://oss.sonatype.org/content/repositories/central' }
     maven { url = 'https://jitpack.io' }
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+
     mavenLocal()
     mavenCentral() // This is needed for CraftBukkit and Spigot.
 }
@@ -49,6 +51,7 @@ dependencies {
     compileOnly 'org.apache.httpcomponents:httpclient:4.5.14'
     compileOnly "com.github.MilkBowl:VaultAPI:1.7"
     compileOnly 'me.clip:placeholderapi:2.11.2'
+    compileOnly 'me.lucko:spark-api:0.1-SNAPSHOT'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation("com.google.guava:guava:31.1-jre")
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'

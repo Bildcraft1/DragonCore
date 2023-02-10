@@ -51,3 +51,7 @@ statistics_api:
   url: ""
 
 salutiplayers: ["Ciao {player_name}!", "Come va {player_name}?"]
+
+alerts:
+  ram-when-over: 50 #COUNTS THE PERCENTAGE!
+  tps-when-under: 18

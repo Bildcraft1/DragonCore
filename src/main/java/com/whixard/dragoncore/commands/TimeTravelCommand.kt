@@ -71,7 +71,7 @@ object TimeTravelCommand: CommandExecutor {
                     }
                     sender.server.broadcastMessage(Format.color("&f&lEvento &f- &d&lViaggio del Drago&7 comincierà tra 10 secondi."))
                     sender.server.broadcastMessage(Format.color("&4&l!! &7È consigliabile svuotarsi l'inventario!"))
-                    preStartTimer()
+                    preStartTimer(sender)
                 }
 
 
@@ -94,7 +94,7 @@ object TimeTravelCommand: CommandExecutor {
     }
 
 
-    private fun preStartTimer() {
+    private fun preStartTimer(sender: CommandSender) {
         object : BukkitRunnable() {
             override fun run() {
                 if (pre_bossbar != null) {
@@ -105,14 +105,14 @@ object TimeTravelCommand: CommandExecutor {
                         pre_bossbar!!.removeAll()
                         pre_bossbar = null
                         cancel()
-                        startTimer()
+                        startTimer(sender)
                     }
                 }
             }
         }.runTaskTimer(Main.instance, 0, 20)
     }
 
-    private fun startTimer() {
+    private fun startTimer(sender : CommandSender) {
         bossbar = Bukkit.createBossBar(Format.color("&d&lViaggio del Drago"), BarColor.PURPLE, BarStyle.SOLID)
         bossbar!!.isVisible = true
         bossbar!!.progress = 1.0
@@ -141,14 +141,14 @@ object TimeTravelCommand: CommandExecutor {
                 }
                 // Randomly decide if we should give items
                 if (Math.random() < 0.5) {
-                    giveItems()
+                    giveItems(sender)
                 }
             }
         }.runTaskTimer(Main.instance, 0, 20)
     }
 
     var conta_give = 0;
-    private fun giveItems() {
+    private fun giveItems(sender : CommandSender) {
         for (player in sender.server.onlinePlayers) {
 
             val world = player.world
