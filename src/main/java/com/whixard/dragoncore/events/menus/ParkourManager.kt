@@ -1,643 +1,434 @@
-package com.whixard.dragoncore.events.menus;
-import com.whixard.dragoncore.Main;
-import com.whixard.dragoncore.format.Format;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.*;
-import org.bukkit.block.Block;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarFlag;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
-import org.bukkit.event.player.*;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+package com.whixard.dragoncore.events.menus
 
+import com.whixard.dragoncore.Main
+import com.whixard.dragoncore.format.Format.color
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.TextComponent
+import org.bukkit.*
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarFlag
+import org.bukkit.boss.BarStyle
+import org.bukkit.boss.BossBar
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityToggleGlideEvent
+import org.bukkit.event.player.*
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import org.bukkit.scheduler.BukkitRunnable
+import java.time.LocalTime
+import java.util.*
 
-public class ParkourManager implements Listener {
+class ParkourManager : Listener {
+    private val checkpoints = HashMap<Player, Location>()
+    private val goingBackToCheckpoint = HashMap<Player, Boolean>()
+    private val checkpointsCache = HashMap<Player, ArrayList<Location>>()
+    private val winnerPosition = HashMap<Player, Int>()
+    private val getWinner = HashMap<Int, Player>()
+    private var winners = 0
+    private var parkourWorld: World? = null
+    var isParkourEventRunning = false
+    var startingBossbar: BossBar?
+    var parkourBossbar: BossBar
 
-
-    private HashMap<Player,Location> checkpoints = new HashMap<>();
-    private HashMap<Player,Boolean> going_back_to_checkpoint = new HashMap<>();
-    private HashMap<Player, ArrayList<Location>> checkpoints_cache = new HashMap<>();
-    private HashMap<Player,Integer> winner_position = new HashMap<>();
-
-    private HashMap<Integer,Player> get_winner = new HashMap<>();
-
-    private int winners = 0;
-
-    World parkour_world;
-
-    boolean is_parkour_event_running = false;
-
-    public BossBar starting_bossBar;
-
-    public BossBar parkour_bossBar;
-
-    public ParkourManager(){
-
-        if(Main.instance.getConfig().contains("parkour_world_name")) parkour_world = Main.instance.getServer().getWorld(Objects.requireNonNull(Main.instance.getConfig().getString("parkour_world_name")));
-        else Main.instance.getLogger().info("Parkour world name not set up in the config.");
-
-        for(Player p : Main.instance.getServer().getOnlinePlayers()){
-
-            if(p.getLocation().getWorld()==parkour_world && !checkpoints_cache.containsKey(p)){
-
-                checkpoints_cache.put(p,new ArrayList<>());
-
+    init {
+        if (Main.instance.config.contains("parkour_world_name")) parkourWorld = Objects.requireNonNull(
+            Main.instance.config.getString("parkour_world_name")
+        )?.let {
+            Main.instance.server.getWorld(
+                it
+            )
+        } else Main.instance.logger.info("Parkour world name not set up in the config.")
+        for (p in Main.instance.server.onlinePlayers) {
+            if (p.location.world === parkourWorld && !checkpointsCache.containsKey(p)) {
+                checkpointsCache[p] = ArrayList()
             }
-
         }
-
-        starting_bossBar = Bukkit.createBossBar(Format.color("&eEvento a Tempo &7- &d&lParkour &f- &fFai il comando &d/warp parkour&f per andarci!"), BarColor.PINK, BarStyle.SEGMENTED_10, BarFlag.DARKEN_SKY);
-
-        parkour_bossBar = Bukkit.createBossBar(Format.color("&dParkour &f- &7Tempo rimanente"), BarColor.WHITE, BarStyle.SEGMENTED_20,BarFlag.CREATE_FOG);
-
-        parkour_bossBar.setProgress(0);
-        parkour_bossBar.setVisible(true);
-
-        starting_bossBar.setVisible(false);
-
-        AutomaticParkourEventTimer();
-
+        startingBossbar = Bukkit.createBossBar(
+            color("&eEvento a Tempo &7- &d&lParkour &f- &fFai il comando &d/warp parkour&f per andarci!"),
+            BarColor.PINK,
+            BarStyle.SEGMENTED_10,
+            BarFlag.DARKEN_SKY
+        )
+        parkourBossbar = Bukkit.createBossBar(
+            color("&dParkour &f- &7Tempo rimanente"),
+            BarColor.WHITE,
+            BarStyle.SEGMENTED_20,
+            BarFlag.CREATE_FOG
+        )
+        parkourBossbar.progress = 0.0
+        parkourBossbar.isVisible = true
+        startingBossbar!!.isVisible = false
+        AutomaticParkourEventTimer()
     }
 
-    public void AutomaticParkourEventTimer(){
-
-        new BukkitRunnable(){
-
-
-            @Override
-            public void run(){
-
-
-                if((LocalTime.now().getHour()==18 || LocalTime.now().getHour()==22) && !is_parkour_event_running && LocalTime.now().getMinute()<20 ){
-
-                    is_parkour_event_running = true;
-                    new BukkitRunnable(){
-
-
-                        @Override
-                        public void run(){
-
-                            start_parkour_event();
-
+    private fun AutomaticParkourEventTimer() {
+        object : BukkitRunnable() {
+            override fun run() {
+                if ((LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && !isParkourEventRunning && LocalTime.now().minute < 20) {
+                    isParkourEventRunning = true
+                    object : BukkitRunnable() {
+                        override fun run() {
+                            startParkourEvent()
                         }
-
-                    }.runTaskAsynchronously(Main.instance);
-
-
+                    }.runTaskAsynchronously(Main.instance)
                 }
-
-                if(is_parkour_event_running){
-
-                    double max = 20;
-
-                    double actual = LocalTime.now().getMinute();
-
-                    if(max-actual!=1) parkour_bossBar.setTitle(Format.color("&dParkour &f- &7Tempo rimanente - &b"+(int)(max-actual)+"&f Minuti"));
-                    else parkour_bossBar.setTitle(Format.color("&dParkour &f- &7Tempo rimanente - &b"+(int)(max-actual)+"&f Minuto"));
-
-                    parkour_bossBar.setProgress(1-(actual/max));
-
-                    if(actual==max || ((LocalTime.now().getHour()==18 || LocalTime.now().getHour()==22) && LocalTime.now().getMinute()>=20)){
-
-                        parkour_bossBar.setProgress(0);
-                        is_parkour_event_running = false;
-                        new BukkitRunnable(){
-
-                            @Override
-                            public void run() {
-
-
-                                stop_parkour_event();
-
+                if (isParkourEventRunning) {
+                    val max = 20.0
+                    val actual = LocalTime.now().minute.toDouble()
+                    if (max - actual != 1.0) parkourBossbar.setTitle(color("&dParkour &f- &7Tempo rimanente - &b" + (max - actual).toInt() + "&f Minuti")) else parkourBossbar.setTitle(
+                        color("&dParkour &f- &7Tempo rimanente - &b" + (max - actual).toInt() + "&f Minuto")
+                    )
+                    parkourBossbar.progress = 1 - actual / max
+                    if (actual == max || (LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && LocalTime.now().minute >= 20) {
+                        parkourBossbar.progress = 0.0
+                        isParkourEventRunning = false
+                        object : BukkitRunnable() {
+                            override fun run() {
+                                stopParkourEvent()
                             }
-
-                        }.runTaskAsynchronously(Main.instance);
-
-
+                        }.runTaskAsynchronously(Main.instance)
                     }
-
                 }
-
-
             }
-
-
-        }.runTaskTimerAsynchronously(Main.instance,300,1200); // Ogni minuto
-
-
-    }
-
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent event){
-
-        if(event.getPlayer().getLocation().getWorld()==parkour_world && !checkpoints_cache.containsKey(event.getPlayer())){
-
-            checkpoints_cache.put(event.getPlayer(),new ArrayList<>());
-            if(event.getPlayer().getAllowFlight() || event.getPlayer().isFlying()){
-                event.getPlayer().setAllowFlight(false);
-                event.getPlayer().setFlying(false);
-            }
-
-
-            if(!is_parkour_event_running && !event.getPlayer().hasPermission("dragoncore.parkour.cheatingprevention.bypass")){
-
-                Bukkit.dispatchCommand(event.getPlayer().getServer().getConsoleSender(),"spawn "+event.getPlayer().getName());
-
-                event.getPlayer().sendTitle("",Format.color("&cEvento parkour terminato!"),0,100,0); // 5 Secondi | Considerare anche il tempo che il loro client faccia la transizione tra i mondi.
-
-            }
-
-        }
-        if(event.getPlayer().getLocation().getWorld() == parkour_world && is_parkour_event_running){
-
-            parkour_bossBar.addPlayer(event.getPlayer());
-
-        }
-
+        }.runTaskTimerAsynchronously(Main.instance, 300, 1200) // Ogni minuto
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event){
-
-        if(event.getPlayer().getLocation().getWorld()==parkour_world){
-
-            going_back_to_checkpoint.remove(event.getPlayer());
-            parkour_bossBar.removePlayer(event.getPlayer());
-
+    fun onJoin(event: PlayerJoinEvent) {
+        if (event.player.location.world === parkourWorld && !checkpointsCache.containsKey(event.player)) {
+            checkpointsCache[event.player] = ArrayList()
+            if (event.player.allowFlight || event.player.isFlying) {
+                event.player.allowFlight = false
+                event.player.isFlying = false
+            }
+            if (!isParkourEventRunning && !event.player.hasPermission("dragoncore.parkour.cheatingprevention.bypass")) {
+                Bukkit.dispatchCommand(event.player.server.consoleSender, "spawn " + event.player.name)
+                event.player.sendTitle(
+                    "",
+                    color("&cEvento parkour terminato!"),
+                    0,
+                    100,
+                    0
+                ) // 5 Secondi | Considerare anche il tempo che il loro client faccia la transizione tra i mondi.
+            }
         }
-
-
+        if (event.player.location.world === parkourWorld && isParkourEventRunning) {
+            parkourBossbar.addPlayer(event.player)
+        }
     }
 
+    @EventHandler
+    fun onQuit(event: PlayerQuitEvent) {
+        if (event.player.location.world === parkourWorld) {
+            goingBackToCheckpoint.remove(event.player)
+            parkourBossbar.removePlayer(event.player)
+        }
+    }
 
-    public void start_parkour_event(){
+    fun startParkourEvent() {
 
         // MUST GIVE THEM THE PERMISSION TO GO TO THE WARP
-
-
-
-        starting_bossBar.setVisible(false);
-
-        parkour_bossBar.setProgress(1);
-        parkour_bossBar.setVisible(true);
-
-        for(Player p : Main.instance.getServer().getOnlinePlayers()){
-
-            p.setNoDamageTicks(260); // Diamogli tempo di leggere il titolo casomai sia in combattimento/pericolo.
-            p.sendTitle(Format.color("&d&lParkour"),Format.color("&7Evento parkour avviato!"),0,200,0);
-            p.playSound(p,Sound.ENTITY_ENDER_DRAGON_AMBIENT,60f,1f);
-            if(p.getWorld() == parkour_world){
-                parkour_bossBar.addPlayer(p);
+        startingBossbar!!.isVisible = false
+        parkourBossbar.progress = 1.0
+        parkourBossbar.isVisible = true
+        for (p in Main.instance.server.onlinePlayers) {
+            p.noDamageTicks = 260 // Diamogli tempo di leggere il titolo casomai sia in combattimento/pericolo.
+            p.sendTitle(color("&d&lParkour"), color("&7Evento parkour avviato!"), 0, 200, 0)
+            p.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 60f, 1f)
+            if (p.world === parkourWorld) {
+                parkourBossbar.addPlayer(p)
             }
-            starting_bossBar.addPlayer(p);
-
-
+            startingBossbar!!.addPlayer(p)
         }
-
-        starting_bossBar.setProgress(1);
-        starting_bossBar.setVisible(true);
-        start_starting_bossBar();
-
-
-
-
-
+        startingBossbar!!.progress = 1.0
+        startingBossbar!!.isVisible = true
+        startStartingBossbar()
     }
 
-
-    public void start_starting_bossBar(){
-
-        new BukkitRunnable(){
-
-            @Override
-            public void run(){
-
-                if(starting_bossBar==null){
-
-                    Main.instance.getServer().getLogger().warning("Cod. Errore #EF2G | Per qualche motivo la starting_bossbar non era stata instanziata durante l'evento Parkour");
-                    this.cancel();
-
+    private fun startStartingBossbar() {
+        object : BukkitRunnable() {
+            override fun run() {
+                if (startingBossbar == null) {
+                    Main.instance.server.logger.warning("Cod. Errore #EF2G | Per qualche motivo la starting_bossbar non era stata instanziata durante l'evento Parkour")
+                    cancel()
                 }
-
-                if(starting_bossBar.getProgress()>=0.1){
-
-                    starting_bossBar.setProgress(starting_bossBar.getProgress()-0.05);
-
-                }else{
-
-                    starting_bossBar.setProgress(0);
-                    new BukkitRunnable(){
-
-                        @Override
-                        public void run(){
-
-                            starting_bossBar.removeAll();
-                            starting_bossBar.setVisible(false);
-
+                if (startingBossbar!!.progress >= 0.1) {
+                    startingBossbar!!.progress = startingBossbar!!.progress - 0.05
+                } else {
+                    startingBossbar!!.progress = 0.0
+                    object : BukkitRunnable() {
+                        override fun run() {
+                            startingBossbar!!.removeAll()
+                            startingBossbar!!.isVisible = false
                         }
-
-                    }.runTaskLater(Main.instance,10);
-
-                    this.cancel();
-
+                    }.runTaskLater(Main.instance, 10)
+                    cancel()
                 }
-
             }
-
-        }.runTaskTimerAsynchronously(Main.instance,0,20);
-
+        }.runTaskTimerAsynchronously(Main.instance, 0, 20)
     }
 
-
-    public void stop_parkour_event(){     // MUST REMOVE THEM THE PERMISSION
+    fun stopParkourEvent() {     // MUST REMOVE THEM THE PERMISSION
 
         //Bukkit.dispatchCommand(Main.instance.getServer().getConsoleSender(),"lp group default permission unset");
-
-
-        for(Player p : parkour_world.getPlayers()){
+        for (p in parkourWorld!!.players) {
 
             //Bukkit.dispatchCommand(p.getServer().getConsoleSender(),"spawn "+p.getName());
-
-            p.sendTitle("",Format.color("&cEvento parkour terminato!"),0,100,0); // 5 Secondi | Considerare anche il tempo che il loro client faccia la transizione tra i mondi.
-
+            p.sendTitle(
+                "",
+                color("&cEvento parkour terminato!"),
+                0,
+                100,
+                0
+            ) // 5 Secondi | Considerare anche il tempo che il loro client faccia la transizione tra i mondi.
         }
-
-        if(winners!=0){
-
-            String title = Format.color("&6&l1&6. &7no_first_winner");
-            String subtitle = Format.color("&e&l2&e. &7no_second_winner&f, &9&l3&9. &7no_third_winner");
-
-            if(get_winner.containsKey(3)){
-
-                subtitle = subtitle.replaceAll("no_third_winner",get_winner.get(3).getName());
-
+        if (winners != 0) {
+            var title = color("&6&l1&6. &7no_first_winner")
+            var subtitle = color("&e&l2&e. &7no_second_winner&f, &9&l3&9. &7no_third_winner")
+            if (getWinner.containsKey(3)) {
+                subtitle = subtitle.replace("no_third_winner".toRegex(), getWinner[3]!!.name)
             }
-
-            if(get_winner.containsKey(2)){
-
-                subtitle = subtitle.replaceAll("no_second_winner",get_winner.get(2).getName());
-
+            if (getWinner.containsKey(2)) {
+                subtitle = subtitle.replace("no_second_winner".toRegex(), getWinner[2]!!.name)
             }
-
-            title =  title.replaceAll("no_first_winner",get_winner.get(1).getName());
-
-            String finalTitle = title;
-            String finalSubtitle = subtitle;
-            new BukkitRunnable(){
-
-
-                String title = finalTitle;
-                String subtitle = finalSubtitle;
-
-                @Override
-                public void run(){
-
-                    for(Player p : Main.instance.getServer().getOnlinePlayers()){
-
-                        p.setNoDamageTicks(200);
-                        p.sendTitle(this.title,this.subtitle,0,160,0);
-                        p.playSound(p,Sound.BLOCK_NOTE_BLOCK_PLING,100f,1f);
-
+            title = title.replace("no_first_winner".toRegex(), getWinner[1]!!.name)
+            val finalTitle = title
+            val finalSubtitle = subtitle
+            object : BukkitRunnable() {
+                var title = finalTitle
+                var subtitle = finalSubtitle
+                override fun run() {
+                    for (p in Main.instance.server.onlinePlayers) {
+                        p.noDamageTicks = 200
+                        p.sendTitle(this.title, this.subtitle, 0, 160, 0)
+                        p.playSound(p, Sound.BLOCK_NOTE_BLOCK_PLING, 100f, 1f)
                     }
-
                 }
-
-
-            }.runTaskLaterAsynchronously(Main.instance,160);
-
-
-        }else{
-
-            new BukkitRunnable(){
-
-
-
-                @Override
-                public void run(){
-
-                    for(Player p : Main.instance.getServer().getOnlinePlayers()){
-
-                        p.setNoDamageTicks(200);
-                        p.sendTitle("",Format.color("&cNessuno ha vinto durante l'evento &dParkour&c."),0,160,0);
-
+            }.runTaskLaterAsynchronously(Main.instance, 160)
+        } else {
+            object : BukkitRunnable() {
+                override fun run() {
+                    for (p in Main.instance.server.onlinePlayers) {
+                        p.noDamageTicks = 200
+                        p.sendTitle("", color("&cNessuno ha vinto durante l'evento &dParkour&c."), 0, 160, 0)
                     }
-
                 }
-
-
-            }.runTaskLaterAsynchronously(Main.instance,160);
-
+            }.runTaskLaterAsynchronously(Main.instance, 160)
         }
-
-
-        starting_bossBar.setVisible(false);
-        parkour_bossBar.removeAll();
-        parkour_bossBar.setVisible(false);
-        parkour_bossBar.setTitle(Format.color("&dParkour &f- &7Tempo rimanente"));
-
-        winner_position.clear();
-        get_winner.clear();
-
-        checkpoints.clear();
-        going_back_to_checkpoint.clear();
-        checkpoints_cache.clear();
-        winners = 0;
-        winner_position.clear();
-
+        startingBossbar!!.isVisible = false
+        parkourBossbar.removeAll()
+        parkourBossbar.isVisible = false
+        parkourBossbar.setTitle(color("&dParkour &f- &7Tempo rimanente"))
+        winnerPosition.clear()
+        getWinner.clear()
+        checkpoints.clear()
+        goingBackToCheckpoint.clear()
+        checkpointsCache.clear()
+        winners = 0
+        winnerPosition.clear()
     }
-
 
     // PREVENTION FLY / ELYTRA / ENDERPEARL / CHORUS FRUIT
-
     @EventHandler
-    public void PlayerCommand(PlayerCommandPreprocessEvent event){
-
-        if(event.getPlayer().getLocation().getWorld()==parkour_world){
-
-            if(event.getPlayer().hasPermission("dragoncore.parkour.cheatingprevention.bypass")) return;
-
-            if(!(event.getMessage().contains("spawn"))){
-
-                event.setCancelled(true);
-                event.getPlayer().sendTitle("",Format.color("&cPuoi solo fare il comando &7/spawn&c qua!"),0,80,0);
-                event.getPlayer().playSound(event.getPlayer(),Sound.ENTITY_WANDERING_TRADER_NO,100f,1f);
-
+    fun playerCommand(event: PlayerCommandPreprocessEvent) {
+        if (event.player.location.world === parkourWorld) {
+            if (event.player.hasPermission("dragoncore.parkour.cheatingprevention.bypass")) return
+            if (!event.message.contains("spawn")) {
+                event.isCancelled = true
+                event.player.sendTitle("", color("&cPuoi solo fare il comando &7/spawn&c qua!"), 0, 80, 0)
+                event.player.playSound(event.player, Sound.ENTITY_WANDERING_TRADER_NO, 100f, 1f)
             }
-
         }
-
     }
 
-
     @EventHandler
-    public void WorldChangeEvent(PlayerChangedWorldEvent event){
-
-        if(!checkpoints_cache.containsKey(event.getPlayer())){
-            checkpoints_cache.put(event.getPlayer(),new ArrayList<>());
-        }else{
-            checkpoints_cache.remove(event.getPlayer());
+    fun WorldChangeEvent(event: PlayerChangedWorldEvent) {
+        if (!checkpointsCache.containsKey(event.player)) {
+            checkpointsCache[event.player] = ArrayList()
+        } else {
+            checkpointsCache.remove(event.player)
         }
-
-        if(event.getPlayer().getLocation().getWorld() == parkour_world){
-
-            parkour_bossBar.addPlayer(event.getPlayer());
-
-            if(event.getPlayer().hasPermission("dragoncore.parkour.flyprevention.bypass")) return;
-
-            if(event.getPlayer().getAllowFlight()){
-                event.getPlayer().setAllowFlight(false);
-                event.getPlayer().setFlying(false);
-                event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_VILLAGER_NO,100F,1F);
-                event.getPlayer().sendTitle("",Format.color("&cNon puoi volare qui!"),0,40,0);
+        if (event.player.location.world === parkourWorld) {
+            parkourBossbar.addPlayer(event.player)
+            if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
+            if (event.player.allowFlight) {
+                event.player.allowFlight = false
+                event.player.isFlying = false
+                event.player.playSound(event.player, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
+                event.player.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
             }
-
-        }else{
-
-            parkour_bossBar.removePlayer(event.getPlayer());
-            checkpoints.remove(event.getPlayer());
-            checkpoints_cache.remove(event.getPlayer());
-
+        } else {
+            parkourBossbar.removePlayer(event.player)
+            checkpoints.remove(event.player)
+            checkpointsCache.remove(event.player)
         }
-
     }
 
     @EventHandler
-    public void PlayerFly(PlayerToggleFlightEvent event){
-
-        if(event.getPlayer().getLocation().getWorld() == parkour_world){
-
-            if(event.getPlayer().hasPermission("dragoncore.parkour.flyprevention.bypass")) return;
-
-            event.getPlayer().setAllowFlight(false);
-            event.getPlayer().setFlying(false);
-            event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_VILLAGER_NO,100F,1F);
-            event.getPlayer().sendTitle("",Format.color("&cNon puoi volare qui!"),0,40,0);
-
+    fun playerFly(event: PlayerToggleFlightEvent) {
+        if (event.player.location.world === parkourWorld) {
+            if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
+            event.player.allowFlight = false
+            event.player.isFlying = false
+            event.player.playSound(event.player, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
+            event.player.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
         }
-
-
     }
 
     @EventHandler
-    public void PlayerElytra(EntityToggleGlideEvent event){
-
-        if(event.getEntity().getLocation().getWorld() == parkour_world){
-
-            if(!(event.getEntity() instanceof Player)) return;
-
-            Player p = (Player) event.getEntity();
-
-            if(p.hasPermission("dragoncore.parkour.flyprevention.bypass")) return;
-
-            if(event.isGliding()) event.setCancelled(true);
-            p.playSound(p, Sound.ENTITY_VILLAGER_NO,100F,1F);
-            p.sendTitle("",Format.color("&cNon puoi volare qui!"),0,40,0);
-
+    fun PlayerElytra(event: EntityToggleGlideEvent) {
+        if (event.entity.location.world === parkourWorld) {
+            if (event.entity !is Player) return
+            val p = event.entity as Player
+            if (p.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
+            if (event.isGliding) event.isCancelled = true
+            p.playSound(p, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
+            p.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
         }
-
     }
 
     @EventHandler
-    public void PlayerTeleport(PlayerTeleportEvent event){
-
-        if(event.getPlayer().getLocation().getWorld() == parkour_world) {
-
-
-            if(event.getPlayer().hasPermission("dragoncore.parkour.flyprevention.bypass")) return;
-
-            if(event.getCause() == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL){
-
-                event.setCancelled(true);
-                event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_VILLAGER_NO,100F,1F);
-                event.getPlayer().sendTitle("",Format.color("&cNon puoi teletrasportarti qui!"),0,40,0);
-
+    fun PlayerTeleport(event: PlayerTeleportEvent) {
+        if (event.player.location.world === parkourWorld) {
+            if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
+            if (event.cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || event.cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+                event.isCancelled = true
+                event.player.playSound(event.player, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
+                event.player.sendTitle("", color("&cNon puoi teletrasportarti qui!"), 0, 40, 0)
             }
-
-
-
         }
-
     }
 
     @EventHandler
-    public void PlayerMove(PlayerMoveEvent event){
-
-        if(!is_parkour_event_running) return;
-
-
-        if(event.getPlayer().getLocation().getWorld() == parkour_world) {
-
-
-
-            if((event.getPlayer().getAllowFlight() || event.getPlayer().isFlying()) && !event.getPlayer().hasPermission("dragoncore.parkour.flyprevention.bypass")){
-                event.getPlayer().setAllowFlight(false);
-                event.getPlayer().setFlying(false);
-                event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_VILLAGER_NO,100F,1F);
-                event.getPlayer().sendTitle("",Format.color("&cNon puoi volare qui!"),0,40,0);
+    fun PlayerMove(event: PlayerMoveEvent) {
+        if (!isParkourEventRunning) return
+        if (event.player.location.world === parkourWorld) {
+            if ((event.player.allowFlight || event.player.isFlying) && !event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) {
+                event.player.allowFlight = false
+                event.player.isFlying = false
+                event.player.playSound(event.player, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
+                event.player.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
             }
-
-            Block b = event.getPlayer().getLocation().add(0,-1,0).getBlock();
-
-            if(b.getType() == Material.GOLD_BLOCK){
-
-                if(checkpoints.containsKey(event.getPlayer())){
-
-                    if(!(event.getPlayer().getLocation()==checkpoints.get(event.getPlayer()))){
-
-                        Location location_block_hipotetic = b.getLocation();
-                        location_block_hipotetic.setY(location_block_hipotetic.getY()+1);
-
-                        if(!checkpoints_cache.get(event.getPlayer()).contains(location_block_hipotetic)) {
-
-                            event.getPlayer().sendTitle("", Format.color("&2&lCheckpoint salvato!"), 0, 20, 0);
-
-                            event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_VILLAGER_YES, 100F, 1F);
-
-                            Location l = b.getLocation();
-
-                            l.setY(l.getY() + 1);
-
-                            checkpoints.replace(event.getPlayer(), l);
-
-                            checkpoints_cache.get(event.getPlayer()).add(l);
+            val b = event.player.location.add(0.0, -1.0, 0.0).block
+            if (b.type == Material.GOLD_BLOCK) {
+                if (checkpoints.containsKey(event.player)) {
+                    if (event.player.location !== checkpoints[event.player]) {
+                        val location_block_hipotetic = b.location
+                        location_block_hipotetic.y = location_block_hipotetic.y + 1
+                        if (!checkpointsCache[event.player]!!.contains(location_block_hipotetic)) {
+                            event.player.sendTitle("", color("&2&lCheckpoint salvato!"), 0, 20, 0)
+                            event.player.playSound(event.player, Sound.ENTITY_VILLAGER_YES, 100f, 1f)
+                            val l = b.location
+                            l.y = l.y + 1
+                            checkpoints.replace(event.player, l)
+                            checkpointsCache[event.player]!!.add(l)
                         }
-
                     }
-
-                }else{
-
-                    event.getPlayer().sendTitle("",Format.color("&2&lCheckpoint salvato!"),0,20,0);
-                    event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_VILLAGER_YES,100F,1F);
-
-                    Location l = b.getLocation();
-
-                    l.setY(l.getY()+1);
-
-
-                    checkpoints.put(event.getPlayer(),l);
-
-                    checkpoints_cache.get(event.getPlayer()).add(l);
-
+                } else {
+                    event.player.sendTitle("", color("&2&lCheckpoint salvato!"), 0, 20, 0)
+                    event.player.playSound(event.player, Sound.ENTITY_VILLAGER_YES, 100f, 1f)
+                    val l = b.location
+                    l.y = l.y + 1
+                    checkpoints[event.player] = l
+                    checkpointsCache[event.player]!!.add(l)
                 }
-
             }
-
-            if(parkour_world.getBlockAt(event.getPlayer().getLocation()).getBlockData().getMaterial() == Material.WATER){
-
-                if(going_back_to_checkpoint.containsKey(event.getPlayer())) return;
-
-                if(!checkpoints.containsKey(event.getPlayer())) return;
-
-                going_back_to_checkpoint.put(event.getPlayer(),true);
-
-                event.getPlayer().playSound(event.getPlayer(),Sound.ENTITY_GENERIC_EXPLODE,60f,1f);
-                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW,10,255,false));
-                event.getPlayer().sendTitle("",Format.color("&fTeletrasporto..."),0,13,0);
-
-
-                Main.instance.getServer().getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(Main.class), new Runnable() {
-                    @Override
-                    public void run() {
-                        event.getPlayer().teleport(checkpoints.get(event.getPlayer()));
-                        going_back_to_checkpoint.remove(event.getPlayer());
-                        event.getPlayer().resetTitle();
-                        event.getPlayer().sendTitle("",Format.color("&2Tornato al checkpoint!"),0,10,0);
-                        event.getPlayer().spawnParticle(Particle.PORTAL,event.getPlayer().getLocation(),100,2,2,2);
-                        event.getPlayer().playSound(event.getPlayer(),Sound.ENTITY_ENDERMAN_TELEPORT,100f,1f);
-                        event.getPlayer().removePotionEffect(PotionEffectType.SLOW);
-                    }
-                }, 13L);
-
-
+            if (parkourWorld!!.getBlockAt(event.player.location).blockData.material == Material.WATER) {
+                if (goingBackToCheckpoint.containsKey(event.player)) return
+                if (!checkpoints.containsKey(event.player)) return
+                goingBackToCheckpoint[event.player] = true
+                event.player.playSound(event.player, Sound.ENTITY_GENERIC_EXPLODE, 60f, 1f)
+                event.player.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 10, 255, false))
+                event.player.sendTitle("", color("&fTeletrasporto..."), 0, 13, 0)
+                Main.instance.server.scheduler.scheduleSyncDelayedTask(
+                    JavaPlugin.getPlugin(
+                        Main::class.java
+                    ), {
+                        event.player.teleport(checkpoints[event.player]!!)
+                        goingBackToCheckpoint.remove(event.player)
+                        event.player.resetTitle()
+                        event.player.sendTitle("", color("&2Tornato al checkpoint!"), 0, 10, 0)
+                        event.player.spawnParticle(Particle.PORTAL, event.player.location, 100, 2.0, 2.0, 2.0)
+                        event.player.playSound(event.player, Sound.ENTITY_ENDERMAN_TELEPORT, 100f, 1f)
+                        event.player.removePotionEffect(PotionEffectType.SLOW)
+                    }, 13L
+                )
             }
-
-            if(b.getType() == Material.EMERALD_BLOCK){
-
-                if(winner_position.containsKey(event.getPlayer())){
-                    return;
+            if (b.type == Material.EMERALD_BLOCK) {
+                if (winnerPosition.containsKey(event.player)) {
+                    return
                 }
-
-                Location l = b.getLocation();
-
-                l.setY(l.getY() + 1);
-
-                checkpoints.replace(event.getPlayer(), l);
-
-                if(winners>=3){
-
-                    event.getPlayer().sendTitle("",Format.color("&2Bravo, hai completato il parkour!"), 0, 20, 0);
-                    event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Format.color("&2+ &2&l500&2 Soldi")));
-                    Bukkit.dispatchCommand(event.getPlayer().getServer().getConsoleSender(),"cmi money give "+event.getPlayer().getName()+" 500");
+                val l = b.location
+                l.y = l.y + 1
+                checkpoints.replace(event.player, l)
+                if (winners >= 3) {
+                    event.player.sendTitle("", color("&2Bravo, hai completato il parkour!"), 0, 20, 0)
+                    event.player.spigot()
+                        .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l500&2 Soldi")))
+                    Bukkit.dispatchCommand(
+                        event.player.server.consoleSender,
+                        "cmi money give " + event.player.name + " 500"
+                    )
                     //cmi money give player tot
-                    event.getPlayer().playSound(event.getPlayer(),Sound.ENTITY_WANDERING_TRADER_YES,100f,1.3f);
-                    winner_position.put(event.getPlayer(),-1); // -1 Non è un vincitore, ma non gli si manda il titolo a spam
-
-
+                    event.player.playSound(event.player, Sound.ENTITY_WANDERING_TRADER_YES, 100f, 1.3f)
+                    winnerPosition[event.player] = -1 // -1 Non è un vincitore, ma non gli si manda il titolo a spam
                 }
-                switch (winners) {
-                    case 0 -> {
-                        winners++;
-                        winner_position.put(event.getPlayer(), 1);
-                        get_winner.put(1, event.getPlayer());
-                        event.getPlayer().sendTitle(Format.color("&6&lPrimo"), Format.color("&aCongratulazioni!"), 0, 40, 0);
-                        for (Player p : parkour_world.getPlayers()) {
-                            p.sendMessage(Format.color("&7Il giocatore &b" + event.getPlayer().getName() + "&7 e' arrivato primo all'evento Parkour!"));
+                when (winners) {
+                    0 -> {
+                        winners++
+                        winnerPosition[event.player] = 1
+                        getWinner[1] = event.player
+                        event.player.sendTitle(color("&6&lPrimo"), color("&aCongratulazioni!"), 0, 40, 0)
+                        for (p in parkourWorld!!.players) {
+                            p.sendMessage(color("&7Il giocatore &b" + event.player.name + "&7 e' arrivato primo all'evento Parkour!"))
                         }
-                        Bukkit.dispatchCommand(event.getPlayer().getServer().getConsoleSender(),"cmi money give "+event.getPlayer().getName()+" 5000");
-                        event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Format.color("&2+ &2&l5K&2 Soldi")));
-                        event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_PLAYER_LEVELUP, 100f, 2f);
+                        Bukkit.dispatchCommand(
+                            event.player.server.consoleSender,
+                            "cmi money give " + event.player.name + " 5000"
+                        )
+                        event.player.spigot()
+                            .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l5K&2 Soldi")))
+                        event.player.playSound(event.player, Sound.ENTITY_PLAYER_LEVELUP, 100f, 2f)
                     }
-                    case 1 -> {
-                        winners++;
-                        winner_position.put(event.getPlayer(), 2);
-                        get_winner.put(2, event.getPlayer());
-                        event.getPlayer().sendTitle(Format.color("&6&lSecondo"), Format.color("&aCongratulazioni!"), 0, 40, 0);
-                        for (Player p : parkour_world.getPlayers()) {
-                            p.sendMessage(Format.color("&7Il giocatore &b" + event.getPlayer().getName() + "&7 e' arrivato secondo all'evento Parkour!"));
+
+                    1 -> {
+                        winners++
+                        winnerPosition[event.player] = 2
+                        getWinner[2] = event.player
+                        event.player.sendTitle(color("&6&lSecondo"), color("&aCongratulazioni!"), 0, 40, 0)
+                        for (p in parkourWorld!!.players) {
+                            p.sendMessage(color("&7Il giocatore &b" + event.player.name + "&7 e' arrivato secondo all'evento Parkour!"))
                         }
-                        Bukkit.dispatchCommand(event.getPlayer().getServer().getConsoleSender(),"cmi money give "+event.getPlayer().getName()+" 3000");
-                        event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Format.color("&2+ &2&l3K&2 Soldi")));
-                        event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_PLAYER_LEVELUP, 100f, 1.3f);
+                        Bukkit.dispatchCommand(
+                            event.player.server.consoleSender,
+                            "cmi money give " + event.player.name + " 3000"
+                        )
+                        event.player.spigot()
+                            .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l3K&2 Soldi")))
+                        event.player.playSound(event.player, Sound.ENTITY_PLAYER_LEVELUP, 100f, 1.3f)
                     }
-                    case 2 -> {
-                        winner_position.put(event.getPlayer(), 3);
-                        get_winner.put(3, event.getPlayer());
-                        winners++;
-                        event.getPlayer().sendTitle(Format.color("&6&lTerzo"), Format.color("&aCongratulazioni!"), 0, 40, 0);
-                        for (Player p : parkour_world.getPlayers()) {
-                            p.sendMessage(Format.color("&7Il giocatore &b" + event.getPlayer().getName() + "&7 e' arrivato terzo all'evento Parkour!"));
+
+                    2 -> {
+                        winnerPosition[event.player] = 3
+                        getWinner[3] = event.player
+                        winners++
+                        event.player.sendTitle(color("&6&lTerzo"), color("&aCongratulazioni!"), 0, 40, 0)
+                        for (p in parkourWorld!!.players) {
+                            p.sendMessage(color("&7Il giocatore &b" + event.player.name + "&7 e' arrivato terzo all'evento Parkour!"))
                         }
-                        Bukkit.dispatchCommand(event.getPlayer().getServer().getConsoleSender(),"cmi money give "+event.getPlayer().getName()+" 1000");
-                        event.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Format.color("&2+ &2&l1K&2 Soldi")));
-                        event.getPlayer().playSound(event.getPlayer(), Sound.ENTITY_PLAYER_LEVELUP, 100f, 0.7f);
+                        Bukkit.dispatchCommand(
+                            event.player.server.consoleSender,
+                            "cmi money give " + event.player.name + " 1000"
+                        )
+                        event.player.spigot()
+                            .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l1K&2 Soldi")))
+                        event.player.playSound(event.player, Sound.ENTITY_PLAYER_LEVELUP, 100f, 0.7f)
                     }
                 }
-
-
             }
-
-
-
-
         }
-
     }
-
-
-
 }

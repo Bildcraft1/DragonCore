@@ -1,13 +1,10 @@
-package com.whixard.dragoncore.events.ResourcesMonitoring
+package com.whixard.dragoncore.events.resourcesMonitoring
 
 import com.whixard.dragoncore.Main
 import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.format.Format
 import me.lucko.spark.api.statistic.StatisticWindow
-import net.md_5.bungee.api.ChatMessageType
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Sound
-import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 class RM_AlertInProgress : BukkitRunnable() {

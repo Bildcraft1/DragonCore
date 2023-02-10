@@ -1,4 +1,4 @@
-package com.whixard.dragoncore.events.ResourcesMonitoring
+package com.whixard.dragoncore.events.resourcesMonitoring
 
 import com.whixard.dragoncore.Main
 import org.bukkit.event.EventHandler
