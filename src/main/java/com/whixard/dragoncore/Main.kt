@@ -110,6 +110,10 @@ class Main : JavaPlugin() {
         } else {
             logger.log(Level.INFO, "Lands not found, disabling tab checker.")
         }
+
+        if (config.contains("parkour_world_name")) {
+            server.pluginManager.registerEvents(ParkourManager(), this)
+        }
     }
 
     private fun commands() {
@@ -138,10 +142,6 @@ class Main : JavaPlugin() {
 
     private fun betaFeatures() {
         if (DragonAPI().getConfig().getBoolean("beta_features")) {
-            if (config.contains("parkour_world_name")) {
-                server.pluginManager.registerEvents(ParkourManager(), this)
-            }
-
             if (config.contains("alerts.tps-when-under") && config.contains("alerts.ram-when-over")) {
 
                 server.pluginManager.registerEvents(RM_Events(), this)

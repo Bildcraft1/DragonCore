@@ -12,7 +12,6 @@ import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityToggleGlideEvent
 import org.bukkit.event.player.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -264,29 +263,6 @@ class ParkourManager : Listener {
             parkourBossbar.removePlayer(event.player)
             checkpoints.remove(event.player)
             checkpointsCache.remove(event.player)
-        }
-    }
-
-    @EventHandler
-    fun playerFly(event: PlayerToggleFlightEvent) {
-        if (event.player.location.world === parkourWorld) {
-            if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
-            event.player.allowFlight = false
-            event.player.isFlying = false
-            event.player.playSound(event.player, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
-            event.player.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
-        }
-    }
-
-    @EventHandler
-    fun PlayerElytra(event: EntityToggleGlideEvent) {
-        if (event.entity.location.world === parkourWorld) {
-            if (event.entity !is Player) return
-            val p = event.entity as Player
-            if (p.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
-            if (event.isGliding) event.isCancelled = true
-            p.playSound(p, Sound.ENTITY_VILLAGER_NO, 100f, 1f)
-            p.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
         }
     }
 
