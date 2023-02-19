@@ -12,6 +12,8 @@ import org.bukkit.boss.BossBar
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.entity.PotionSplashEvent
 import org.bukkit.event.player.*
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
@@ -81,7 +83,7 @@ class ParkourManager : Listener {
                         color("&dParkour &f- &7Tempo rimanente - &b" + (max - actual).toInt() + "&f Minuto")
                     )
                     parkourBossbar.progress = 1 - actual / max
-                    if (actual == max || (LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && LocalTime.now().minute >= 20) {
+                    if (actual == max || ((LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && LocalTime.now().minute >= 20)) {
                         parkourBossbar.progress = 0.0
                         isParkourEventRunning = false
                         object : BukkitRunnable() {
@@ -257,6 +259,20 @@ class ParkourManager : Listener {
     }
 
     @EventHandler
+    fun playerConsumePotionEvent(event: PlayerItemConsumeEvent){
+        if(event.player.location.world === parkourWorld){
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun potionSplash(event: PotionSplashEvent){
+        if(event.entity.location.world === parkourWorld){
+            event.isCancelled = true
+        }
+    }
+
+    @EventHandler
     fun WorldChangeEvent(event: PlayerChangedWorldEvent) {
         if (!checkpointsCache.containsKey(event.player)) {
             checkpointsCache[event.player] = ArrayList()
@@ -264,6 +280,9 @@ class ParkourManager : Listener {
             checkpointsCache.remove(event.player)
         }
         if (event.player.location.world === parkourWorld) {
+            for(potion in event.player.activePotionEffects){
+                event.player.removePotionEffect(potion.type)
+            }
             parkourBossbar.addPlayer(event.player)
             if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
             if (event.player.allowFlight) {
