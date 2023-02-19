@@ -128,12 +128,12 @@ class ParkourManager : Listener {
     }
 
     fun startParkourEvent() {
-
         // MUST GIVE THEM THE PERMISSION TO GO TO THE WARP
         startingBossbar!!.isVisible = false
         parkourBossbar.progress = 1.0
         parkourBossbar.isVisible = true
         for (p in Main.instance.server.onlinePlayers) {
+            p.addAttachment(Main.instance, "cmi.command.warp.parkour", true)
             p.noDamageTicks = 260 // Diamogli tempo di leggere il titolo casomai sia in combattimento/pericolo.
             p.sendTitle(color("&d&lParkour"), color("&7Evento parkour avviato!"), 0, 200, 0)
             p.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 60f, 1f)
@@ -171,6 +171,14 @@ class ParkourManager : Listener {
     }
 
     fun stopParkourEvent() {     // MUST REMOVE THEM THE PERMISSION
+
+        for (p in Main.instance.server.onlinePlayers) {
+            Bukkit.dispatchCommand(
+                p.server.consoleSender,
+                "lp user " + p.name + " permission unset cmi.command.warp.parkour"
+            )
+        }
+
 
         //Bukkit.dispatchCommand(Main.instance.getServer().getConsoleSender(),"lp group default permission unset");
         for (p in parkourWorld!!.players) {
