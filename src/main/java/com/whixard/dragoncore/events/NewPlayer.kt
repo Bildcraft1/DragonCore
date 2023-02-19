@@ -18,7 +18,7 @@ class NewPlayer : Listener {
                     return
                 }
 
-                if (event.reason == EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY || event.reason == EntityTargetEvent.TargetReason.TARGET_ATTACKED_NEARBY_ENTITY) {
+                if (event.reason == EntityTargetEvent.TargetReason.TARGET_ATTACKED_ENTITY || event.reason == EntityTargetEvent.TargetReason.TARGET_ATTACKED_NEARBY_ENTITY || event.reason == EntityTargetEvent.TargetReason.TEMPT) {
                     return
                 }
 
