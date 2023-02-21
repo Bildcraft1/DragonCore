@@ -148,8 +148,7 @@ class Main : JavaPlugin() {
 
             }
 
-            // MENTION DISABLED
-            //server.pluginManager.registerEvents(Mention(),this)
+            server.pluginManager.registerEvents(Mention(),this)
 
             if (config.contains("alerts.tps-when-under") && config.contains("alerts.ram-when-over")) {
 

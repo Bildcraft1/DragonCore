@@ -18,7 +18,7 @@ class Mention : Listener {
                 var msg = e.format
                 msg = msg.replace("%1\$s",e.player.name)
                 msg = msg.replace("%2\$s",e.message)
-                msg = msg.replace(player.name,Format.color("&d${player.name}&f"))
+                msg = msg.replace(player.name,Format.color("&d${player.name}&f")+ChatColor.getLastColors(msg))
                 player.sendMessage(msg)
                 player.playSound(player, Sound.BLOCK_BELL_USE,1f,1f)
             }
