@@ -61,13 +61,13 @@ class ParkourManager : Listener {
         parkourBossbar.progress = 0.0
         parkourBossbar.isVisible = true
         startingBossbar!!.isVisible = false
-        AutomaticParkourEventTimer()
+        automaticParkourEventTimer()
     }
 
-    private fun AutomaticParkourEventTimer() {
+    private fun automaticParkourEventTimer() {
         object : BukkitRunnable() {
             override fun run() {
-                if (LocalTime.now().hour == 18 && !isParkourEventRunning && LocalTime.now().minute < 20) {
+                if ((LocalTime.now().hour == 16 || LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && !isParkourEventRunning && LocalTime.now().minute < 20) {
                     object : BukkitRunnable() {
                         override fun run() {
                             startParkourEvent()
@@ -82,7 +82,7 @@ class ParkourManager : Listener {
                         color("&dParkour &f- &7Tempo rimanente - &b" + (max - actual).toInt() + "&f Minuto")
                     )
                     parkourBossbar.progress = 1 - actual / max
-                    if (actual == max || (LocalTime.now().hour == 18 && LocalTime.now().minute >= 20)) {
+                    if (actual == max || ((LocalTime.now().hour == 16 || LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && LocalTime.now().minute >= 20)) {
                         parkourBossbar.progress = 0.0
                         isParkourEventRunning = false
                         object : BukkitRunnable() {
@@ -133,10 +133,17 @@ class ParkourManager : Listener {
         startingBossbar!!.isVisible = false
         parkourBossbar.progress = 1.0
         parkourBossbar.isVisible = true
-        Bukkit.dispatchCommand(
-            Main.instance.server.consoleSender,
-            "lp group default permission set cmi.command.warp.parkour"
-        )
+        object : BukkitRunnable() {
+
+            override fun run() {
+                Bukkit.dispatchCommand(
+                    Main.instance.server.consoleSender,
+                    "lp group default permission set cmi.command.warp.parkour"
+                )
+            }
+
+        }.runTask(Main.instance)
+
         for (p in Main.instance.server.onlinePlayers) {
             p.noDamageTicks = 260 // Diamogli tempo di leggere il titolo casomai sia in combattimento/pericolo.
             p.sendTitle(color("&d&lParkour"), color("&7Evento parkour avviato!"), 0, 200, 0)
@@ -176,10 +183,17 @@ class ParkourManager : Listener {
 
     fun stopParkourEvent() {     // MUST REMOVE THEM THE PERMISSION
 
-            Bukkit.dispatchCommand(
-                Main.instance.server.consoleSender,
-                "lp group default permission unset cmi.command.warp.parkour"
-            )
+        object : BukkitRunnable(){
+
+            override fun run() {
+                Bukkit.dispatchCommand(
+                    Main.instance.server.consoleSender,
+                    "lp group default permission unset cmi.command.warp.parkour"
+                )
+            }
+
+        }.runTask(Main.instance)
+
 
 
         //Bukkit.dispatchCommand(Main.instance.getServer().getConsoleSender(),"lp group default permission unset");
@@ -193,10 +207,18 @@ class ParkourManager : Listener {
                 100,
                 0
             ) // 5 Secondi | Considerare anche il tempo che il loro client faccia la transizione tra i mondi.
-            Bukkit.dispatchCommand(
-                Main.instance.server.consoleSender,
-                "spawn ${p.name}"
-            )
+
+            object : BukkitRunnable(){
+
+                override fun run() {
+                    Bukkit.dispatchCommand(
+                        Main.instance.server.consoleSender,
+                        "spawn ${p.name}"
+                    )
+                }
+
+            }.runTask(Main.instance)
+
         }
         if (winners != 0) {
             var title = color("&6&l1&6. &7no_first_winner")
@@ -373,12 +395,18 @@ class ParkourManager : Listener {
                 checkpoints.replace(event.player, l)
                 if (winners >= 3) {
                     event.player.sendTitle("", color("&2Bravo, hai completato il parkour!"), 0, 20, 0)
-                    event.player.spigot()
-                        .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l500&2 Soldi")))
-                    Bukkit.dispatchCommand(
-                        event.player.server.consoleSender,
-                        "cmi money give " + event.player.name + " 500"
-                    )
+                    event.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l500&2 Soldi")))
+                    object : BukkitRunnable(){
+
+                        override fun run() {
+                            Bukkit.dispatchCommand(
+                                event.player.server.consoleSender,
+                                "cmi money give " + event.player.name + " 500"
+                            )
+                        }
+
+                    }.runTaskLater(Main.instance, 40)
+
                     //cmi money give player tot
                     event.player.playSound(event.player, Sound.ENTITY_WANDERING_TRADER_YES, 100f, 1.3f)
                     winnerPosition[event.player] = -1 // -1 Non è un vincitore, ma non gli si manda il titolo a spam
@@ -392,12 +420,18 @@ class ParkourManager : Listener {
                         for (p in parkourWorld!!.players) {
                             p.sendMessage(color("&7Il giocatore &b" + event.player.name + "&7 e' arrivato primo all'evento Parkour!"))
                         }
-                        Bukkit.dispatchCommand(
-                            event.player.server.consoleSender,
-                            "cmi money give " + event.player.name + " 5000"
-                        )
-                        event.player.spigot()
-                            .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l5K&2 Soldi")))
+                        object: BukkitRunnable(){
+
+                            override fun run() {
+                                Bukkit.dispatchCommand(
+                                    event.player.server.consoleSender,
+                                    "cmi money give " + event.player.name + " 5000"
+                                )
+                            }
+
+                        }.runTaskLater(Main.instance,40)
+
+                        event.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l5K&2 Soldi")))
                         event.player.playSound(event.player, Sound.ENTITY_PLAYER_LEVELUP, 100f, 2f)
                     }
 
@@ -409,12 +443,18 @@ class ParkourManager : Listener {
                         for (p in parkourWorld!!.players) {
                             p.sendMessage(color("&7Il giocatore &b" + event.player.name + "&7 e' arrivato secondo all'evento Parkour!"))
                         }
-                        Bukkit.dispatchCommand(
-                            event.player.server.consoleSender,
-                            "cmi money give " + event.player.name + " 3000"
-                        )
-                        event.player.spigot()
-                            .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l3K&2 Soldi")))
+                        object : BukkitRunnable(){
+
+                            override fun run() {
+                                Bukkit.dispatchCommand(
+                                    event.player.server.consoleSender,
+                                    "cmi money give " + event.player.name + " 3000"
+                                )
+                            }
+
+                        }.runTaskLater(Main.instance,40)
+
+                        event.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l3K&2 Soldi")))
                         event.player.playSound(event.player, Sound.ENTITY_PLAYER_LEVELUP, 100f, 1.3f)
                     }
 
@@ -426,12 +466,15 @@ class ParkourManager : Listener {
                         for (p in parkourWorld!!.players) {
                             p.sendMessage(color("&7Il giocatore &b" + event.player.name + "&7 e' arrivato terzo all'evento Parkour!"))
                         }
-                        Bukkit.dispatchCommand(
-                            event.player.server.consoleSender,
-                            "cmi money give " + event.player.name + " 1000"
-                        )
-                        event.player.spigot()
-                            .sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l1K&2 Soldi")))
+                        object : BukkitRunnable(){
+                            override fun run() {
+                                Bukkit.dispatchCommand(
+                                    event.player.server.consoleSender,
+                                    "cmi money give " + event.player.name + " 1000"
+                                )
+                            }
+                        }.runTaskLater(Main.instance,40)
+                        event.player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent(color("&2+ &2&l1K&2 Soldi")))
                         event.player.playSound(event.player, Sound.ENTITY_PLAYER_LEVELUP, 100f, 0.7f)
                     }
                 }
