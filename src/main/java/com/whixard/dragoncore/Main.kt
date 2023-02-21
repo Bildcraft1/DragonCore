@@ -148,6 +148,9 @@ class Main : JavaPlugin() {
 
             }
 
+            // MENTION DISABLED
+            //server.pluginManager.registerEvents(Mention(),this)
+
             if (config.contains("alerts.tps-when-under") && config.contains("alerts.ram-when-over")) {
 
                 RM_Generic().runTaskTimerAsynchronously(this, 0, 600)
