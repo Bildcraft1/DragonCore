@@ -28,31 +28,27 @@ object TimeTravelCommand: CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         items["diamond"] = ItemStack(Material.DIAMOND)
         items["diamond"]!!.amount = 3
-        items["diamond"]!!.itemMeta = items["diamond"]!!.itemMeta?.apply {
-            setDisplayName(Format.color("&bDiamante"))
-            lore = listOf("Time Traveler")
-        }
 
         items["gold"] = ItemStack(Material.GOLD_INGOT)
         items["gold"]!!.amount = 10
-        items["gold"]!!.itemMeta = items["gold"]!!.itemMeta?.apply {
-            setDisplayName(Format.color("&6Lingotto d'oro"))
-            lore = listOf("Time Traveler")
-        }
 
         items["iron"] = ItemStack(Material.IRON_INGOT)
         items["iron"]!!.amount = 20
-        items["iron"]!!.itemMeta = items["iron"]!!.itemMeta?.apply {
-            setDisplayName(Format.color("&fLingotto di ferro"))
-            lore = listOf("Time Traveler")
-        }
 
         items["ancient"] = ItemStack(Material.ANCIENT_DEBRIS)
         items["ancient"]!!.amount = 1
-        items["ancient"]!!.itemMeta = items["ancient"]!!.itemMeta?.apply {
-            setDisplayName(Format.color("&8Detrito antico"))
-            lore = listOf("Time Traveler")
-        }
+
+        items["netheritescrap"] = ItemStack(Material.NETHERITE_SCRAP)
+        items["netheritescrap"]!!.amount = 2
+
+        items["goldblock"] = ItemStack(Material.GOLD_BLOCK)
+        items["goldblock"]!!.amount = 2
+
+        items["ironblock"] = ItemStack(Material.IRON_BLOCK)
+        items["ironblock"]!!.amount = 6
+
+        items["goldenapple"] = ItemStack(Material.GOLDEN_APPLE)
+        items["goldenapple"]!!.amount = 4
 
         if (sender.hasPermission("dragoncore.timetravelevent")) {
 
@@ -61,7 +57,7 @@ object TimeTravelCommand: CommandExecutor {
                     for (player in sender.server.onlinePlayers) {
                         player.playSound(player.location, Sound.BLOCK_PORTAL_TRAVEL,100F, 1F)
                     }
-                    pre_bossbar = Bukkit.createBossBar(Format.color("&fAvvio... &c- &dViaggio del Drago"), BarColor.PURPLE, BarStyle.SOLID)
+                    pre_bossbar = Bukkit.createBossBar(Format.color("&4&l!! &fAvvio... &c- &dSveltina del Drago"), BarColor.RED, BarStyle.SEGMENTED_10)
                     pre_bossbar!!.addFlag(BarFlag.CREATE_FOG)
                     pre_bossbar!!.addFlag(BarFlag.DARKEN_SKY)
                     pre_bossbar!!.isVisible = true
@@ -69,7 +65,7 @@ object TimeTravelCommand: CommandExecutor {
                     for (player in sender.server.onlinePlayers) {
                         pre_bossbar!!.addPlayer(player)
                     }
-                    sender.server.broadcastMessage(Format.color("&f&lEvento &f- &d&lViaggio del Drago&7 comincierà tra 10 secondi."))
+                    sender.server.broadcastMessage(Format.color("&4&l!! &f&lEvento &f- &d&lSveltina del Drago&7 comincierà tra 10 secondi."))
                     sender.server.broadcastMessage(Format.color("&4&l!! &7È consigliabile svuotarsi l'inventario!"))
                     preStartTimer(sender)
                 }
@@ -113,12 +109,12 @@ object TimeTravelCommand: CommandExecutor {
     }
 
     private fun startTimer(sender : CommandSender) {
-        bossbar = Bukkit.createBossBar(Format.color("&d&lViaggio del Drago"), BarColor.PURPLE, BarStyle.SOLID)
+        bossbar = Bukkit.createBossBar(Format.color("&d&lSveltina del Drago"), BarColor.PURPLE, BarStyle.SEGMENTED_20)
         bossbar!!.isVisible = true
         bossbar!!.progress = 1.0
         bossbar!!.addFlag(BarFlag.CREATE_FOG)
         bossbar!!.addFlag(BarFlag.DARKEN_SKY)
-        bossbar!!.style = BarStyle.SEGMENTED_10
+        bossbar!!.style = BarStyle.SEGMENTED_20
 
         for (player in sender.server.onlinePlayers) {
             bossbar!!.addPlayer(player)
@@ -127,8 +123,8 @@ object TimeTravelCommand: CommandExecutor {
         object : BukkitRunnable() {
             override fun run() {
                 if (bossbar != null) {
-                    if (bossbar!!.progress > 0.03) {
-                        bossbar!!.progress -= 0.01
+                    if (bossbar!!.progress > 0.06) {
+                        bossbar!!.progress -= 0.05
                     } else {
                         for(player in sender.server.onlinePlayers){
                             player.playSound(player.location,Sound.ENTITY_ENDER_DRAGON_DEATH,0.35f,1f)
@@ -140,38 +136,25 @@ object TimeTravelCommand: CommandExecutor {
                     }
                 }
                 // Randomly decide if we should give items
-                if (Math.random() < 0.5) {
+                if (Math.random() < 0.9) {
                     giveItems(sender)
                 }
             }
-        }.runTaskTimer(Main.instance, 0, 20)
+        }.runTaskTimer(Main.instance, 0, 5)
     }
-
-    var conta_give = 0;
     private fun giveItems(sender : CommandSender) {
         for (player in sender.server.onlinePlayers) {
 
             val world = player.world
 
-            var oggetto = items.values.random();
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR,TextComponent(Format.color("&f&l + &f"+oggetto.amount+"x "+oggetto.itemMeta?.displayName)))
+            val oggetto = items.values.random()
+            player.playSound(player,Sound.ENTITY_ITEM_PICKUP, 1f, 1f)
             if(player.inventory.firstEmpty()==-1) world.dropItem(player.location, oggetto)
             else player.inventory.addItem(oggetto)
-            
-            if(conta_give>3){
 
-                player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_GROWL, 50F, 1F)
-                player.playSound(player.location, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 50F, 1F)
-
-            }else{
-                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 100F, 1F)
-            }
-
-            player.world.spawnParticle(Particle.PORTAL,player.location,500,5.0,2.0,5.0)
-            player.world.spawnParticle(Particle.DRAGON_BREATH,player.location,500,5.0,2.0,5.0)
+            player.world.spawnParticle(Particle.PORTAL,player.location,125,5.0,2.0,5.0)
+            player.world.spawnParticle(Particle.DRAGON_BREATH,player.location,125,5.0,2.0,5.0)
 
         }
-        if(conta_give>3) conta_give = 0
-        else conta_give++
     }
 }
