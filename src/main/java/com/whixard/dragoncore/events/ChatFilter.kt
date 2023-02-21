@@ -19,7 +19,7 @@ class ChatFilter : Listener {
         val msg: String = event.message.lowercase()
         blacklist.addAll((DragonAPI().getConfig().getStringList("chatfilter.blacklist")))
 
-        if (msg.matches("^<.*>.*$".toRegex())) {
+        if (msg.matches("^<.*>.*$".toRegex()) && !p.hasPermission("dragoncore.staff")) {
             for (player in p.server.onlinePlayers) {
                 if (player.hasPermission("dragoncore.staff")) {
                     val teleport = TextComponent(prefix + color(" User &7") + p.name + color(" &ctried to force op!"))
@@ -31,7 +31,7 @@ class ChatFilter : Listener {
             event.isCancelled = true
         }
 
-        if (msg.matches(".*\\{jndi:ldap://.*}.*".toRegex())) {
+        if (msg.matches(".*\\{jndi:ldap://.*}.*".toRegex()) && !p.hasPermission("dragoncore.staff")) {
             for (player in p.server.onlinePlayers) {
                 if (player.hasPermission("dragoncore.staff")) {
                     val teleport = TextComponent(prefix + "User §7" + p.name + " §ctried to Log4Shell!")
@@ -44,7 +44,7 @@ class ChatFilter : Listener {
         }
 
         for (x in blacklist) {
-            if (msg.contains(x)) {
+            if (msg.contains(x) && !p.hasPermission("dragoncore.staff")) {
 
                 for (player in p.server.onlinePlayers) {
                     if (player.hasPermission("dragoncore.staff")) {
