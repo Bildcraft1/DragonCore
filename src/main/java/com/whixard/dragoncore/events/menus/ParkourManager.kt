@@ -42,7 +42,7 @@ class ParkourManager : Listener {
             )
         } else Main.instance.logger.info("Parkour world name not set up in the config.")
         for (p in Main.instance.server.onlinePlayers) {
-            if (p.location.world === parkourWorld && !checkpointsCache.containsKey(p)) {
+            if (p.location.world == parkourWorld && !checkpointsCache.containsKey(p)) {
                 checkpointsCache[p] = ArrayList()
             }
         }
@@ -67,13 +67,13 @@ class ParkourManager : Listener {
     private fun AutomaticParkourEventTimer() {
         object : BukkitRunnable() {
             override fun run() {
-                if ((LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && !isParkourEventRunning && LocalTime.now().minute < 20) {
-                    isParkourEventRunning = true
+                if (LocalTime.now().hour == 18 && !isParkourEventRunning && LocalTime.now().minute < 20) {
                     object : BukkitRunnable() {
                         override fun run() {
                             startParkourEvent()
                         }
                     }.runTaskAsynchronously(Main.instance)
+                    isParkourEventRunning = true
                 }
                 if (isParkourEventRunning) {
                     val max = 20.0
@@ -82,7 +82,7 @@ class ParkourManager : Listener {
                         color("&dParkour &f- &7Tempo rimanente - &b" + (max - actual).toInt() + "&f Minuto")
                     )
                     parkourBossbar.progress = 1 - actual / max
-                    if (actual == max || ((LocalTime.now().hour == 18 || LocalTime.now().hour == 22) && LocalTime.now().minute >= 20)) {
+                    if (actual == max || (LocalTime.now().hour == 18 && LocalTime.now().minute >= 20)) {
                         parkourBossbar.progress = 0.0
                         isParkourEventRunning = false
                         object : BukkitRunnable() {
@@ -98,7 +98,7 @@ class ParkourManager : Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        if (event.player.location.world === parkourWorld && !checkpointsCache.containsKey(event.player)) {
+        if (event.player.location.world == parkourWorld && !checkpointsCache.containsKey(event.player)) {
             checkpointsCache[event.player] = ArrayList()
             if (event.player.allowFlight || event.player.isFlying) {
                 event.player.allowFlight = false
@@ -115,14 +115,14 @@ class ParkourManager : Listener {
                 ) // 5 Secondi | Considerare anche il tempo che il loro client faccia la transizione tra i mondi.
             }
         }
-        if (event.player.location.world === parkourWorld && isParkourEventRunning) {
+        if (event.player.location.world == parkourWorld && isParkourEventRunning) {
             parkourBossbar.addPlayer(event.player)
         }
     }
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
-        if (event.player.location.world === parkourWorld) {
+        if (event.player.location.world == parkourWorld) {
             goingBackToCheckpoint.remove(event.player)
             parkourBossbar.removePlayer(event.player)
         }
@@ -141,7 +141,7 @@ class ParkourManager : Listener {
             p.noDamageTicks = 260 // Diamogli tempo di leggere il titolo casomai sia in combattimento/pericolo.
             p.sendTitle(color("&d&lParkour"), color("&7Evento parkour avviato!"), 0, 200, 0)
             p.playSound(p, Sound.ENTITY_ENDER_DRAGON_AMBIENT, 60f, 1f)
-            if (p.world === parkourWorld) {
+            if (p.world == parkourWorld) {
                 parkourBossbar.addPlayer(p)
             }
             startingBossbar!!.addPlayer(p)
@@ -247,7 +247,7 @@ class ParkourManager : Listener {
     // PREVENTION FLY / ELYTRA / ENDERPEARL / CHORUS FRUIT
     @EventHandler
     fun playerCommand(event: PlayerCommandPreprocessEvent) {
-        if (event.player.location.world === parkourWorld) {
+        if (event.player.location.world == parkourWorld) {
             if (event.player.hasPermission("dragoncore.parkour.cheatingprevention.bypass")) return
             if (!event.message.contains("spawn")) {
                 event.isCancelled = true
@@ -259,14 +259,14 @@ class ParkourManager : Listener {
 
     @EventHandler
     fun playerConsumePotionEvent(event: PlayerItemConsumeEvent){
-        if(event.player.location.world === parkourWorld){
+        if(event.player.location.world == parkourWorld){
             event.isCancelled = true
         }
     }
 
     @EventHandler
     fun potionSplash(event: PotionSplashEvent){
-        if(event.entity.location.world === parkourWorld){
+        if(event.entity.location.world == parkourWorld){
             event.isCancelled = true
         }
     }
@@ -278,7 +278,7 @@ class ParkourManager : Listener {
         } else {
             checkpointsCache.remove(event.player)
         }
-        if (event.player.location.world === parkourWorld) {
+        if (event.player.location.world == parkourWorld) {
             for(potion in event.player.activePotionEffects){
                 event.player.removePotionEffect(potion.type)
             }
@@ -299,7 +299,7 @@ class ParkourManager : Listener {
 
     @EventHandler
     fun PlayerTeleport(event: PlayerTeleportEvent) {
-        if (event.player.location.world === parkourWorld) {
+        if (event.player.location.world == parkourWorld) {
             if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
             if (event.cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT || event.cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
                 event.isCancelled = true
@@ -312,7 +312,7 @@ class ParkourManager : Listener {
     @EventHandler
     fun PlayerMove(event: PlayerMoveEvent) {
         if (!isParkourEventRunning) return
-        if (event.player.location.world === parkourWorld) {
+        if (event.player.location.world == parkourWorld) {
             if ((event.player.allowFlight || event.player.isFlying) && !event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) {
                 event.player.allowFlight = false
                 event.player.isFlying = false
@@ -322,7 +322,7 @@ class ParkourManager : Listener {
             val b = event.player.location.add(0.0, -1.0, 0.0).block
             if (b.type == Material.GOLD_BLOCK) {
                 if (checkpoints.containsKey(event.player)) {
-                    if (event.player.location !== checkpoints[event.player]) {
+                    if (event.player.location != checkpoints[event.player]) {
                         val location_block_hipotetic = b.location
                         location_block_hipotetic.y = location_block_hipotetic.y + 1
                         if (!checkpointsCache[event.player]!!.contains(location_block_hipotetic)) {

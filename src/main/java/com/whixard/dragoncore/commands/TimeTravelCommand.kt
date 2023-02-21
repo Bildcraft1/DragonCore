@@ -127,8 +127,8 @@ object TimeTravelCommand: CommandExecutor {
         object : BukkitRunnable() {
             override fun run() {
                 if (bossbar != null) {
-                    if (bossbar!!.progress > 0.05) { // CA. 39 CICLI ESATTI ( 0.025 * 40 = 1)
-                        bossbar!!.progress -= 0.025
+                    if (bossbar!!.progress > 0.03) {
+                        bossbar!!.progress -= 0.01
                     } else {
                         for(player in sender.server.onlinePlayers){
                             player.playSound(player.location,Sound.ENTITY_ENDER_DRAGON_DEATH,0.35f,1f)
