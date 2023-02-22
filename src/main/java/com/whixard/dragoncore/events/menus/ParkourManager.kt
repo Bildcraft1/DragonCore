@@ -98,6 +98,7 @@ class ParkourManager : Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
+        event.player.isCollidable = true
         if (event.player.location.world == parkourWorld && !checkpointsCache.containsKey(event.player)) {
             checkpointsCache[event.player] = ArrayList()
             if (event.player.allowFlight || event.player.isFlying) {
@@ -122,6 +123,7 @@ class ParkourManager : Listener {
 
     @EventHandler
     fun onQuit(event: PlayerQuitEvent) {
+        event.player.isCollidable = true
         if (event.player.location.world == parkourWorld) {
             goingBackToCheckpoint.remove(event.player)
             parkourBossbar.removePlayer(event.player)
@@ -305,6 +307,7 @@ class ParkourManager : Listener {
                 event.player.removePotionEffect(potion.type)
             }
             parkourBossbar.addPlayer(event.player)
+            event.player.isCollidable = false
             if (event.player.hasPermission("dragoncore.parkour.flyprevention.bypass")) return
             if (event.player.allowFlight) {
                 event.player.allowFlight = false
@@ -313,6 +316,7 @@ class ParkourManager : Listener {
                 event.player.sendTitle("", color("&cNon puoi volare qui!"), 0, 40, 0)
             }
         } else {
+            event.player.isCollidable = true
             parkourBossbar.removePlayer(event.player)
             checkpoints.remove(event.player)
             checkpointsCache.remove(event.player)
