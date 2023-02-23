@@ -294,7 +294,6 @@ class ParkourManager : Listener {
             event.isCancelled = true
         }
     }
-
     @EventHandler
     fun WorldChangeEvent(event: PlayerChangedWorldEvent) {
         if (!checkpointsCache.containsKey(event.player)) {
