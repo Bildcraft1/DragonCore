@@ -1,5 +1,6 @@
 package com.whixard.dragoncore.events
 
+import com.whixard.dragoncore.Main
 import com.whixard.dragoncore.api.DragonAPI
 import com.whixard.dragoncore.api.DragonDatabase
 import com.whixard.dragoncore.commands.tags.Tags
@@ -11,7 +12,10 @@ import org.bukkit.Bukkit.getLogger
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerCommandPreprocessEvent
+import org.bukkit.event.player.PlayerCommandSendEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.scheduler.BukkitRunnable
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.util.*
@@ -64,6 +68,42 @@ class PlayerJoin : Listener {
         return false
     }
 
+    /*@EventHandler
+    fun playerRemovedVanish(e: PlayerCommandPreprocessEvent){
+        if(e.message != "vanish") return
+        if(!e.player.hasPermission("pv.*")) return
+        val mex = DragonAPI().getConfig().getList("salutiplayers")
+
+        object : BukkitRunnable(){
+
+            override fun run() {
+
+                for(meta in e.player.getMetadata("vanished")){
+                    if(meta.asBoolean()){
+                        cancel()
+                    }
+                }
+
+                for (p in e.player.server.onlinePlayers) {
+                    if (p.hasPermission("dragoncore.hello") && p != e.player) {
+                        val component = TextComponent(
+                            ChatColor.translateAlternateColorCodes(
+                                '&',
+                                "&7&l&oCLICCA QUI&7&o per salutare &6&o" + e.player.name + "&7!"
+                            )
+                        )
+                        component.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, mex?.random().toString().replace("{player_name}", e.player.name))
+                        p.spigot().sendMessage(component)
+                    }
+                }
+
+            }
+
+        }.runTaskLater(Main.instance,15)
+
+
+    }*/
+
     @EventHandler
     fun salutePlayer(event: PlayerJoinEvent) {
         val mex = DragonAPI().getConfig().getList("salutiplayers")
@@ -75,18 +115,28 @@ class PlayerJoin : Listener {
 
         if (isVanished(event.player)) return
 
-        for (p in event.player.server.onlinePlayers) {
-            if (p.hasPermission("dragoncore.hello") && p != event.player) {
-                val component = TextComponent(
-                    ChatColor.translateAlternateColorCodes(
-                        '&',
-                        "&7&l&oCLICCA QUI&7&o per salutare &6&o" + event.player.name + "&7!"
-                    )
-                )
-                component.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, mex.random().toString().replace("{player_name}", event.player.name))
-                p.spigot().sendMessage(component)
+        object : BukkitRunnable(){
+
+            val player = event.player
+
+            override fun run() {
+
+                for (p in player.server.onlinePlayers) {
+                    if (p.hasPermission("dragoncore.hello") && p != player) {
+                        val component = TextComponent(
+                            ChatColor.translateAlternateColorCodes(
+                                '&',
+                                "&7&l&oCLICCA QUI&7&o per salutare &6&o" + player.name + "&7!"
+                            )
+                        )
+                        component.clickEvent = ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, mex.random().toString().replace("{player_name}", player.name))
+                        p.spigot().sendMessage(component)
+                    }
+                }
+
             }
-        }
+
+        }.runTaskLater(Main.instance,15)
     }
 
     @EventHandler
