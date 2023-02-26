@@ -111,9 +111,9 @@ class Main : JavaPlugin() {
             logger.log(Level.INFO, "Lands not found, disabling tab checker.")
         }
 
-        if (config.contains("parkour_world_name")) {
+        /*if (config.contains("parkour_world_name")) {
             server.pluginManager.registerEvents(ParkourManager(), this)
-        }
+        }*/
     }
 
     private fun commands() {
